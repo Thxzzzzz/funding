@@ -61,64 +61,19 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
+    beego.GlobalControllerRouter["testApi/controllers:ProductController"] = append(beego.GlobalControllerRouter["testApi/controllers:ProductController"],
         beego.ControllerComments{
-            Method: "Post",
-            Router: `/`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
-        beego.ControllerComments{
-            Method: "GetAll",
-            Router: `/`,
+            Method: "GetProductWithPkg",
+            Router: `/detail/:id`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
+    beego.GlobalControllerRouter["testApi/controllers:UserControllers"] = append(beego.GlobalControllerRouter["testApi/controllers:UserControllers"],
         beego.ControllerComments{
-            Method: "Get",
-            Router: `/:uid`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
-        beego.ControllerComments{
-            Method: "Put",
-            Router: `/:uid`,
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
-        beego.ControllerComments{
-            Method: "Delete",
-            Router: `/:uid`,
-            AllowHTTPMethods: []string{"delete"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
-        beego.ControllerComments{
-            Method: "Login",
-            Router: `/login`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["testApi/controllers:UserController"] = append(beego.GlobalControllerRouter["testApi/controllers:UserController"],
-        beego.ControllerComments{
-            Method: "Logout",
-            Router: `/logout`,
+            Method: "GetUserById",
+            Router: `/id/:id`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

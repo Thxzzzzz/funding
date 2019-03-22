@@ -9,9 +9,9 @@ import (
 )
 
 type BaseModel struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uint       `json:"id" gorm:"primary_key"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `sql:"index" json:"-"`
 }
 
@@ -20,6 +20,10 @@ var (
 )
 
 func init() {
+	InitDB()
+}
+
+func InitDB() {
 	dbStr := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		beego.AppConfig.String("mysqluser"),
 		beego.AppConfig.String("mysqlpass"),
@@ -28,7 +32,12 @@ func init() {
 	var err error
 	db, err = gorm.Open("mysql", dbStr)
 	if err != nil {
-		panic("failed to connect database")
+		fmt.Println(err)
+		//这里先忽略生产环境的错误，方便测试
+		if beego.BConfig.RunMode != "prod" {
+			panic("failed to connect database")
+		}
+		return
 	}
 	db.LogMode(true)
 }

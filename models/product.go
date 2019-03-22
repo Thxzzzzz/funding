@@ -9,42 +9,44 @@ import (
 type Product struct {
 	BaseModel
 	//产品名
-	Name string
+	Name string `json:"name"`
 	//产品类型
-	ProductType int
+	ProductType int `json:"product_type"`
 	//当前筹集金额
-	CurrentPrice float64
+	CurrentPrice float64 `json:"current_price"`
 	//目标筹集金额
-	TargetPrice float64
+	TargetPrice float64 `json:"target_price"`
 	//支持人数
-	Backers int
+	Backers int `json:"backers"`
 	//截止时间
-	EndTime time.Time
+	EndTime time.Time `json:"end_time"`
 	//介绍页详情 Html
-	DetailHtml string
+	DetailHtml string `json:"detail_html"`
 	//商品套餐
-	ProductPackages []ProductPackage
+	ProductPackages []ProductPackage `json:"product_packages"`
 }
 
 //产品套餐
 type ProductPackage struct {
 	BaseModel
 	//对应产品 Id
-	ProductId string
+	ProductId string `json:"product_id"`
 	//套餐描述
-	Description string
+	Description string `json:"description"`
 	//图片链接
-	ImageUrl string
+	ImageUrl string `json:"image_url"`
 	//套餐价格
-	Price float64
+	Price float64 `json:"price"`
 	//剩余库存
-	Stock int64
+	Stock int64 `json:"stock"`
 	//套餐总数
-	Total int64
+	Total int64 `json:"total"`
+	//支持人数
+	Backers int `json:"backers"`
 	//运费
-	Freight float64
+	Freight float64 `json:"freight"`
 	//发货时间 (众筹成功后多到天内)
-	DeliveryDay int64
+	DeliveryDay int64 `json:"delivery_day"`
 }
 
 func init() {
