@@ -19,7 +19,7 @@ type User struct {
 }
 
 //查找用户信息
-func FindUserById(id int) (*User, error) {
+func FindUserById(id int64) (*User, error) {
 	var result User
 	err := db.First(&result, id).Error
 	return &result, err
