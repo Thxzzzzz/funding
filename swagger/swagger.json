@@ -227,8 +227,9 @@
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "body",
-                        "description": "true",
+                        "name": "LoginUserForm",
+                        "description": "登录信息",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/controllers.LoginUser"
                         }

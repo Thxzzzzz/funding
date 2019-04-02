@@ -7,8 +7,8 @@ type Result struct {
 }
 
 const (
-	SUCCESS = 0
-	FALL    = 100
+	SUCCESS = 200
+	FALL    = 400
 )
 
 const (

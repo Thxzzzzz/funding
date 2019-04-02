@@ -2,13 +2,12 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
 	"testApi/models"
 )
 
 // 产品相关
 type ProductController struct {
-	beego.Controller
+	BaseController
 }
 
 // @Title Get All Products
@@ -17,6 +16,8 @@ type ProductController struct {
 // @Failure 400
 // @router /all [get]
 func (c *ProductController) GetAll() {
+	ss := c.GetSession("userId")
+	fmt.Println(ss)
 	dbResult, err := models.GetAllProduct()
 	var result models.Result
 	if err != nil {
@@ -25,8 +26,7 @@ func (c *ProductController) GetAll() {
 		result = models.SuccessResult(dbResult)
 	}
 	fmt.Println(&result)
-	c.Data["json"] = result
-	c.ServeJSON()
+	c.ResponseJson(result)
 }
 
 // @Title Get Product With Detail
@@ -43,6 +43,5 @@ func (c *ProductController) GetProductWithPkg() {
 	} else {
 		result = models.SuccessResult(dbResult)
 	}
-	c.Data["json"] = result
-	c.ServeJSON()
+	c.ResponseJson(result)
 }
