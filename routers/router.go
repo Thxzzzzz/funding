@@ -3,13 +3,11 @@
 // @Description Funding
 // @Contact
 // @TermsOfServiceUrl
-// @License Apache 2.0
-// @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
 package routers
 
 import (
+	"funding/controllers"
 	"github.com/astaxie/beego"
-	"testApi/controllers"
 )
 
 func init() {
@@ -27,6 +25,11 @@ func init() {
 		beego.NSNamespace("/product",
 			beego.NSInclude(
 				&controllers.ProductController{},
+			),
+		),
+		beego.NSNamespace("/order",
+			beego.NSInclude(
+				&controllers.OrderController{},
 			),
 		),
 	)

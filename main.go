@@ -1,10 +1,10 @@
 package main
 
 import (
+	_ "funding/routers"
 	"github.com/astaxie/beego"
 	_ "github.com/astaxie/beego/session/redis"
 	_ "github.com/gomodule/redigo/redis"
-	_ "testApi/routers"
 )
 
 func main() {

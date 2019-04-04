@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"testApi/forms"
-	"testApi/models"
+	"funding/forms"
+	"funding/models"
 )
 
 // 用户相关
@@ -30,8 +30,15 @@ func (c *UserControllers) GetUserById() {
 	c.ResponseJson(result)
 }
 
-// Session 中保存登录信息的 Key 值
-const SESSION_USER_KEY = "userId"
+// @Title 注册
+// @Description 注册
+// @Param RegistryForm	body	forms.RegisterForm	true	"注册信息"
+// @Success 200
+// @Failure 400
+// @router	/register	[post]
+func (c *UserControllers) Register() {
+	//TODO 注册
+}
 
 // @Title 登录
 // @Description 用账号密码登录
@@ -73,7 +80,8 @@ func (c *UserControllers) Login() {
 	c.ResponseJson(result)
 }
 
-//	@Title 登出
+//	@Title 登出/注销登录
+// @Description 注销登录
 //	@router /logout	[post]
 func (c *UserControllers) Logout() {
 	var result models.Result
@@ -83,8 +91,9 @@ func (c *UserControllers) Logout() {
 	c.ResponseJson(result)
 }
 
-//	@Title 根据当前的 Session 查询对应的用户信息
-//	@router /info	[get]
+// @Title 根据当前的 Session 查询对应的用户信息
+// @Description 用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期
+// @router /info	[get]
 func (c *UserControllers) Info() {
 	userId := c.GetSession(SESSION_USER_KEY)
 	var result models.Result

@@ -5,7 +5,7 @@ package test
 //	"net/http/httptest"
 //	"path/filepath"
 //	"runtime"
-//	_ "testApi/routers"
+//	_ "funding/routers"
 //	"testing"
 //
 //	"github.com/astaxie/beego"

@@ -4,11 +4,7 @@
         "title": "Funding Api",
         "description": "Funding",
         "version": "1.0.0",
-        "contact": {},
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+        "contact": {}
     },
     "basePath": "/v1",
     "paths": {
@@ -147,6 +143,31 @@
                 }
             }
         },
+        "/order/new": {
+            "post": {
+                "tags": [
+                    "order"
+                ],
+                "operationId": "OrderController.新订单"
+            }
+        },
+        "/product/": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "据页码和其他条件获取产品信息",
+                "operationId": "ProductController.据页码和其他条件获取产品信息",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/product/all": {
             "get": {
                 "tags": [
@@ -190,6 +211,40 @@
                 }
             }
         },
+        "/product/verify": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "审核人员才能调用该接口获取信息 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态",
+                "operationId": "ProductController.根据审核状态获取产品信息",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/product/verify/update": {
+            "post": {
+                "tags": [
+                    "product"
+                ],
+                "description": "审核人员才能修改审核状态 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态",
+                "operationId": "ProductController.产品审核状态修改",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/id/{id}": {
             "get": {
                 "tags": [
@@ -217,6 +272,14 @@
                 }
             }
         },
+        "/user/info\t[get]": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息"
+            }
+        },
         "/user/login": {
             "post": {
                 "tags": [
@@ -231,7 +294,43 @@
                         "description": "登录信息",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.LoginUser"
+                            "$ref": "#/definitions/forms.LoginForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/logout\t[post]": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "operationId": "UserControllers.登出"
+            }
+        },
+        "/user/register\t[post]": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "注册",
+                "operationId": "UserControllers.注册",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "RegistryForm",
+                        "description": "注册信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.RegisterForm"
                         }
                     }
                 ],
@@ -247,11 +346,35 @@
         }
     },
     "definitions": {
-        "controllers.LoginUser": {
-            "title": "LoginUser",
+        "forms.LoginForm": {
+            "title": "LoginForm",
             "type": "object",
             "properties": {
                 "Password": {
+                    "type": "string"
+                },
+                "Username": {
+                    "type": "string"
+                }
+            }
+        },
+        "forms.RegisterForm": {
+            "title": "RegisterForm",
+            "type": "object",
+            "properties": {
+                "Email": {
+                    "type": "string"
+                },
+                "IconUrl": {
+                    "type": "string"
+                },
+                "Nickname": {
+                    "type": "string"
+                },
+                "Password": {
+                    "type": "string"
+                },
+                "Phone": {
                     "type": "string"
                 },
                 "Username": {
@@ -288,6 +411,10 @@
         {
             "name": "product",
             "description": "产品相关\n"
+        },
+        {
+            "name": "order",
+            "description": "订单相关\n"
         }
     ]
 }

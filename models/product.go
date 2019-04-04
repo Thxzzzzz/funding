@@ -72,9 +72,9 @@ func GetProductWithPkg(productId string) (*Product, error) {
 	return &result, nil
 }
 
-func GetProductPackage(productId string) (*ProductPackage, error) {
-	var result ProductPackage
-	err := db.First(&result).Where("Product_id = ?", productId).Error
+func GetProductPackages(productId string) (*[]ProductPackage, error) {
+	var result []ProductPackage
+	err := db.Find(&result).Where("Product_id = ?", productId).Error
 	if err != nil {
 		return nil, err
 	}

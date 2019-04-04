@@ -1,10 +1,10 @@
 package test
 
 import (
+	"funding/models"
 	"github.com/astaxie/beego"
 	"path/filepath"
 	"runtime"
-	"testApi/models"
 	"testing"
 )
 
