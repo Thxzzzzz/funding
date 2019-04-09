@@ -1,4 +1,4 @@
-package models
+package resultModels
 
 type Result struct {
 	Code    int         `json:"code"`

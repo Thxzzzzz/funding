@@ -3,11 +3,30 @@ package controllers
 import (
 	"fmt"
 	"funding/models"
+	"funding/resultModels"
 )
 
 // 产品相关
 type ProductController struct {
 	BaseController
+}
+
+// @Title Get Home Page Info
+// @Description 获取首页信息
+// @router /home
+func (c *ProductController) GetHome() {
+
+	// 轮播图 前端 type == 0
+	//TODO 最新的 5 个产品作为轮播图
+
+	// 活动板块  前端 type == 1
+	//TODO 这个感觉不需要。。
+
+	// 热门商品  前端 type == 2
+	//TODO 众筹中的产品里面筹集金额最高的产品
+
+	// XXX精选 前端 type == 3
+	//TODO 几大类别的热门
 }
 
 // @Title Get All Products
@@ -17,11 +36,11 @@ type ProductController struct {
 // @router /all [get]
 func (c *ProductController) GetAll() {
 	dbResult, err := models.GetAllProduct()
-	var result models.Result
+	var result resultModels.Result
 	if err != nil {
-		result = models.ErrorResult(models.FALL, err.Error())
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	} else {
-		result = models.SuccessResult(dbResult)
+		result = resultModels.SuccessResult(dbResult)
 	}
 	fmt.Println(&result)
 	c.ResponseJson(result)
@@ -67,11 +86,11 @@ func (c *ProductController) VerifyProduct() {
 // @router /detail/:id [get]
 func (c *ProductController) GetProductWithPkg() {
 	dbResult, err := models.GetProductWithPkg(c.GetString(":id"))
-	var result models.Result
+	var result resultModels.Result
 	if err != nil {
-		result = models.ErrorResult(models.FALL, err.Error())
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	} else {
-		result = models.SuccessResult(dbResult)
+		result = resultModels.SuccessResult(dbResult)
 	}
 	c.ResponseJson(result)
 }
