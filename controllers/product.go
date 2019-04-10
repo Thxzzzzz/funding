@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"funding/models"
 	"funding/resultModels"
+	"funding/utils"
+	"time"
 )
 
 // 产品相关
@@ -17,50 +19,57 @@ type ProductController struct {
 // @Failure 400
 // @router /home
 func (c *ProductController) GetHome() {
-
 	var home []resultModels.HomeResult
 	var result resultModels.Result
-	// 轮播图 前端 type == 0
+	// 轮播图 前端 type == 0 5个
 	//TODO 最新的 5 个产品作为轮播图
 	bannerProduct, err := models.GetProductsByPageAndType(1, 5, 0)
 	if err != nil {
 
 	} else {
 		homeBanner := resultModels.HomeResult{
-			Name:      "轮播图",
-			LimitNum:  5,
-			Type:      0,
-			Position:  0,
-			Status:    1,
-			SortOrder: 0,
-			Remark:    "",
+			Name:     "轮播图",
+			LimitNum: 5,
+			Type:     0,
 		}
-		for i, p := range bannerProduct {
-			var content = resultModels.PanelContent{
-				Type:            0,
-				ProductID:       int64(p.ID),
-				SortOrder:       i + 1,
-				PicURL:          p.BigImg,
-				SalePrice:       int(p.CurrentPrice),
-				ProductName:     p.Name,
-				SubTitle:        p.Name,
-				ProductImageBig: p.BigImg,
-			}
-			homeBanner.PanelContents = append(homeBanner.PanelContents, content)
+		for _, p := range bannerProduct {
+			var productContent resultModels.ProductContent
+			utils.CopyStructJ(&p, &productContent)
+			productContent.ID = p.ID
+			productContent.CurrentTime = time.Now()
+			homeBanner.ProductContents = append(homeBanner.ProductContents, productContent)
 		}
 		home = append(home, homeBanner)
 	}
-	fmt.Println(&bannerProduct)
 
 	// 活动板块  前端 type == 1
 	//TODO 这个感觉不需要。。
 
-	// 热门商品  前端 type == 2
+	// 热门商品  前端 type == 2 2个？
 	//TODO 众筹中的产品里面筹集金额最高的产品
 
-	// XXX精选 前端 type == 3
+	// XXX精选 前端 type == 3 7个
 	//TODO 几大类别的热门
+	//科技类
+	var techType = 1
+	techProduct, err := models.GetProductsByPageAndType(1, 7, techType)
+	if err != nil {
 
+	} else {
+		techResult := resultModels.HomeResult{
+			Name:     "科技精选",
+			LimitNum: 7,
+			Type:     3,
+		}
+		for _, p := range techProduct {
+			var productContent resultModels.ProductContent
+			utils.CopyStructJ(&p, &productContent)
+			productContent.ID = p.ID
+			productContent.CurrentTime = time.Now()
+			techResult.ProductContents = append(techResult.ProductContents, productContent)
+		}
+		home = append(home, techResult)
+	}
 	result = resultModels.SuccessResult(home)
 	c.ResponseJson(result)
 }

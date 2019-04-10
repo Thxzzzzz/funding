@@ -13,6 +13,8 @@ type Product struct {
 	Name string `json:"name"`
 	//顶部大图
 	BigImg string `json:"big_img"`
+	//列表小图
+	SmallImg string `json:"small_img"`
 	//产品类型
 	ProductType int `json:"product_type"`
 	//当前筹集金额
