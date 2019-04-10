@@ -211,6 +211,23 @@
                 }
             }
         },
+        "/product/home": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "获取首页信息",
+                "operationId": "ProductController.Get Home Page Info",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/product/verify": {
             "get": {
                 "tags": [
@@ -277,6 +294,7 @@
                 "tags": [
                     "user"
                 ],
+                "description": "用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期",
                 "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息"
             }
         },
@@ -313,7 +331,8 @@
                 "tags": [
                     "user"
                 ],
-                "operationId": "UserControllers.登出"
+                "description": "注销登录",
+                "operationId": "UserControllers.登出/注销登录"
             }
         },
         "/user/register\t[post]": {

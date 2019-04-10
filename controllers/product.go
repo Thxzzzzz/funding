@@ -13,11 +13,44 @@ type ProductController struct {
 
 // @Title Get Home Page Info
 // @Description 获取首页信息
+// @Success 200
+// @Failure 400
 // @router /home
 func (c *ProductController) GetHome() {
 
+	var home []resultModels.HomeResult
+	var result resultModels.Result
 	// 轮播图 前端 type == 0
 	//TODO 最新的 5 个产品作为轮播图
+	bannerProduct, err := models.GetProductsByPageAndType(1, 5, 0)
+	if err != nil {
+
+	} else {
+		homeBanner := resultModels.HomeResult{
+			Name:      "轮播图",
+			LimitNum:  5,
+			Type:      0,
+			Position:  0,
+			Status:    1,
+			SortOrder: 0,
+			Remark:    "",
+		}
+		for i, p := range bannerProduct {
+			var content = resultModels.PanelContent{
+				Type:            0,
+				ProductID:       int64(p.ID),
+				SortOrder:       i + 1,
+				PicURL:          p.BigImg,
+				SalePrice:       int(p.CurrentPrice),
+				ProductName:     p.Name,
+				SubTitle:        p.Name,
+				ProductImageBig: p.BigImg,
+			}
+			homeBanner.PanelContents = append(homeBanner.PanelContents, content)
+		}
+		home = append(home, homeBanner)
+	}
+	fmt.Println(&bannerProduct)
 
 	// 活动板块  前端 type == 1
 	//TODO 这个感觉不需要。。
@@ -27,6 +60,9 @@ func (c *ProductController) GetHome() {
 
 	// XXX精选 前端 type == 3
 	//TODO 几大类别的热门
+
+	result = resultModels.SuccessResult(home)
+	c.ResponseJson(result)
 }
 
 // @Title Get All Products
