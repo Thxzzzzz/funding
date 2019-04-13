@@ -126,13 +126,17 @@ func (c *ProductController) VerifyProduct() {
 
 // @Title Get Product With Detail
 // @Description 根据 id 获取带有套餐信息的指定产品信息
-// @Param	id	path	string	true	"商品ID"
-// @Success 200
+// @Param	id	query	int	true	"商品ID"
+// @Success 200	{object} models.Product
 // @Failure 400
-// @router /detail/:id [get]
+// @router /detail [get]
 func (c *ProductController) GetProductWithPkg() {
-	dbResult, err := models.GetProductWithPkg(c.GetString(":id"))
+	id, err := c.GetUint32("id")
 	var result resultModels.Result
+	if err != nil {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+	}
+	dbResult, err := models.GetProductWithPkg(uint(id))
 	if err != nil {
 		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	} else {

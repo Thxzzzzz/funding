@@ -185,7 +185,7 @@
                 }
             }
         },
-        "/product/detail/{id}": {
+        "/product/detail": {
             "get": {
                 "tags": [
                     "product"
@@ -194,16 +194,20 @@
                 "operationId": "ProductController.Get Product With Detail",
                 "parameters": [
                     {
-                        "in": "path",
+                        "in": "query",
                         "name": "id",
                         "description": "商品ID",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
                     },
                     "400": {
                         "description": ""
@@ -260,6 +264,15 @@
                         "description": ""
                     }
                 }
+            }
+        },
+        "/user/addCart": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "添加购物车",
+                "operationId": "UserControllers.TODO:添加购物车"
             }
         },
         "/user/id/{id}": {
@@ -401,6 +414,16 @@
                 }
             }
         },
+        "models.BaseModel": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
         "models.Object": {
             "title": "Object",
             "type": "object",
@@ -412,6 +435,97 @@
                     "type": "string"
                 },
                 "Score": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.Product": {
+            "title": "Product",
+            "type": "object",
+            "properties": {
+                "backers": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "big_img": {
+                    "type": "string"
+                },
+                "current_price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "detail_html": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "product_packages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductPackage"
+                    }
+                },
+                "product_type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "small_img": {
+                    "type": "string"
+                },
+                "target_price": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "models.ProductPackage": {
+            "title": "ProductPackage",
+            "type": "object",
+            "properties": {
+                "backers": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "delivery_day": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "freight": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "total": {
                     "type": "integer",
                     "format": "int64"
                 }

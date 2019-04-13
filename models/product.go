@@ -91,7 +91,7 @@ func GetAllProduct() ([]*Product, error) {
 	return results, nil
 }
 
-func GetProductWithPkg(productId string) (*Product, error) {
+func GetProductWithPkg(productId uint) (*Product, error) {
 	var result Product
 	err := db.Preload("ProductPackages").First(&result, productId).Error
 	if err != nil {

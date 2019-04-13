@@ -111,3 +111,10 @@ func (c *UserControllers) Info() {
 	}
 	c.ResponseJson(result)
 }
+
+// @Title TODO:添加购物车
+// @Description 添加购物车
+// @router /addCart
+func (c *UserControllers) AddCart() {
+
+}

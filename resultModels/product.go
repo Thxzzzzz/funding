@@ -1,7 +1,6 @@
 package resultModels
 
 import (
-	"funding/models"
 	"time"
 )
 
@@ -36,18 +35,4 @@ type ProductContent struct {
 	CurrentTime time.Time `json:"current_time"`
 	//截止时间
 	EndTime time.Time `json:"end_time"`
-}
-
-type PanelContent struct {
-	models.BaseModel
-	PanelID   int   `json:"panelId"`
-	Type      int   `json:"type"`
-	ProductID int64 `json:"productId"`
-	//SortOrder       int    `json:"sortOrder"`
-	FullURL         string `json:"fullUrl"`
-	PicURL          string `json:"picUrl"`
-	SalePrice       int    `json:"salePrice"`
-	ProductName     string `json:"productName"`
-	SubTitle        string `json:"subTitle"`
-	ProductImageBig string `json:"productImageBig"`
 }
