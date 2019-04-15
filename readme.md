@@ -1,11 +1,11 @@
-# BeeGoLearn
+# BeeGo -- 后端框架
 
 
 ## Controller
 ### BaseController
 在 ./controllers/common.go 下定义了一个 `BaseController` struct
  以及实现了一些公共函数。后续其他的 Controller 需要嵌入这个 `BaseController`就可以调用针对于 `BaseController` 的一些公共方法。
- 
+
  比如 `ResponseJson()`
  ``` go
  package controllers
@@ -135,3 +135,11 @@ func (c *UserControllers) Logout() {
 	c.ResponseJson(result)
 }
 ```
+
+
+
+# Gorm   -- 数据库 ORM 框架
+
+## Gorm 的软删除
+
+在这个项目中包含有 `delete_at`字段的表将会采用软删除的形式来进行删除，即在调用删除函数时，实际上并没有将该条记录从数据库中删除，而是将这个`delete_at` 字段设置为删除时的时间，之后的查询中只要这个 `delete_at` 不为空，就会在查询时忽略这条数据，这样做的好处比较明显的就是能在数据"删除"之后还可以很方便的对其进行恢复操作。

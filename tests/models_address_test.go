@@ -1,13 +1,16 @@
 package test
 
 import (
+	"fmt"
 	"funding/models"
 	"github.com/astaxie/beego"
 	_ "github.com/astaxie/beego/session/redis"
 	_ "github.com/gomodule/redigo/redis"
+	"math/rand"
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func init() {
@@ -40,6 +43,52 @@ func TestGetAddressesByUserId(t *testing.T) {
 
 	rets, err = models.FindAddressesByUserId(userId + 1)
 	if err != nil && rets[0].UserId == userId {
+		t.Failed()
+	}
+}
+
+func TestInsertAddress(t *testing.T) {
+	address := models.Address{
+		UserId:  20003,
+		Name:    "测试大佬2",
+		Address: "广西壮族自治区桂林市七星区南方小清华",
+		Phone:   "18512345432",
+	}
+	err := models.InsertAddress(&address)
+	if err != nil {
+		t.Failed()
+	}
+}
+
+func TestDeleteAddress(t *testing.T) {
+	aId := uint64(2)
+	err := models.DeleteAddressById(aId)
+	if err != nil {
+		t.Failed()
+	}
+}
+
+func TestUpdateAddress(t *testing.T) {
+	aId := uint64(1)
+	rand.Seed(time.Now().UnixNano())
+	randi := rand.Intn(100)
+	name := fmt.Sprintf("李小明%d", randi)
+
+	address := models.Address{
+		BaseModel: models.BaseModel{
+			ID: aId,
+		},
+		Name: name,
+	}
+	err := models.UpdateAddress(&address)
+	if err != nil {
+		t.Failed()
+	}
+	ret, err := models.FindAddressById(aId)
+	if err != nil {
+		t.Failed()
+	}
+	if ret.Name != name {
 		t.Failed()
 	}
 }

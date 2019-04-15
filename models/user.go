@@ -14,12 +14,10 @@ type User struct {
 	LicenseId string `json:"license_id"`                //执照信息 id
 }
 
+//插入一条新的用户信息
 func InsertUser(user *User) error {
 	err := db.Create(&user).Error
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 //查找用户信息
@@ -29,6 +27,7 @@ func FindUserById(id uint64) (*User, error) {
 	return &result, err
 }
 
+//根据用户名查找用户信息
 func FindUserByUsername(username string) (*User, error) {
 	var result User
 	//// SELECT * FROM users WHERE username = "username" LIMIT 1;

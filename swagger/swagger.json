@@ -275,7 +275,7 @@
                 "operationId": "UserControllers.'TODO:添加购物车'"
             }
         },
-        "/user/addresses": {
+        "/user/address/all": {
             "get": {
                 "tags": [
                     "user"
@@ -291,6 +291,72 @@
                                 "$ref": "#/definitions/models.Address"
                             }
                         }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/address/delete": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "根据地址的 id 删除对应的地址",
+                "operationId": "UserControllers.根据地址的 id 删除对应的地址",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "id",
+                        "description": "地址的id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/address/new": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "添加新的地址",
+                "operationId": "UserControllers.添加新的地址",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "description": "收货人姓名",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "address",
+                        "description": "收货地址",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "description": "联系电话",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
                     },
                     "400": {
                         "description": ""

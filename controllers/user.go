@@ -7,6 +7,7 @@ import (
 	"funding/models"
 	"funding/resultModels"
 	"funding/utils"
+	"github.com/astaxie/beego/validation"
 )
 
 // 用户相关
@@ -31,6 +32,8 @@ func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
 	return result, nil
 }
 
+////////////////			Users	用户信息相关									///////////////
+
 // @Title 根据 id 获取 User
 // @Description 根据 Id（数据库表 Id ，不是用户名）来获取对应用户信息
 // @Param	id	query	int	true	"数据库 User 表ID"
@@ -38,15 +41,31 @@ func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
 // @Failure 400
 // @router /id [get]
 func (c *UserControllers) GetUserById() {
-	// 这里的 Key 要注意带上冒号，否则获取不到对应的参数
-	idd, err := c.GetUint64("id")
-	dbResult, err := models.FindUserById(idd)
 	var result resultModels.Result
-	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-	} else {
-		result = resultModels.SuccessResult(dbResult)
+
+	//TODO 表单校验，有优化空间啊
+	valid := validation.Validation{}
+	valid.Required(c.GetString("id"), "id").Message("id 不能为空")
+
+	if valid.HasErrors() {
+		for _, err := range valid.Errors {
+			c.ResponseErrJson(err)
+			return
+		}
 	}
+
+	id, err := c.GetUint64("id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	dbResult, err := models.FindUserById(id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result = resultModels.SuccessResult(dbResult)
 	c.ResponseJson(result)
 }
 
@@ -69,8 +88,7 @@ func (c *UserControllers) Register() {
 	err := c.ParseForm(&form)
 	//如果解析时出现错误，则说明请求的参数有误
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-		c.ResponseJson(result)
+		c.ResponseErrJson(err)
 		return
 	}
 
@@ -78,8 +96,7 @@ func (c *UserControllers) Register() {
 	dbExisted, err := models.FindUserByUsername(form.Username)
 	//查询出错
 	if err != nil && err.Error() != "record not found" {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-		c.ResponseJson(result)
+		c.ResponseErrJson(err)
 		return
 	}
 	//已存在
@@ -98,8 +115,7 @@ func (c *UserControllers) Register() {
 	//向数据库中插入数据
 	err = models.InsertUser(&user)
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-		c.ResponseJson(result)
+		c.ResponseErrJson(err)
 		return
 	}
 	//注册成功后将 id 加入到 session 中,即可记录登录状态
@@ -124,7 +140,8 @@ func (c *UserControllers) Login() {
 	err := c.ParseForm(&loginForm)
 	//如果解析时出现错误，则说明请求的参数有误
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseErrJson(err)
+		return
 	}
 
 	// 2. 获取数据库中的数据并与请求数据进行比较
@@ -132,19 +149,22 @@ func (c *UserControllers) Login() {
 
 	//数据库查找出错则返回错误
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseErrJson(err)
+		return
 	}
 
 	// 3. 比较得出结果后，如果正确登录则将信息加入到 Session 中
-	if dbResult.Password == loginForm.Password {
-		result = resultModels.SuccessResult(nil)
-		//向当前 Session 写入 userId
-		c.SetSession(SESSION_USER_KEY, dbResult.ID)
-		//TODO 单点登录
-	} else {
+	if dbResult.Password != loginForm.Password {
 		// 密码不正确也返回错误
 		result = resultModels.ErrorResult(resultModels.FALL, "用户名或密码错误")
+		c.ResponseJson(result)
+		return
 	}
+	result = resultModels.SuccessResult(nil)
+	//向当前 Session 写入 userId
+	c.SetSession(SESSION_USER_KEY, dbResult.ID)
+	//TODO 单点登录
+
 	//  4.. 返回 Json 信息
 	c.ResponseJson(result)
 }
@@ -171,36 +191,127 @@ func (c *UserControllers) Info() {
 	var result resultModels.Result
 	user, err := c.CheckAndGetUser()
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-		c.ResponseJson(result)
+		c.ResponseErrJson(err)
 		return
 	}
 	result = resultModels.SuccessResult(user)
 	c.ResponseJson(result)
 }
 
+////////// 					 Address 收货地址相关								///////////
+
 // @Title 根据 userId 获取收货地址
 // @Description 根据 userId 获取收货地址
 // @Success 200	{object} []models.Address
 // @Failure 400
-// @router /addresses [get]
+// @router /address/all [get]
 func (c *UserControllers) GetAddresses() {
+	//首先要检查登录状态
 	var result resultModels.Result
 	user, err := c.CheckAndGetUser()
+	//状态不对则直接返回错误
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-		c.ResponseJson(result)
+		c.ResponseErrJson(err)
 		return
 	}
+	//根据 UserId 来查找对应的地址
 	addresses, err := models.FindAddressesByUserId(user.ID)
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-		c.ResponseJson(result)
+		c.ResponseErrJson(err)
 		return
 	}
 	result = resultModels.SuccessResult(addresses)
 	c.ResponseJson(result)
 }
+
+// @Title 添加新的地址
+// @Description	添加新的地址
+// @Param	name	formData	string	true	"收货人姓名"
+// @Param	address	formData	string	true	"收货地址"
+// @Param	phone	formData	string	true	"联系电话"
+// @Success	200
+// @Failure 400
+// @router /address/new [post]
+func (c *UserControllers) NewAddress() {
+	//首先要检查登录状态
+	user, err := c.CheckAndGetUser()
+	//状态不对则直接返回错误
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	//解析 form 表单数据
+	var form forms.Address
+	err = c.ParseForm(&form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	//将表单数据复制到 Address 中
+	address := models.Address{}
+	err = utils.CopyStruct(form, &address)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	//设置 UserId
+	address.UserId = user.ID
+	err = models.InsertAddress(&address)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result := resultModels.SuccessResult(nil)
+	c.ResponseJson(result)
+}
+
+// @Title 根据地址的 id 删除对应的地址
+// @Description	根据地址的 id 删除对应的地址
+// @Param	id	formData	string	true	"地址的id"
+// @Success 200
+// @Failure 400
+// @router	/address/delete [post]
+func (c *UserControllers) DeleteAddress() {
+	//首先要检查登录状态
+	var result resultModels.Result
+	user, err := c.CheckAndGetUser()
+	//状态不对则直接返回错误
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	//TODO 或许应该表单校验
+	aId, err := c.GetUint64("id")
+
+	//根据请求的 id 查找对应地址
+	address, err := models.FindAddressById(aId)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// ID 不匹配 返回错误信息
+	if address.UserId != user.ID {
+		result = resultModels.ErrorResult(resultModels.FALL, "记录与 ID 不匹配，这不是你的地址~")
+		c.ResponseJson(result)
+		return
+	}
+	// ID 匹配，删除对应的数据
+	err = models.DeleteAddressById(aId)
+	// 删除出错 返回错误信息
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	//删除成功，返回成功提示
+	result = resultModels.SuccessResult(nil)
+	c.ResponseJson(result)
+}
+
+/////////						 Carts 购物车相关   									///////////
 
 // @Title 'TODO:添加购物车'
 // @Description 添加购物车
