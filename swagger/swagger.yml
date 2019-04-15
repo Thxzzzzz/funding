@@ -211,6 +211,10 @@ paths:
       responses:
         "200":
           description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.User'
         "400":
           description: ""
   /user/info:
@@ -222,6 +226,10 @@ paths:
       responses:
         "200":
           description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.User'
         "400":
           description: ""
   /user/login:
@@ -365,6 +373,9 @@ definitions:
         format: double
       user_id:
         type: string
+      verify_status:
+        type: integer
+        format: int64
   models.ProductPackage:
     title: ProductPackage
     type: object
@@ -396,6 +407,31 @@ definitions:
       total:
         type: integer
         format: int64
+  models.User:
+    title: User
+    type: object
+    properties:
+      email:
+        type: string
+      icon_url:
+        type: string
+      id:
+        type: integer
+        format: int64
+      license_id:
+        type: string
+      nickname:
+        type: string
+      person_id:
+        type: integer
+        format: int64
+      phone:
+        type: string
+      role_id:
+        type: integer
+        format: int64
+      username:
+        type: string
 tags:
 - name: object
   description: |

@@ -34,7 +34,7 @@ func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
 // @Title 根据 id 获取 User
 // @Description 根据 Id（数据库表 Id ，不是用户名）来获取对应用户信息
 // @Param	id	query	int	true	"数据库 User 表ID"
-// @Success 200
+// @Success 200	{object} []models.User
 // @Failure 400
 // @router /id [get]
 func (c *UserControllers) GetUserById() {
@@ -164,7 +164,7 @@ func (c *UserControllers) Logout() {
 
 // @Title 根据当前的 Session 查询对应的用户信息
 // @Description 用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期
-// @Success 200
+// @Success 200	{object} []models.User
 // @Failure 400
 // @router /info [get]
 func (c *UserControllers) Info() {

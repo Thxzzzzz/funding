@@ -317,7 +317,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
                     },
                     "400": {
                         "description": ""
@@ -334,7 +340,13 @@
                 "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息",
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
                     },
                     "400": {
                         "description": ""
@@ -545,6 +557,10 @@
                 },
                 "user_id": {
                     "type": "string"
+                },
+                "verify_status": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         },
@@ -588,6 +604,42 @@
                 "total": {
                     "type": "integer",
                     "format": "int64"
+                }
+            }
+        },
+        "models.User": {
+            "title": "User",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "icon_url": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "license_id": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "person_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
