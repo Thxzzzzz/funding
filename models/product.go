@@ -8,51 +8,32 @@ import (
 //产品
 type Product struct {
 	BaseModel
-	//产品名
-	Name string `json:"name"`
-	//顶部大图
-	BigImg string `json:"big_img"`
-	//列表小图
-	SmallImg string `json:"small_img"`
-	//发布者ID
-	UserId string `json:"user_id"`
-	//产品类型
-	ProductType int `json:"product_type"`
-	//当前筹集金额
-	CurrentPrice float64 `json:"current_price"`
-	//目标筹集金额
-	TargetPrice float64 `json:"target_price"`
-	//支持人数
-	Backers int `json:"backers"`
-	//截止时间
-	EndTime time.Time `json:"end_time"`
-	//介绍页详情 Html
-	DetailHtml string `json:"detail_html"`
-	//商品套餐
-	ProductPackages []ProductPackage `json:"product_packages"`
+	Name            string           `json:"name"`                           //产品名
+	BigImg          string           `json:"big_img"`                        //顶部大图
+	SmallImg        string           `json:"small_img"`                      //列表小图
+	UserId          string           `json:"user_id"`                        //发布者ID
+	ProductType     int              `json:"product_type"`                   //产品类型
+	CurrentPrice    float64          `json:"current_price"`                  //当前筹集金额
+	TargetPrice     float64          `json:"target_price"`                   //目标筹集金额
+	VerifyStatus    int              `json:"verify_status" gorm:"default:2"` //审核状态(0:未通过 1:已通过 2:待审核(默认))
+	Backers         int              `json:"backers"`                        //支持人数
+	EndTime         time.Time        `json:"end_time"`                       //截止时间
+	DetailHtml      string           `json:"detail_html"`                    //介绍页详情 Html
+	ProductPackages []ProductPackage `json:"product_packages"`               //商品套餐
 }
 
 //产品套餐
 type ProductPackage struct {
 	BaseModel
-	//对应产品 Id
-	ProductId string `json:"product_id"`
-	//套餐描述
-	Description string `json:"description"`
-	//图片链接
-	ImageUrl string `json:"image_url"`
-	//套餐价格
-	Price float64 `json:"price"`
-	//剩余库存
-	Stock int64 `json:"stock"`
-	//套餐总数
-	Total int64 `json:"total"`
-	//支持人数
-	Backers int `json:"backers"`
-	//运费
-	Freight float64 `json:"freight"`
-	//发货时间 (众筹成功后多少天内)
-	DeliveryDay int64 `json:"delivery_day"`
+	ProductId   string  `json:"product_id"`   //对应产品 Id
+	Description string  `json:"description"`  //套餐描述
+	ImageUrl    string  `json:"image_url"`    //图片链接
+	Price       float64 `json:"price"`        //套餐价格
+	Stock       int64   `json:"stock"`        //剩余库存
+	Total       int64   `json:"total"`        //套餐总数
+	Backers     int     `json:"backers"`      //支持人数
+	Freight     float64 `json:"freight"`      //运费
+	DeliveryDay int64   `json:"delivery_day"` //发货时间 (众筹成功后多少天内)
 }
 
 func init() {

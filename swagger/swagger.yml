@@ -179,7 +179,7 @@ paths:
       tags:
       - user
       description: 添加购物车
-      operationId: UserControllers.TODO:添加购物车
+      operationId: UserControllers.'TODO:添加购物车'
   /user/addresses:
     get:
       tags:
@@ -250,8 +250,8 @@ paths:
     post:
       tags:
       - user
-      description: 注销登录
-      operationId: UserControllers.登出/注销登录
+      description: 注销
+      operationId: UserControllers.注销
       responses:
         "200":
           description: ""
@@ -264,34 +264,37 @@ paths:
       description: 注册
       operationId: UserControllers.注册
       parameters:
-      - in: body
-        name: RegistryForm
-        description: 注册信息
+      - in: formData
+        name: username
+        description: 用户名
         required: true
-        schema:
-          $ref: '#/definitions/forms.RegisterForm'
+        type: string
+      - in: formData
+        name: password
+        description: 密码
+        required: true
+        type: string
+      - in: formData
+        name: nickname
+        description: 昵称
+        required: true
+        type: string
+      - in: formData
+        name: email
+        description: 邮箱
+        required: true
+        type: string
+      - in: formData
+        name: phone
+        description: 手机号
+        required: true
+        type: string
       responses:
         "200":
           description: ""
         "400":
           description: ""
 definitions:
-  forms.RegisterForm:
-    title: RegisterForm
-    type: object
-    properties:
-      Email:
-        type: string
-      IconUrl:
-        type: string
-      Nickname:
-        type: string
-      Password:
-        type: string
-      Phone:
-        type: string
-      Username:
-        type: string
   models.Address:
     title: Address
     type: object

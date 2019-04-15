@@ -81,20 +81,21 @@ sessionname = "token"
 ``` go
 // @Title 登录
 // @Description 用账号密码登录
-// @Param	LoginUserForm	body	forms.LoginForm		true	"登录信息"
+// @Param	username	formData	string		true	"用户名"
+// @Param	password	formData	string		true	"密码"
 // @Success 200
 // @Failure 400
 // @router /login [post]
 func (c *UserControllers) Login() {
 	// 1. 首先获取请求中的数据
-	//先声明一个 struct 其结构对应请求的 RequestBody 的 Json 结构
+	//先声明一个 struct 其结构对应请求的 form 表单数据
 	loginForm := forms.LoginForm{}
-	var result models.Result
+	var result resultModels.Result
 	//将 RequestBody 的值填充到 struct 之中
 	err := c.ParseForm(&loginForm)
 	//如果解析时出现错误，则说明请求的参数有误
 	if err != nil {
-		result = models.ErrorResult(models.FALL, err.Error())
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	}
 
 	// 2. 获取数据库中的数据并与请求数据进行比较
@@ -102,18 +103,18 @@ func (c *UserControllers) Login() {
 
 	//数据库查找出错则返回错误
 	if err != nil {
-		result = models.ErrorResult(models.FALL, err.Error())
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	}
 
 	// 3. 比较得出结果后，如果正确登录则将信息加入到 Session 中
 	if dbResult.Password == loginForm.Password {
-		result = models.SuccessResult(nil)
+		result = resultModels.SuccessResult(nil)
 		//向当前 Session 写入 userId
 		c.SetSession(SESSION_USER_KEY, dbResult.ID)
 		//TODO 单点登录
 	} else {
 		// 密码不正确也返回错误
-		result = models.ErrorResult(models.FALL, "用户名或密码错误")
+		result = resultModels.ErrorResult(resultModels.FALL, "用户名或密码错误")
 	}
 	//  4.. 返回 Json 信息
 	c.ResponseJson(result)
@@ -124,8 +125,8 @@ func (c *UserControllers) Login() {
 注销则比较简单，直接将对应的 `Session` 销毁（从 Redis 中删除）即可，不用管其是否存在对应的 `userId`,因为只要销毁了，那不管其之前存不存在 `userId`，最终处理的结果都是一样的。
 
 ``` go
-//	@Title 登出
-//	@router /logout	[post]
+// @Title 登出
+// @router /logout	[post]
 func (c *UserControllers) Logout() {
 	var result models.Result
 	//直接销毁 Session

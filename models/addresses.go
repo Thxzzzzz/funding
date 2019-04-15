@@ -8,7 +8,8 @@ type Address struct {
 	Phone   string `json:"phone"`
 }
 
-func GetAddressById(addressId uint64) (*Address, error) {
+// 根据地址的 ID 来获取地址
+func FindAddressById(addressId uint64) (*Address, error) {
 	var ret Address
 	err := db.First(&ret, addressId).Error
 	if err != nil {
@@ -17,11 +18,18 @@ func GetAddressById(addressId uint64) (*Address, error) {
 	return &ret, nil
 }
 
-func GetAddressesByUserId(userId uint64) ([]*Address, error) {
+// 根据用户 ID 来获取地址列表
+func FindAddressesByUserId(userId uint64) ([]*Address, error) {
 	var rets []*Address
 	err := db.Find(&rets).Where("user_id = ?", userId).Error
 	if err != nil {
 		return nil, err
 	}
 	return rets, nil
+}
+
+// 新增地址
+func InsertAddress(address Address) error {
+
+	return nil
 }

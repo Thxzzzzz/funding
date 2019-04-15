@@ -19,12 +19,12 @@ func init() {
 
 func TestGetAddressById(t *testing.T) {
 	var addsId uint64 = 1
-	ret, err := models.GetAddressById(addsId)
+	ret, err := models.FindAddressById(addsId)
 	if err != nil && ret.ID != addsId {
 		t.Failed()
 	}
 
-	ret, err = models.GetAddressById(addsId + 1)
+	ret, err = models.FindAddressById(addsId + 1)
 	if err != nil && ret.ID == addsId {
 		t.Failed()
 	}
@@ -33,12 +33,12 @@ func TestGetAddressById(t *testing.T) {
 
 func TestGetAddressesByUserId(t *testing.T) {
 	var userId uint64 = 20003
-	rets, err := models.GetAddressesByUserId(userId)
+	rets, err := models.FindAddressesByUserId(userId)
 	if err != nil && rets[0].UserId != userId {
 		t.Failed()
 	}
 
-	rets, err = models.GetAddressesByUserId(userId + 1)
+	rets, err = models.FindAddressesByUserId(userId + 1)
 	if err != nil && rets[0].UserId == userId {
 		t.Failed()
 	}

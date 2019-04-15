@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"funding/forms"
 	"funding/models"
 	"funding/resultModels"
+	"funding/utils"
 )
 
 // 用户相关
@@ -50,12 +52,60 @@ func (c *UserControllers) GetUserById() {
 
 // @Title 注册
 // @Description 注册
-// @Param RegistryForm	body	forms.RegisterForm	true	"注册信息"
+// @Param 	username formData	string 	true	"用户名"
+// @Param 	password formData	string 	true	"密码"
+// @Param 	nickname formData	string 	true	"昵称"
+// @Param 	email    formData	string 	true	"邮箱"
+// @Param 	phone    formData	string 	true	"手机号"
 // @Success 200
 // @Failure 400
 // @router /register [post]
 func (c *UserControllers) Register() {
-	//TODO 注册
+	// 首先获取请求中的数据
+	//先声明一个 struct 其结构对应请求的 form 表单数据
+	form := forms.RegisterForm{}
+	var result resultModels.Result
+	//将 RequestBody 的值填充到 struct 之中
+	err := c.ParseForm(&form)
+	//如果解析时出现错误，则说明请求的参数有误
+	if err != nil {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseJson(result)
+		return
+	}
+
+	//查询是否已存在用户名
+	dbExisted, err := models.FindUserByUsername(form.Username)
+	//查询出错
+	if err != nil && err.Error() != "record not found" {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseJson(result)
+		return
+	}
+	//已存在
+	if dbExisted != nil && dbExisted.Username == form.Username {
+		result = resultModels.ErrorResult(resultModels.FALL, "用户名已存在")
+		c.ResponseJson(result)
+		return
+	}
+
+	user := models.User{}
+	err = utils.CopyStruct(form, &user)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	//向数据库中插入数据
+	err = models.InsertUser(&user)
+	if err != nil {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseJson(result)
+		return
+	}
+	//注册成功后将 id 加入到 session 中,即可记录登录状态
+	c.SetSession(SESSION_USER_KEY, user.ID)
+	result = resultModels.SuccessResult(nil)
+	c.ResponseJson(result)
 }
 
 // @Title 登录
@@ -67,7 +117,7 @@ func (c *UserControllers) Register() {
 // @router /login [post]
 func (c *UserControllers) Login() {
 	// 1. 首先获取请求中的数据
-	//先声明一个 struct 其结构对应请求的 RequestBody 的 Json 结构
+	//先声明一个 struct 其结构对应请求的 form 表单数据
 	loginForm := forms.LoginForm{}
 	var result resultModels.Result
 	//将 RequestBody 的值填充到 struct 之中
@@ -99,8 +149,8 @@ func (c *UserControllers) Login() {
 	c.ResponseJson(result)
 }
 
-// @Title 登出/注销登录
-// @Description 注销登录
+// @Title 注销
+// @Description 注销
 // @Success 200
 // @Failure 400
 // @router /logout [post]
@@ -142,7 +192,7 @@ func (c *UserControllers) GetAddresses() {
 		c.ResponseJson(result)
 		return
 	}
-	addresses, err := models.GetAddressesByUserId(user.ID)
+	addresses, err := models.FindAddressesByUserId(user.ID)
 	if err != nil {
 		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 		c.ResponseJson(result)
@@ -152,7 +202,7 @@ func (c *UserControllers) GetAddresses() {
 	c.ResponseJson(result)
 }
 
-// @Title TODO:添加购物车
+// @Title 'TODO:添加购物车'
 // @Description 添加购物车
 // @router /addCart [post]
 func (c *UserControllers) AddCart() {
