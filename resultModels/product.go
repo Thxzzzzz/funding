@@ -16,7 +16,7 @@ type HomeResult struct {
 }
 
 type ProductContent struct {
-	ID uint `json:"product_id"`
+	ID uint64 `json:"product_id"`
 	//产品名
 	Name string `json:"name"`
 	//大图

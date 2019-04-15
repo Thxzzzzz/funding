@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"funding/forms"
 	"funding/models"
 	"funding/resultModels"
@@ -12,15 +13,31 @@ type UserControllers struct {
 	BaseController
 }
 
+// 检查并获取对应的 User 信息
+func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
+	userId := c.GetSession(SESSION_USER_KEY)
+	var result *models.User
+	if userId == nil {
+		return nil, errors.New("没有登录")
+	}
+	id, _ := userId.(uint64)
+	// 获取当前 Session 中的 userId 字段对应的值
+	result, err := models.FindUserById(id)
+	if err != nil {
+		return nil, errors.New("没有该用户")
+	}
+	return result, nil
+}
+
 // @Title 根据 id 获取 User
 // @Description 根据 Id（数据库表 Id ，不是用户名）来获取对应用户信息
-// @Param	id	path	int	true	"数据库 User 表ID"
+// @Param	id	query	int	true	"数据库 User 表ID"
 // @Success 200
 // @Failure 400
-// @router /id/:id [get]
+// @router /id [get]
 func (c *UserControllers) GetUserById() {
 	// 这里的 Key 要注意带上冒号，否则获取不到对应的参数
-	idd, err := c.GetInt64(":id")
+	idd, err := c.GetUint64("id")
 	dbResult, err := models.FindUserById(idd)
 	var result resultModels.Result
 	if err != nil {
@@ -36,14 +53,15 @@ func (c *UserControllers) GetUserById() {
 // @Param RegistryForm	body	forms.RegisterForm	true	"注册信息"
 // @Success 200
 // @Failure 400
-// @router	/register	[post]
+// @router /register [post]
 func (c *UserControllers) Register() {
 	//TODO 注册
 }
 
 // @Title 登录
 // @Description 用账号密码登录
-// @Param	LoginUserForm	body	forms.LoginForm		true	"登录信息"
+// @Param	username	formData	string		true	"用户名"
+// @Param	password	formData	string		true	"密码"
 // @Success 200
 // @Failure 400
 // @router /login [post]
@@ -81,9 +99,11 @@ func (c *UserControllers) Login() {
 	c.ResponseJson(result)
 }
 
-//	@Title 登出/注销登录
+// @Title 登出/注销登录
 // @Description 注销登录
-//	@router /logout	[post]
+// @Success 200
+// @Failure 400
+// @router /logout [post]
 func (c *UserControllers) Logout() {
 	var result resultModels.Result
 	//直接销毁 Session
@@ -94,27 +114,47 @@ func (c *UserControllers) Logout() {
 
 // @Title 根据当前的 Session 查询对应的用户信息
 // @Description 用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期
-// @router /info	[get]
+// @Success 200
+// @Failure 400
+// @router /info [get]
 func (c *UserControllers) Info() {
-	userId := c.GetSession(SESSION_USER_KEY)
 	var result resultModels.Result
-	if userId == nil {
-		result = resultModels.ErrorResult(resultModels.FALL, "没有登录")
-	} else {
-		// 获取当前 Session 中的 userId 字段对应的值
-		user, err := models.FindUserById(int64(userId.(uint)))
-		if err != nil {
-			result = resultModels.ErrorResult(resultModels.FALL, "没有该用户")
-		} else {
-			result = resultModels.SuccessResult(user)
-		}
+	user, err := c.CheckAndGetUser()
+	if err != nil {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseJson(result)
+		return
 	}
+	result = resultModels.SuccessResult(user)
+	c.ResponseJson(result)
+}
+
+// @Title 根据 userId 获取收货地址
+// @Description 根据 userId 获取收货地址
+// @Success 200	{object} []models.Address
+// @Failure 400
+// @router /addresses [get]
+func (c *UserControllers) GetAddresses() {
+	var result resultModels.Result
+	user, err := c.CheckAndGetUser()
+	if err != nil {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseJson(result)
+		return
+	}
+	addresses, err := models.GetAddressesByUserId(user.ID)
+	if err != nil {
+		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseJson(result)
+		return
+	}
+	result = resultModels.SuccessResult(addresses)
 	c.ResponseJson(result)
 }
 
 // @Title TODO:添加购物车
 // @Description 添加购物车
-// @router /addCart
+// @router /addCart [post]
 func (c *UserControllers) AddCart() {
 
 }

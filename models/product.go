@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"funding/objects"
 	"time"
 )
@@ -15,6 +14,8 @@ type Product struct {
 	BigImg string `json:"big_img"`
 	//列表小图
 	SmallImg string `json:"small_img"`
+	//发布者ID
+	UserId string `json:"user_id"`
 	//产品类型
 	ProductType int `json:"product_type"`
 	//当前筹集金额
@@ -82,7 +83,6 @@ func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Produ
 
 // 获取全部产品
 func GetAllProduct() ([]*Product, error) {
-	fmt.Println("Get All Product")
 	var results []*Product
 	err := db.Find(&results).Error
 	if err != nil {
@@ -91,7 +91,7 @@ func GetAllProduct() ([]*Product, error) {
 	return results, nil
 }
 
-func GetProductWithPkg(productId uint) (*Product, error) {
+func GetProductWithPkg(productId uint64) (*Product, error) {
 	var result Product
 	err := db.Preload("ProductPackages").First(&result, productId).Error
 	if err != nil {
@@ -100,11 +100,11 @@ func GetProductWithPkg(productId uint) (*Product, error) {
 	return &result, nil
 }
 
-func GetProductPackages(productId string) (*[]ProductPackage, error) {
-	var result []ProductPackage
+func GetProductPackages(productId uint64) ([]*ProductPackage, error) {
+	var result []*ProductPackage
 	err := db.Where("product_id = ?", productId).Find(&result).Error
 	if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	return result, nil
 }

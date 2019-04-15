@@ -267,7 +267,7 @@
             }
         },
         "/user/addCart": {
-            "get": {
+            "post": {
                 "tags": [
                     "user"
                 ],
@@ -275,7 +275,30 @@
                 "operationId": "UserControllers.TODO:添加购物车"
             }
         },
-        "/user/id/{id}": {
+        "/user/addresses": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "根据 userId 获取收货地址",
+                "operationId": "UserControllers.根据 userId 获取收货地址",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Address"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/id": {
             "get": {
                 "tags": [
                     "user"
@@ -284,7 +307,7 @@
                 "operationId": "UserControllers.根据 id 获取 User",
                 "parameters": [
                     {
-                        "in": "path",
+                        "in": "query",
                         "name": "id",
                         "description": "数据库 User 表ID",
                         "required": true,
@@ -302,13 +325,21 @@
                 }
             }
         },
-        "/user/info\t[get]": {
+        "/user/info": {
             "get": {
                 "tags": [
                     "user"
                 ],
                 "description": "用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期",
-                "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息"
+                "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
             }
         },
         "/user/login": {
@@ -320,13 +351,18 @@
                 "operationId": "UserControllers.登录",
                 "parameters": [
                     {
-                        "in": "body",
-                        "name": "LoginUserForm",
-                        "description": "登录信息",
+                        "in": "formData",
+                        "name": "username",
+                        "description": "用户名",
                         "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/forms.LoginForm"
-                        }
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "description": "密码",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -339,17 +375,25 @@
                 }
             }
         },
-        "/user/logout\t[post]": {
-            "get": {
+        "/user/logout": {
+            "post": {
                 "tags": [
                     "user"
                 ],
                 "description": "注销登录",
-                "operationId": "UserControllers.登出/注销登录"
+                "operationId": "UserControllers.登出/注销登录",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
             }
         },
-        "/user/register\t[post]": {
-            "get": {
+        "/user/register": {
+            "post": {
                 "tags": [
                     "user"
                 ],
@@ -378,18 +422,6 @@
         }
     },
     "definitions": {
-        "forms.LoginForm": {
-            "title": "LoginForm",
-            "type": "object",
-            "properties": {
-                "Password": {
-                    "type": "string"
-                },
-                "Username": {
-                    "type": "string"
-                }
-            }
-        },
         "forms.RegisterForm": {
             "title": "RegisterForm",
             "type": "object",
@@ -414,13 +446,36 @@
                 }
             }
         },
+        "models.Address": {
+            "title": "Address",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
         "models.BaseModel": {
             "title": "BaseModel",
             "type": "object",
             "properties": {
                 "id": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int64"
                 }
             }
         },
@@ -464,7 +519,7 @@
                 },
                 "id": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int64"
                 },
                 "name": {
                     "type": "string"
@@ -485,6 +540,9 @@
                 "target_price": {
                     "type": "number",
                     "format": "double"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         },
@@ -509,7 +567,7 @@
                 },
                 "id": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int64"
                 },
                 "image_url": {
                     "type": "string"

@@ -131,12 +131,12 @@ func (c *ProductController) VerifyProduct() {
 // @Failure 400
 // @router /detail [get]
 func (c *ProductController) GetProductWithPkg() {
-	id, err := c.GetUint32("id")
+	id, err := c.GetUint64("id")
 	var result resultModels.Result
 	if err != nil {
 		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	}
-	dbResult, err := models.GetProductWithPkg(uint(id))
+	dbResult, err := models.GetProductWithPkg(id)
 	if err != nil {
 		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
 	} else {

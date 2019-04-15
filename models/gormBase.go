@@ -9,7 +9,7 @@ import (
 )
 
 type BaseModel struct {
-	ID        uint       `json:"id" gorm:"primary_key"`
+	ID        uint64     `json:"id" gorm:"primary_key"`
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `sql:"index" json:"-"`
