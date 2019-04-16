@@ -467,18 +467,13 @@
                 "operationId": "UserControllers.登录",
                 "parameters": [
                     {
-                        "in": "formData",
-                        "name": "username",
-                        "description": "用户名",
+                        "in": "body",
+                        "name": "userForm",
+                        "description": "登录账号密码",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "password",
-                        "description": "密码",
-                        "required": true,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/forms.LoginForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -567,6 +562,18 @@
         }
     },
     "definitions": {
+        "forms.LoginForm": {
+            "title": "LoginForm",
+            "type": "object",
+            "properties": {
+                "Password": {
+                    "type": "string"
+                },
+                "Username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Address": {
             "title": "Address",
             "type": "object",

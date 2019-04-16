@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"funding/forms"
@@ -69,13 +70,16 @@ func (c *UserControllers) GetUserById() {
 	c.ResponseJson(result)
 }
 
-// @Title 注册
-// @Description 注册
+/*
 // @Param 	username formData	string 	true	"用户名"
 // @Param 	password formData	string 	true	"密码"
 // @Param 	nickname formData	string 	true	"昵称"
 // @Param 	email    formData	string 	true	"邮箱"
 // @Param 	phone    formData	string 	true	"手机号"
+*/
+
+// @Title 注册
+// @Description 注册
 // @Success 200
 // @Failure 400
 // @router /register [post]
@@ -84,6 +88,9 @@ func (c *UserControllers) Register() {
 	//先声明一个 struct 其结构对应请求的 form 表单数据
 	form := forms.RegisterForm{}
 	var result resultModels.Result
+
+	//TODO 改成Json
+
 	//将 RequestBody 的值填充到 struct 之中
 	err := c.ParseForm(&form)
 	//如果解析时出现错误，则说明请求的参数有误
@@ -126,8 +133,7 @@ func (c *UserControllers) Register() {
 
 // @Title 登录
 // @Description 用账号密码登录
-// @Param	username	formData	string		true	"用户名"
-// @Param	password	formData	string		true	"密码"
+// @Param	userForm	body	forms.LoginForm		true	"登录账号密码"
 // @Success 200 {object} models.User
 // @Failure 400
 // @router /login [post]
@@ -136,13 +142,16 @@ func (c *UserControllers) Login() {
 	//先声明一个 struct 其结构对应请求的 form 表单数据
 	loginForm := forms.LoginForm{}
 	var result resultModels.Result
-	//将 RequestBody 的值填充到 struct 之中
-	err := c.ParseForm(&loginForm)
-	//如果解析时出现错误，则说明请求的参数有误
-	if err != nil {
-		c.ResponseErrJson(err)
-		return
-	}
+	////将 RequestBody 的值填充到 struct 之中
+	//err := c.ParseForm(&loginForm)
+	////如果解析时出现错误，则说明请求的参数有误
+	//if err != nil {
+	//	c.ResponseErrJson(err)
+	//	return
+	//}
+
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	json.Unmarshal(c.Ctx.Input.RequestBody, &loginForm)
 
 	// 2. 获取数据库中的数据并与请求数据进行比较
 	dbResult, err := models.FindUserByUsername(loginForm.Username)
