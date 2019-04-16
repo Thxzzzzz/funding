@@ -239,6 +239,35 @@ paths:
           description: ""
         "400":
           description: ""
+  /user/address/update:
+    post:
+      tags:
+      - user
+      description: 添加新的地址
+      operationId: UserControllers.更新指定 id 的地址
+      parameters:
+      - in: formData
+        name: id
+        description: 地址ID
+        required: true
+        type: string
+      - in: formData
+        name: name
+        description: 收货人姓名
+        type: string
+      - in: formData
+        name: address
+        description: 收货地址
+        type: string
+      - in: formData
+        name: phone
+        description: 联系电话
+        type: string
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /user/id:
     get:
       tags:
@@ -256,9 +285,7 @@ paths:
         "200":
           description: ""
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: ""
   /user/info:
@@ -271,9 +298,7 @@ paths:
         "200":
           description: ""
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: ""
   /user/login:
@@ -296,6 +321,8 @@ paths:
       responses:
         "200":
           description: ""
+          schema:
+            $ref: '#/definitions/models.User'
         "400":
           description: ""
   /user/logout:

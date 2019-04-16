@@ -37,7 +37,7 @@ func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
 // @Title 根据 id 获取 User
 // @Description 根据 Id（数据库表 Id ，不是用户名）来获取对应用户信息
 // @Param	id	query	int	true	"数据库 User 表ID"
-// @Success 200	{object} []models.User
+// @Success 200	{object} models.User
 // @Failure 400
 // @router /id [get]
 func (c *UserControllers) GetUserById() {
@@ -128,7 +128,7 @@ func (c *UserControllers) Register() {
 // @Description 用账号密码登录
 // @Param	username	formData	string		true	"用户名"
 // @Param	password	formData	string		true	"密码"
-// @Success 200
+// @Success 200 {object} models.User
 // @Failure 400
 // @router /login [post]
 func (c *UserControllers) Login() {
@@ -160,7 +160,8 @@ func (c *UserControllers) Login() {
 		c.ResponseJson(result)
 		return
 	}
-	result = resultModels.SuccessResult(nil)
+
+	result = resultModels.SuccessResult(dbResult)
 	//向当前 Session 写入 userId
 	c.SetSession(SESSION_USER_KEY, dbResult.ID)
 	//TODO 单点登录
@@ -184,7 +185,7 @@ func (c *UserControllers) Logout() {
 
 // @Title 根据当前的 Session 查询对应的用户信息
 // @Description 用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期
-// @Success 200	{object} []models.User
+// @Success 200	{object} models.User
 // @Failure 400
 // @router /info [get]
 func (c *UserControllers) Info() {
@@ -295,7 +296,7 @@ func (c *UserControllers) DeleteAddress() {
 
 	// ID 不匹配 返回错误信息
 	if address.UserId != user.ID {
-		result = resultModels.ErrorResult(resultModels.FALL, "记录与 ID 不匹配，这不是你的地址~")
+		result = resultModels.ErrorResult(resultModels.FALL, "记录与用户不匹配，这不是你的地址~")
 		c.ResponseJson(result)
 		return
 	}
@@ -307,6 +308,61 @@ func (c *UserControllers) DeleteAddress() {
 		return
 	}
 	//删除成功，返回成功提示
+	result = resultModels.SuccessResult(nil)
+	c.ResponseJson(result)
+}
+
+// @Title 更新指定 id 的地址
+// @Description	添加新的地址
+// @Param	id		formData	string	true	"地址ID"
+// @Param	name	formData	string	false	"收货人姓名"
+// @Param	address	formData	string	false	"收货地址"
+// @Param	phone	formData	string	false	"联系电话"
+// @Success	200
+// @Failure 400
+// @router /address/update [post]
+func (c *UserControllers) UpdateAddress() {
+	var result resultModels.Result
+	//首先要检查登录状态
+	user, err := c.CheckAndGetUser()
+	//状态不对则直接返回错误
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	//解析 form 表单数据
+	var form forms.Address
+	err = c.ParseForm(&form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	//根据请求的 id 查找对应地址
+	address, err := models.FindAddressById(form.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// ID 不匹配 返回错误信息
+	if address.UserId != user.ID {
+		result = resultModels.ErrorResult(resultModels.FALL, "记录与用户不匹配，这不是你的地址~")
+		c.ResponseJson(result)
+		return
+	}
+	//将表单数据复制到 Address 中
+	newAddress := models.Address{}
+	err = utils.CopyStruct(form, &newAddress)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	err = models.UpdateAddress(&newAddress)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
 	result = resultModels.SuccessResult(nil)
 	c.ResponseJson(result)
 }
