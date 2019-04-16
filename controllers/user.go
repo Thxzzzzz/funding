@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"funding/forms"
 	"funding/models"
 	"funding/resultModels"
@@ -79,6 +78,8 @@ func (c *UserControllers) GetUserById() {
 */
 
 // @Title 注册
+// @Description	注册
+// @Param registerForm	body	forms.RegisterForm	true	"注册信息"
 // @Description 注册
 // @Success 200
 // @Failure 400
@@ -89,12 +90,17 @@ func (c *UserControllers) Register() {
 	form := forms.RegisterForm{}
 	var result resultModels.Result
 
-	//TODO 改成Json
+	////将 RequestBody 的值填充到 struct 之中
+	//err := c.ParseForm(&form)
+	////如果解析时出现错误，则说明请求的参数有误
+	//if err != nil {
+	//	c.ResponseErrJson(err)
+	//	return
+	//}
 
-	//将 RequestBody 的值填充到 struct 之中
-	err := c.ParseForm(&form)
-	//如果解析时出现错误，则说明请求的参数有误
-	if err != nil {
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil || form == (forms.RegisterForm{}) {
 		c.ResponseErrJson(err)
 		return
 	}
@@ -116,7 +122,7 @@ func (c *UserControllers) Register() {
 	user := models.User{}
 	err = utils.CopyStruct(form, &user)
 	if err != nil {
-		fmt.Println(err)
+		c.ResponseErrJson(err)
 		return
 	}
 	//向数据库中插入数据
@@ -151,7 +157,11 @@ func (c *UserControllers) Login() {
 	//}
 
 	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
-	json.Unmarshal(c.Ctx.Input.RequestBody, &loginForm)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &loginForm)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
 
 	// 2. 获取数据库中的数据并与请求数据进行比较
 	dbResult, err := models.FindUserByUsername(loginForm.Username)

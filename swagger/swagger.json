@@ -515,39 +515,13 @@
                 "operationId": "UserControllers.注册",
                 "parameters": [
                     {
-                        "in": "formData",
-                        "name": "username",
-                        "description": "用户名",
+                        "in": "body",
+                        "name": "registerForm",
+                        "description": "注册信息",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "password",
-                        "description": "密码",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "nickname",
-                        "description": "昵称",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "email",
-                        "description": "邮箱",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "phone",
-                        "description": "手机号",
-                        "required": true,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/forms.RegisterForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -570,6 +544,27 @@
                     "type": "string"
                 },
                 "Username": {
+                    "type": "string"
+                }
+            }
+        },
+        "forms.RegisterForm": {
+            "title": "RegisterForm",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
