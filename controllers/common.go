@@ -19,6 +19,12 @@ func (c *BaseController) ResponseErrJson(err error) {
 	c.ResponseJson(result)
 }
 
+// 返回成功的 Json 数据
+func (c *BaseController) ResponseSuccessJson(data interface{}) {
+	result := resultModels.SuccessResult(data)
+	c.ResponseJson(result)
+}
+
 // 用于返回 Json 格式的数据
 // 这个项目里会用前后端分离的模式开发，返回的都是 Json 数据
 func (c *BaseController) ResponseJson(result resultModels.Result) {

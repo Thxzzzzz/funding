@@ -246,13 +246,18 @@ func (c *UserControllers) GetAddresses() {
 
 // @Title 添加新的地址
 // @Description	添加新的地址
-// @Param	name	formData	string	true	"收货人姓名"
-// @Param	address	formData	string	true	"收货地址"
-// @Param	phone	formData	string	true	"联系电话"
+// @Param	addressForm	body	forms.Address	true	"地址表单"
+
 // @Success	200
 // @Failure 400
 // @router /address/new [post]
 func (c *UserControllers) NewAddress() {
+
+	// @Param	name	formData	string	true	"收货人姓名"
+	// @Param	address	formData	string	true	"收货地址"
+	// @Param	phone	formData	string	true	"联系电话"
+	// @Param	default	formData	bool	false	"默认地址"
+
 	//首先要检查登录状态
 	user, err := c.CheckAndGetUser()
 	//状态不对则直接返回错误
@@ -263,11 +268,19 @@ func (c *UserControllers) NewAddress() {
 
 	//解析 form 表单数据
 	var form forms.Address
-	err = c.ParseForm(&form)
+	//err = c.ParseForm(&form)
+	//if err != nil {
+	//	c.ResponseErrJson(err)
+	//	return
+	//}
+
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
+
 	//将表单数据复制到 Address 中
 	address := models.Address{}
 	err = utils.CopyStruct(form, &address)
@@ -283,8 +296,19 @@ func (c *UserControllers) NewAddress() {
 		c.ResponseErrJson(err)
 		return
 	}
-	result := resultModels.SuccessResult(nil)
-	c.ResponseJson(result)
+
+	if form.Default {
+		user.DefaultAddressId = address.ID
+		err = models.UpdateUser(user)
+		if err != nil {
+			c.ResponseErrJson(errors.New("未能成功设置为默认地址"))
+			return
+		}
+	}
+	c.ResponseSuccessJson(nil)
+
+	//result := resultModels.SuccessResult(nil)
+	//c.ResponseJson(result)
 }
 
 // @Title 根据地址的 id 删除对应的地址
@@ -303,11 +327,19 @@ func (c *UserControllers) DeleteAddress() {
 		return
 	}
 
+	var form forms.IdForm
 	//TODO 或许应该表单校验
-	aId, err := c.GetUint64("id")
+	//aId, err := c.GetUint64("id")
+
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
 
 	//根据请求的 id 查找对应地址
-	address, err := models.FindAddressById(aId)
+	address, err := models.FindAddressById(form.Id)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
@@ -320,7 +352,7 @@ func (c *UserControllers) DeleteAddress() {
 		return
 	}
 	// ID 匹配，删除对应的数据
-	err = models.DeleteAddressById(aId)
+	err = models.DeleteAddressById(form.Id)
 	// 删除出错 返回错误信息
 	if err != nil {
 		c.ResponseErrJson(err)
@@ -333,14 +365,18 @@ func (c *UserControllers) DeleteAddress() {
 
 // @Title 更新指定 id 的地址
 // @Description	添加新的地址
-// @Param	id		formData	string	true	"地址ID"
-// @Param	name	formData	string	false	"收货人姓名"
-// @Param	address	formData	string	false	"收货地址"
-// @Param	phone	formData	string	false	"联系电话"
+// @Param	addressForm	body	forms.Address	true	"地址表单"
 // @Success	200
 // @Failure 400
 // @router /address/update [post]
 func (c *UserControllers) UpdateAddress() {
+
+	// @Param	id		formData	string	true	"地址ID"
+	// @Param	name	formData	string	false	"收货人姓名"
+	// @Param	address	formData	string	false	"收货地址"
+	// @Param	phone	formData	string	false	"联系电话"
+	// @Param	default	formData	bool	false	"默认地址"
+
 	var result resultModels.Result
 	//首先要检查登录状态
 	user, err := c.CheckAndGetUser()
@@ -351,7 +387,14 @@ func (c *UserControllers) UpdateAddress() {
 	}
 	//解析 form 表单数据
 	var form forms.Address
-	err = c.ParseForm(&form)
+	//err = c.ParseForm(&form)
+	//if err != nil {
+	//	c.ResponseErrJson(err)
+	//	return
+	//}
+
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
@@ -382,8 +425,19 @@ func (c *UserControllers) UpdateAddress() {
 		c.ResponseErrJson(err)
 		return
 	}
-	result = resultModels.SuccessResult(nil)
-	c.ResponseJson(result)
+
+	if form.Default {
+		user.DefaultAddressId = address.ID
+		err = models.UpdateUser(user)
+		if err != nil {
+			c.ResponseErrJson(errors.New("未能成功设置为默认地址"))
+			return
+		}
+	}
+
+	c.ResponseSuccessJson(nil)
+	//result = resultModels.SuccessResult(nil)
+	//c.ResponseJson(result)
 }
 
 /////////						 Carts 购物车相关   									///////////

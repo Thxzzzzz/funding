@@ -216,24 +216,6 @@ paths:
     post:
       tags:
       - user
-      description: 添加新的地址
-      operationId: UserControllers.添加新的地址
-      parameters:
-      - in: formData
-        name: name
-        description: 收货人姓名
-        required: true
-        type: string
-      - in: formData
-        name: address
-        description: 收货地址
-        required: true
-        type: string
-      - in: formData
-        name: phone
-        description: 联系电话
-        required: true
-        type: string
       responses:
         "200":
           description: ""
@@ -246,23 +228,12 @@ paths:
       description: 添加新的地址
       operationId: UserControllers.更新指定 id 的地址
       parameters:
-      - in: formData
-        name: id
-        description: 地址ID
+      - in: body
+        name: addressForm
+        description: 地址表单
         required: true
-        type: string
-      - in: formData
-        name: name
-        description: 收货人姓名
-        type: string
-      - in: formData
-        name: address
-        description: 收货地址
-        type: string
-      - in: formData
-        name: phone
-        description: 联系电话
-        type: string
+        schema:
+          $ref: '#/definitions/forms.Address'
       responses:
         "200":
           description: ""
@@ -351,6 +322,21 @@ paths:
         "400":
           description: ""
 definitions:
+  forms.Address:
+    title: Address
+    type: object
+    properties:
+      Address:
+        type: string
+      Default:
+        type: boolean
+      ID:
+        type: integer
+        format: int64
+      Name:
+        type: string
+      Phone:
+        type: string
   forms.LoginForm:
     title: LoginForm
     type: object
@@ -481,6 +467,9 @@ definitions:
     title: User
     type: object
     properties:
+      default_address_id:
+        type: integer
+        format: int64
       email:
         type: string
       icon_url:
