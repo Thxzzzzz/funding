@@ -37,7 +37,7 @@ func TestFindCartById(t *testing.T) {
 
 func TestFindCartByUserIdAndPkgId(t *testing.T) {
 	userId := uint64(20003)
-	pkgId := uint64(111111113)
+	pkgId := uint64(111111114)
 
 	cart, err := models.FindCartByUserIdAndPkgId(userId, pkgId)
 	if err != nil || cart.UserId != userId || cart.ProductPackageId != pkgId {

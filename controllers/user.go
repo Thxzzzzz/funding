@@ -247,7 +247,6 @@ func (c *UserControllers) GetAddresses() {
 // @Title 添加新的地址
 // @Description	添加新的地址
 // @Param	addressForm	body	forms.Address	true	"地址表单"
-
 // @Success	200
 // @Failure 400
 // @router /address/new [post]
@@ -442,16 +441,80 @@ func (c *UserControllers) UpdateAddress() {
 
 /////////						 Carts 购物车相关   									///////////
 
-// @Title 'TODO:添加购物车'
+// @Title 购物车列表
+// @Description	获取购物车列表
+// @Success 200 {object} []models.Cart
+// @Failure 400
+// @router /cartList [get]
+func (c *UserControllers) CartList() {
+	// 1. 检查 Cookie ,获取 user 信息
+	//首先要检查登录状态
+	user, err := c.CheckAndGetUser()
+	//状态不对则直接返回错误
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	rec, err := models.FindCartsByUserId(user.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	c.ResponseSuccessJson(rec)
+}
+
+// @Title 添加购物车
 // @Description 添加购物车
+// @Param	cartForm	body	forms.cartForm	true	"购物车信息"
+// @Success 200
+// @Failure 400
 // @router /addCart [post]
 func (c *UserControllers) AddCart() {
-	// 检查 Cookie ,获取 user 信息
+	// 1. 检查 Cookie ,获取 user 信息
+	//首先要检查登录状态
+	user, err := c.CheckAndGetUser()
+	//状态不对则直接返回错误
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
 
-	// 根据 userId 和 product_package_id 来检查是否存在对应的购物车记录
+	//解析 form 表单数据
+	var form forms.CartForm
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
 
-	// 存在对应记录则对其数量进行增加
+	// 2. 根据 userId 和 product_package_id 来检查是否存在对应的购物车记录
+	rec, err := models.FindCartByUserIdAndPkgId(user.ID, form.ProductPackageId)
+	if err != nil && err.Error() != "record not found" {
+		c.ResponseErrJson(err)
+		return
+	}
 
-	// 不存在则插入新的购物车记录
-
+	// 3.1 存在对应记录则对其数量进行增加
+	if rec.ID != 0 {
+		rec.Nums += form.Nums
+		err = models.UpdateCart(rec)
+	} else { // 3.2 不存在则插入新的购物车记录
+		// 将表单数据复制到对应 model 中
+		cart := models.Cart{}
+		err = utils.CopyStruct(form, &cart)
+		// 把对应的 UserId 加入到数据中
+		cart.UserId = user.ID
+		if err != nil {
+			c.ResponseErrJson(err)
+			return
+		}
+		err = models.InsertCart(&cart)
+		if err != nil {
+			c.ResponseErrJson(err)
+			return
+		}
+	}
+	c.ResponseSuccessJson(nil)
 }

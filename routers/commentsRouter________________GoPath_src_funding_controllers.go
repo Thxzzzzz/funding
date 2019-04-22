@@ -162,6 +162,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
         beego.ControllerComments{
+            Method: "CartList",
+            Router: `/cartList`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
+        beego.ControllerComments{
             Method: "GetUserById",
             Router: `/id`,
             AllowHTTPMethods: []string{"get"},

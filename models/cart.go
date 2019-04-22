@@ -1,5 +1,7 @@
 package models
 
+import "funding/resultModels"
+
 // 购物车相关
 type Cart struct {
 	BaseModel
@@ -52,6 +54,12 @@ func UpdateCart(cart *Cart) error {
 // 根据用户 id 和 套餐 id 来获取对应的购物车条目信息（用于添加到购物差时检查是否已存在）
 func FindCartByUserIdAndPkgId(userId uint64, pkdId uint64) (*Cart, error) {
 	var ret Cart
-	err := db.First(&ret).Where("user_id = ? AND product_package_id = ?", userId, pkdId).Error
+	err := db.Where("user_id = ? AND product_package_id = ?", userId, pkdId).First(&ret).Error
 	return &ret, err
+}
+
+// TODO 返回购物车列表
+func GetCartItems(userId uint64) []*resultModels.CartItem {
+
+	return nil
 }
