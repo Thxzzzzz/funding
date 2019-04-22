@@ -446,5 +446,12 @@ func (c *UserControllers) UpdateAddress() {
 // @Description 添加购物车
 // @router /addCart [post]
 func (c *UserControllers) AddCart() {
+	// 检查 Cookie ,获取 user 信息
+
+	// 根据 userId 和 product_package_id 来检查是否存在对应的购物车记录
+
+	// 存在对应记录则对其数量进行增加
+
+	// 不存在则插入新的购物车记录
 
 }

@@ -29,16 +29,17 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_addresses_deleted_at` (`deleted_at`),
   KEY `idx_addresses_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户收货地址表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户收货地址表';
 
--- 正在导出表  funding.addresses 的数据：~5 rows (大约)
+-- 正在导出表  funding.addresses 的数据：~6 rows (大约)
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
 REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 20003, '李小明50', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-16 01:03:25', NULL),
+	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-20 15:42:18', NULL),
 	(2, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 00:31:47', '2019-04-16 00:33:11', '2019-04-16 00:33:11'),
 	(3, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:54:39', '2019-04-16 01:54:39', NULL),
 	(4, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:56:50', '2019-04-16 01:59:21', '2019-04-16 01:59:21'),
-	(5, 20003, '测试大佬update', '广西壮族自治区桂林市四电之一', '18512345521', '2019-04-16 02:00:30', '2019-04-16 16:55:10', NULL);
+	(5, 20003, '测试大佬update', '广西壮族自治区桂林市四电之一', '18512345521', '2019-04-16 02:00:30', '2019-04-20 15:58:26', NULL),
+	(6, 20003, '什么鬼', '桂林电子科技大学', '18511123456', '2019-04-20 14:51:14', '2019-04-20 15:30:24', '2019-04-20 15:30:24');
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 
 -- 导出  表 funding.base_table 结构
@@ -57,10 +58,9 @@ CREATE TABLE IF NOT EXISTS `base_table` (
 
 -- 导出  表 funding.carts 结构
 CREATE TABLE IF NOT EXISTS `carts` (
-  `id` bigint(24) unsigned NOT NULL COMMENT 'Id',
+  `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `user_id` bigint(24) unsigned NOT NULL COMMENT '用户ID',
-  `product_id` bigint(24) unsigned NOT NULL COMMENT '产品ID',
-  `product_pakage_id` bigint(24) NOT NULL COMMENT '套餐ID',
+  `product_package_id` bigint(24) unsigned NOT NULL COMMENT '套餐ID',
   `nums` int(8) unsigned NOT NULL COMMENT '数量',
   `checked` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否勾选',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -68,11 +68,15 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间(软删除) NULL为未删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_carts_deleted_at` (`deleted_at`),
-  KEY `idx_carts_user_id` (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
+  KEY `idx_carts_user_id` (`user_id`) USING BTREE,
+  KEY `idx_product_package_id` (`product_package_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
 
 -- 正在导出表  funding.carts 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
+REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, `created_at`, `updated_at`, `deleted_at`) VALUES
+	(1, 20003, 111111113, 1, 1, '2019-04-22 20:54:49', '2019-04-22 20:54:49', NULL),
+	(2, 20003, 111111114, 1, 1, '2019-04-22 21:08:45', '2019-04-22 21:08:45', NULL);
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 
 -- 导出  表 funding.licenses 结构
@@ -243,12 +247,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `username_idx` (`username`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=20008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户';
 
--- 正在导出表  funding.users 的数据：~6 rows (大约)
+-- 正在导出表  funding.users 的数据：~7 rows (大约)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),
 	(20002, 'chixuntech', '123456', '驰讯通科技', '', '0', 2, 0, '', 0, '11111111', '2019-03-09 17:03:37', '2019-04-08 18:47:28', NULL),
-	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 14:22:26', '2019-04-15 20:49:44', NULL),
+	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 5, '', '2019-04-15 14:22:26', '2019-04-20 15:58:26', NULL),
 	(20004, 'test2', '123456', '测试2', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 20:47:28', '2019-04-15 20:50:00', NULL),
 	(20005, 'test3', '123456', '测试3', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:11:16', '2019-04-15 21:12:23', NULL),
 	(20006, 'test4', '123456', '测试4', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:14:30', '2019-04-15 21:14:30', NULL),
