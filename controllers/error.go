@@ -16,7 +16,7 @@ func (c *ErrorController) Error404() {
 }
 
 func (c *ErrorController) Error501() {
-	result := resultModels.ErrorResult(404, "Server Error")
+	result := resultModels.ErrorResult(501, "Server Error")
 	c.Data["json"] = result
 	c.ServeJSON()
 }

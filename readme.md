@@ -136,6 +136,54 @@ func (c *UserControllers) Logout() {
 }
 ```
 
+## 全局错误处理
+
+|  https://beego.me/docs/mvc/controller/errors.md 错误处理 - beego: 简约 & 强大并存的 Go 应用框架
+
+Beego 的默认错误处理是会返回一个 html 页面。像这样
+![avatar](https://beego.me/docs/images/401.png)
+
+而这个项目是一个前后端分离的项目，返回一个 HTML 页面显然是不太合理，应该让它返回一个 Json 格式的错误信息。
+
+通过官方文档可以知道，这里可以自定义一个 `ErrorController` 来达到这个目的。
+
+首先在 Controller 目录下创建一个 error.go 文件，内容如下:
+``` go
+package controllers
+
+import (
+	"funding/resultModels"
+	"github.com/astaxie/beego"
+)
+
+type ErrorController struct {
+	beego.Controller
+}
+
+func (c *ErrorController) Error404() {
+	result := resultModels.ErrorResult(404, "Api Not Found")
+	c.Data["json"] = result
+	c.ServeJSON()
+}
+
+func (c *ErrorController) Error501() {
+	result := resultModels.ErrorResult(501, "Server Error")
+	c.Data["json"] = result
+	c.ServeJSON()
+}
+```
+
+然后要在项目根目录下的 main.go 文件的 main 函数里加上
+
+``` go
+func main() {
+	// 异常处理
+	beego.ErrorController(&controllers.ErrorController{})
+	……………… 略
+}
+
+```
+
 
 
 # Gorm   -- 数据库 ORM 框架
@@ -170,7 +218,7 @@ type CartItem struct {
 查询的 SQL 语句是这样的：
 ``` SQL
 SELECT
-c.*,pkg.product_id,p.name,pkg.image_url,pkg.description
+	c.*,pkg.product_id,p.name,pkg.image_url,pkg.description
 FROM
 	carts c
 JOIN
