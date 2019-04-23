@@ -64,3 +64,26 @@ func TestGetCartItemByUserIdAndPkgId(t *testing.T) {
 	}
 	t.Log(cartItem)
 }
+
+func TestUpdateCartByUserIdAndPkgId(t *testing.T) {
+	cart := models.Cart{
+		UserId:           uint64(20003),
+		ProductPackageId: uint64(111111114),
+		Nums:             10,
+		Checked:          false,
+	}
+
+	err := models.UpdateCartByUserIdAndPkgId(&cart)
+	if err != nil {
+		t.Failed()
+	}
+}
+
+func TestDeleteCartByUserIdAndPkgId(t *testing.T) {
+	userId := uint64(20003)
+	pkgId := uint64(111111114)
+	err := models.DeleteCartByUserIdAndPkgId(userId, pkgId)
+	if err != nil {
+		t.Failed()
+	}
+}

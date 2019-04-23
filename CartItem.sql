@@ -1,5 +1,6 @@
 SELECT
-c.*,pkg.product_id,p.name,pkg.image_url,pkg.description
+	c.id,c.user_id,c.product_package_id,c.nums,c.checked,pkg.product_id,
+	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description
 FROM
 	carts c
 JOIN

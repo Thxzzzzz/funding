@@ -7,6 +7,69 @@ import (
 
 func init() {
 
+    beego.GlobalControllerRouter["funding/controllers:AddressController"] = append(beego.GlobalControllerRouter["funding/controllers:AddressController"],
+        beego.ControllerComments{
+            Method: "GetAddresses",
+            Router: `/all`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:AddressController"] = append(beego.GlobalControllerRouter["funding/controllers:AddressController"],
+        beego.ControllerComments{
+            Method: "DeleteAddress",
+            Router: `/delete`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:AddressController"] = append(beego.GlobalControllerRouter["funding/controllers:AddressController"],
+        beego.ControllerComments{
+            Method: "NewAddress",
+            Router: `/new`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:AddressController"] = append(beego.GlobalControllerRouter["funding/controllers:AddressController"],
+        beego.ControllerComments{
+            Method: "UpdateAddress",
+            Router: `/update`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:CartController"] = append(beego.GlobalControllerRouter["funding/controllers:CartController"],
+        beego.ControllerComments{
+            Method: "AddCart",
+            Router: `/addCart`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:CartController"] = append(beego.GlobalControllerRouter["funding/controllers:CartController"],
+        beego.ControllerComments{
+            Method: "CartList",
+            Router: `/cartList`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:CartController"] = append(beego.GlobalControllerRouter["funding/controllers:CartController"],
+        beego.ControllerComments{
+            Method: "DelCart",
+            Router: `/delCart`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/controllers:ObjectController"] = append(beego.GlobalControllerRouter["funding/controllers:ObjectController"],
         beego.ControllerComments{
             Method: "Post",
@@ -55,7 +118,7 @@ func init() {
     beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
         beego.ControllerComments{
             Method: "NewOrder",
-            Router: `/new`,
+            Router: `/newOrder`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -110,51 +173,6 @@ func init() {
         beego.ControllerComments{
             Method: "VerifyProduct",
             Router: `/verify/update`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
-        beego.ControllerComments{
-            Method: "AddCart",
-            Router: `/addCart`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
-        beego.ControllerComments{
-            Method: "GetAddresses",
-            Router: `/address/all`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
-        beego.ControllerComments{
-            Method: "DeleteAddress",
-            Router: `/address/delete`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
-        beego.ControllerComments{
-            Method: "NewAddress",
-            Router: `/address/new`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
-        beego.ControllerComments{
-            Method: "UpdateAddress",
-            Router: `/address/update`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

@@ -12,8 +12,10 @@ type Cart struct {
 }
 
 // 根据 UserId 查询前端所需要的 CartItem 列表 SQL 语句
-const sqlGetCartItemsByUserId = `SELECT
-c.*,pkg.product_id,p.name,pkg.image_url,pkg.description
+const sqlGetCartItemsByUserId = `
+SELECT
+	c.id,c.user_id,c.product_package_id,c.nums,c.checked,pkg.product_id,
+	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description
 FROM
 	carts c
 JOIN
@@ -63,15 +65,37 @@ func UpdateCart(cart *Cart) error {
 	if err != nil {
 		return err
 	}
-	err = db.Model(&rec).Update(cart).Error
+
+	// 由于 Checked 是 bool 型其默认值是 0 ，在直接传入 struct 更新时会被 Gorm 忽略掉，所以这里要手动写更新的 Map
+	err = db.Model(&rec).Updates(map[string]interface{}{"checked": cart.Checked, "nums": cart.Nums}).Error
+
+	//err = db.Model(&rec).Update(cart).Error
 	return err
 }
 
 // 根据用户 id 和 套餐 id 来获取对应的购物车条目信息（用于添加到购物差时检查是否已存在）
-func FindCartByUserIdAndPkgId(userId uint64, pkdId uint64) (*Cart, error) {
+func FindCartByUserIdAndPkgId(userId uint64, pkgId uint64) (*Cart, error) {
 	var ret Cart
-	err := db.Where("user_id = ? AND product_package_id = ?", userId, pkdId).First(&ret).Error
+	err := db.Where("user_id = ? AND product_package_id = ?", userId, pkgId).First(&ret).Error
 	return &ret, err
+}
+
+// 根据用户 id 和 套餐 id 来更新对应的购物车条目信息
+func UpdateCartByUserIdAndPkgId(cart *Cart) error {
+	ret, err := FindCartByUserIdAndPkgId(cart.UserId, cart.ProductPackageId)
+	if err != nil {
+		return err
+	}
+	ret.Checked = cart.Checked
+	ret.Nums = cart.Nums
+	err = UpdateCart(ret)
+	return err
+}
+
+// 根据用户 id 和 套餐 id 来删除对应购物车信息
+func DeleteCartByUserIdAndPkgId(userId uint64, pkgId uint64) error {
+	err := db.Delete(Cart{}, "user_id = ? AND product_package_id = ?", userId, pkgId).Error
+	return err
 }
 
 // 返回购物车列表

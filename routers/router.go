@@ -17,17 +17,27 @@ func init() {
 				&controllers.ObjectController{},
 			),
 		),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserControllers{},
-			),
-		),
 		beego.NSNamespace("/product",
 			beego.NSInclude(
 				&controllers.ProductController{},
 			),
 		),
-		beego.NSNamespace("/order",
+		beego.NSNamespace("/user",
+			beego.NSInclude(
+				&controllers.UserControllers{},
+			),
+		),
+		beego.NSNamespace("/user/address",
+			beego.NSInclude(
+				&controllers.AddressController{},
+			),
+		),
+		beego.NSNamespace("/user/cart",
+			beego.NSInclude(
+				&controllers.CartController{},
+			),
+		),
+		beego.NSNamespace("/user/order",
 			beego.NSInclude(
 				&controllers.OrderController{},
 			),

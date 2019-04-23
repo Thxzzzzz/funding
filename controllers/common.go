@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"errors"
+	"fmt"
+	"funding/models"
 	"funding/resultModels"
 	"github.com/astaxie/beego"
 )
@@ -8,9 +11,34 @@ import (
 // Session 中保存登录信息的 Key 值
 const SESSION_USER_KEY = "userId"
 
-//定义 Controller 基类
+// 定义 Controller 基类
 type BaseController struct {
 	beego.Controller
+}
+
+// 所有请求都需要身份验证的 Controller
+type VailUserController struct {
+	BaseController
+	User *models.User
+}
+
+// 重写 Prepare 验证身份
+func (c *VailUserController) Prepare() {
+	userId := c.GetSession(SESSION_USER_KEY)
+	var result *models.User
+	if userId == nil {
+		c.ResponseErrJson(errors.New("没有登录"))
+		return
+	}
+	id, _ := userId.(uint64)
+	// 获取当前 Session 中的 userId 字段对应的值
+	result, err := models.FindUserById(id)
+	if err != nil {
+		c.ResponseErrJson(errors.New("没有该用户"))
+		return
+	}
+	fmt.Println(result)
+	c.User = result
 }
 
 // 用于返回 err 减少代码量

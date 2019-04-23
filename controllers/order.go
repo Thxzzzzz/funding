@@ -1,13 +1,16 @@
 package controllers
 
-// 订单相关
+// 用户订单相关
 type OrderController struct {
-	BaseController
+	VailUserController
 }
 
 // @Title 新订单
-//
-// @router /new [post]
+// @Description 新订单
+// @Success 200
+// @Failure 400
+// @router /newOrder [post]
 func (c *OrderController) NewOrder() {
-
+	// TODO 新订单
+	c.ResponseSuccessJson(c.User)
 }

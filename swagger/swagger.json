@@ -143,14 +143,6 @@
                 }
             }
         },
-        "/order/new": {
-            "post": {
-                "tags": [
-                    "order"
-                ],
-                "operationId": "OrderController.新订单"
-            }
-        },
         "/product/": {
             "get": {
                 "tags": [
@@ -266,22 +258,13 @@
                 }
             }
         },
-        "/user/addCart": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "description": "添加购物车",
-                "operationId": "UserControllers.'TODO:添加购物车'"
-            }
-        },
         "/user/address/all": {
             "get": {
                 "tags": [
-                    "user"
+                    "user/address"
                 ],
                 "description": "根据 userId 获取收货地址",
-                "operationId": "UserControllers.根据 userId 获取收货地址",
+                "operationId": "AddressController.根据 userId 获取收货地址",
                 "responses": {
                     "200": {
                         "description": "",
@@ -301,10 +284,10 @@
         "/user/address/delete": {
             "post": {
                 "tags": [
-                    "user"
+                    "user/address"
                 ],
                 "description": "根据地址的 id 删除对应的地址",
-                "operationId": "UserControllers.根据地址的 id 删除对应的地址",
+                "operationId": "AddressController.根据地址的 id 删除对应的地址",
                 "parameters": [
                     {
                         "in": "formData",
@@ -327,7 +310,20 @@
         "/user/address/new": {
             "post": {
                 "tags": [
-                    "user"
+                    "user/address"
+                ],
+                "description": "添加新的地址",
+                "operationId": "AddressController.添加新的地址",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "addressForm",
+                        "description": "地址表单",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.Address"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -342,10 +338,10 @@
         "/user/address/update": {
             "post": {
                 "tags": [
-                    "user"
+                    "user/address"
                 ],
                 "description": "添加新的地址",
-                "operationId": "UserControllers.更新指定 id 的地址",
+                "operationId": "AddressController.更新指定 id 的地址",
                 "parameters": [
                     {
                         "in": "body",
@@ -354,6 +350,85 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/forms.Address"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/cart/addCart": {
+            "post": {
+                "tags": [
+                    "user/cart"
+                ],
+                "description": "添加购物车",
+                "operationId": "CartController.添加购物车",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "cartForm",
+                        "description": "购物车信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.CartForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/cart/cartList": {
+            "get": {
+                "tags": [
+                    "user/cart"
+                ],
+                "description": "获取购物车列表",
+                "operationId": "CartController.购物车列表",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Cart"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/cart/delCart": {
+            "post": {
+                "tags": [
+                    "user/cart"
+                ],
+                "description": "删除当前用户指定 product_package_id 的购物车记录",
+                "operationId": "CartController.删除当前用户指定 product_package_id 的购物车记录",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "delCartForm",
+                        "description": "购物车信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.DelCartForm"
                         }
                     }
                 ],
@@ -465,6 +540,23 @@
                 }
             }
         },
+        "/user/order/newOrder": {
+            "post": {
+                "tags": [
+                    "user/order"
+                ],
+                "description": "新订单",
+                "operationId": "OrderController.新订单",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "tags": [
@@ -514,6 +606,37 @@
                 },
                 "Phone": {
                     "type": "string"
+                }
+            }
+        },
+        "forms.CartForm": {
+            "title": "CartForm",
+            "type": "object",
+            "properties": {
+                "Checked": {
+                    "type": "boolean"
+                },
+                "Nums": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ProductPackageId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UserId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "forms.DelCartForm": {
+            "title": "DelCartForm",
+            "type": "object",
+            "properties": {
+                "ProductPackageId": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         },
@@ -578,6 +701,31 @@
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.Cart": {
+            "title": "Cart",
+            "type": "object",
+            "properties": {
+                "checked": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "nums": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "product_package_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user_id": {
                     "type": "integer",
                     "format": "int64"
                 }
@@ -752,8 +900,16 @@
             "description": "产品相关\n"
         },
         {
-            "name": "order",
-            "description": "订单相关\n"
+            "name": "user/address",
+            "description": "用户地址相关\n"
+        },
+        {
+            "name": "user/cart",
+            "description": "用户购物车相关\n"
+        },
+        {
+            "name": "user/order",
+            "description": "用户订单相关\n"
         }
     ]
 }
