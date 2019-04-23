@@ -28,7 +28,7 @@ func TestGetAddressById(t *testing.T) {
 	}
 
 	ret, err = models.FindAddressById(addsId + 1)
-	if err != nil && ret.ID == addsId {
+	if err != nil || ret.ID != addsId {
 		t.Failed()
 	}
 

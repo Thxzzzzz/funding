@@ -8,6 +8,7 @@ import (
 	"funding/resultModels"
 	"funding/utils"
 	"github.com/astaxie/beego/validation"
+	"github.com/jinzhu/gorm"
 )
 
 // 用户相关
@@ -108,7 +109,7 @@ func (c *UserControllers) Register() {
 	//查询是否已存在用户名
 	dbExisted, err := models.FindUserByUsername(form.Username)
 	//查询出错
-	if err != nil && err.Error() != "record not found" {
+	if err != nil && err.Error() != gorm.ErrRecordNotFound.Error() {
 		c.ResponseErrJson(err)
 		return
 	}
@@ -491,7 +492,7 @@ func (c *UserControllers) AddCart() {
 
 	// 2. 根据 userId 和 product_package_id 来检查是否存在对应的购物车记录
 	rec, err := models.FindCartByUserIdAndPkgId(user.ID, form.ProductPackageId)
-	if err != nil && err.Error() != "record not found" {
+	if err != nil && err.Error() != gorm.ErrRecordNotFound.Error() {
 		c.ResponseErrJson(err)
 		return
 	}

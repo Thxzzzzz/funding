@@ -2,6 +2,7 @@ package test
 
 import (
 	"funding/models"
+	"funding/resultModels"
 	"github.com/astaxie/beego"
 	"path/filepath"
 	"runtime"
@@ -43,4 +44,23 @@ func TestFindCartByUserIdAndPkgId(t *testing.T) {
 	if err != nil || cart.UserId != userId || cart.ProductPackageId != pkgId {
 		t.Failed()
 	}
+}
+
+func TestGetCartItems(t *testing.T) {
+	userId := uint64(20003)
+	var results []resultModels.CartItem
+	results, err := models.GetCartItems(userId)
+	if err != nil || len(results) == 0 {
+		t.Failed()
+	}
+}
+
+func TestGetCartItemByUserIdAndPkgId(t *testing.T) {
+	userId := uint64(20003)
+	pkgId := uint64(111111114)
+	cartItem, err := models.GetCartItemByUserIdAndPkgId(userId, pkgId)
+	if err != nil {
+		t.Failed()
+	}
+	t.Log(cartItem)
 }

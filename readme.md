@@ -143,3 +143,54 @@ func (c *UserControllers) Logout() {
 ## Gorm 的软删除
 
 在这个项目中包含有 `delete_at`字段的表将会采用软删除的形式来进行删除，即在调用删除函数时，实际上并没有将该条记录从数据库中删除，而是将这个`delete_at` 字段设置为删除时的时间，之后的查询中只要这个 `delete_at` 不为空，就会在查询时忽略这条数据，这样做的好处比较明显的就是能在数据"删除"之后还可以很方便的对其进行恢复操作。
+
+## Raw() 使用原生 SQL 语句查询
+在多表查询且不需要所有返回的字段的时候，使用 Gorm 的函数来构建一个查询会显得麻烦许多，所以在多表查询时采用了原生 SQL 来执行查询，并使用 `Scan()` 函数来将结果保存到对应的数据结构中。
+
+以 `.\models\cart.go` 下的 `GetCartItemByUserIdAndPkgId` 函数为例子，这个函数的作用是从 `carts`、 `products`、 `product_packages` 三个表中查询出前端购物车列表项所需的数据并返回对应的 `CartItem` 结构体。
+
+`CartItem` 定义如下
+``` go
+// 前端所显示的购物车 item
+type CartItem struct {
+	ID               uint64 `json:"id"`                 //购物车项ID
+	UserId           uint64 `json:"user_id"`            // 用户ID
+	ProductPackageId uint64 `json:"product_package_id"` // 套餐ID
+	Nums             int    `json:"nums"`               // 购买数量
+	Checked          bool   `json:"checked"`            // 是否勾选
+	ProductId        uint64 `json:"product_id"`         // 产品ID
+	ProductName      string `json:"product_name"`       //产品名称
+	Description      string `json:"description"`        //套餐描述
+	ImageUrl         string `json:"image_url"`          //套餐图片
+}
+
+```
+因为 `ProductName` 存在 products 表中， `Description` 和 `ImageUrl` 存在 product_packages 表中，而 carts 表只存了其对应的 `ProductPackageId` 所以在查询的时候需要联合 product_packages 和 products 表来进行查询。
+
+查询的 SQL 语句是这样的：
+``` SQL
+SELECT
+c.*,pkg.product_id,p.name,pkg.image_url,pkg.description
+FROM
+	carts c
+JOIN
+	product_packages pkg ON c.product_package_id = pkg.id
+JOIN
+	products p ON pkg.product_id = p.id
+WHERE
+	c.user_id = ? AND
+	c.product_package_id = ?
+```
+其中 `?` 为占位符，传入的参数会按顺序将 `?` 替换掉
+
+于是定义一个常量 `const sqlGetCartItemByUserIdAndPkgId` 值为上面所述的 SQL 语句，使用 Gorm 的 Row() 函数传入 SQL 语句和参数并执行。
+
+``` go
+// 返回购物车列表项目
+func GetCartItemByUserIdAndPkgId(userId uint64, pkgId uint64) (resultModels.CartItem, error) {
+	var result resultModels.CartItem
+	// 执行 SQL 语句，并将结果映射到 result 中
+	err := db.Raw(sqlGetCartItemByUserIdAndPkgId, userId, pkgId).Scan(&result).Error
+	return result, err
+}
+```
