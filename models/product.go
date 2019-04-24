@@ -1,7 +1,7 @@
 package models
 
 import (
-	"funding/objects"
+	"errors"
 	"time"
 )
 
@@ -43,7 +43,7 @@ func init() {
 // 根据 分页 和 产品类型(0 为全部) 获取产品
 func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Product, error) {
 	if page <= 0 || pageSize <= 0 {
-		return nil, &objects.Error{Msg: "参数错误"}
+		return nil, errors.New("参数错误")
 	}
 	var results []*Product
 	//分页限制

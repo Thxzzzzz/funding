@@ -22,7 +22,7 @@ type VailUserController struct {
 	User *models.User
 }
 
-// 重写 Prepare 验证身份
+// 实现 Prepare 验证身份
 func (c *VailUserController) Prepare() {
 	userId := c.GetSession(SESSION_USER_KEY)
 	var result *models.User

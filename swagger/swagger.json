@@ -391,30 +391,7 @@
                 }
             }
         },
-        "/user/cart/cartList": {
-            "get": {
-                "tags": [
-                    "user/cart"
-                ],
-                "description": "获取购物车列表",
-                "operationId": "CartController.购物车列表",
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Cart"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/user/cart/delCart": {
+        "/user/cart/cartDel": {
             "post": {
                 "tags": [
                     "user/cart"
@@ -435,6 +412,29 @@
                 "responses": {
                     "200": {
                         "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/cart/cartList": {
+            "get": {
+                "tags": [
+                    "user/cart"
+                ],
+                "description": "获取购物车列表",
+                "operationId": "CartController.购物车列表",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Cart"
+                            }
+                        }
                     },
                     "400": {
                         "description": ""
@@ -892,12 +892,12 @@
             "description": "Operations about object\n"
         },
         {
-            "name": "user",
-            "description": "用户相关\n"
-        },
-        {
             "name": "product",
             "description": "产品相关\n"
+        },
+        {
+            "name": "user",
+            "description": "用户相关\n"
         },
         {
             "name": "user/address",

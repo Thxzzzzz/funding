@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"funding/forms"
 	"funding/models"
 	"funding/utils"
@@ -86,8 +85,8 @@ func (c *CartController) AddCart() {
 // @Param	delCartForm	body	forms.DelCartForm	true	"购物车信息"
 // @Success 200
 // @Failure 400
-// @router /delCart [post]
-func (c *CartController) DelCart() {
+// @router /cartDel [post]
+func (c *CartController) CartDel() {
 	// 获取用户信息
 	user := c.User
 	//解析 form 表单数据
@@ -98,6 +97,10 @@ func (c *CartController) DelCart() {
 		c.ResponseErrJson(err)
 		return
 	}
-	fmt.Println(user)
+	err = models.DeleteCartByUserIdAndPkgId(user.ID, form.ProductPackageId)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
 	c.ResponseSuccessJson(nil)
 }

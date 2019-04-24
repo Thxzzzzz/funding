@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"funding/forms"
 	"funding/models"
+	"funding/objects"
 	"funding/resultModels"
 	"funding/utils"
 	"github.com/astaxie/beego/validation"
@@ -26,13 +26,13 @@ func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
 	userId := c.GetSession(SESSION_USER_KEY)
 	var result *models.User
 	if userId == nil {
-		return nil, errors.New("没有登录")
+		return nil, &resultError.DidntLoginError{}
 	}
 	id, _ := userId.(uint64)
 	// 获取当前 Session 中的 userId 字段对应的值
 	result, err := models.FindUserById(id)
 	if err != nil {
-		return nil, errors.New("没有该用户")
+		return nil, &resultError.UserDintExist{}
 	}
 	return result, nil
 }

@@ -23,6 +23,9 @@ JOIN
 JOIN
 	products p ON pkg.product_id = p.id
 WHERE
+	c.deleted_at IS NULL  AND
+	p.deleted_at IS NULL  AND
+	pkg.deleted_at IS NULL AND
 	c.user_id = ? 
 `
 
