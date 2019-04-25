@@ -6,7 +6,7 @@ type CartItem struct {
 	UserId           uint64 `json:"user_id"`            // 用户ID
 	ProductPackageId uint64 `json:"product_package_id"` // 套餐ID
 	Price            string `json:"price"`              //单价
-	Stroke           int    `json:"stroke"`             // 库存
+	stock            int    `json:"stock"`              // 库存
 	Nums             int    `json:"nums"`               // 购买数量
 	Checked          bool   `json:"checked"`            // 是否勾选
 	ProductId        uint64 `json:"product_id"`         // 产品ID

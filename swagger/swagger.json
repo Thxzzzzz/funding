@@ -419,6 +419,34 @@
                 }
             }
         },
+        "/user/cart/cartEdit": {
+            "post": {
+                "tags": [
+                    "user/cart"
+                ],
+                "description": "编辑购物车",
+                "operationId": "CartController.编辑购物车",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "cartForm",
+                        "description": "购物车信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.CartForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/cart/cartList": {
             "get": {
                 "tags": [

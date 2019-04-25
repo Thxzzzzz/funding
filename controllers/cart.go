@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"funding/forms"
 	"funding/models"
 	"funding/utils"
@@ -102,5 +103,41 @@ func (c *CartController) CartDel() {
 		c.ResponseErrJson(err)
 		return
 	}
+	c.ResponseSuccessJson(nil)
+}
+
+// @Title 编辑购物车
+// @Description 编辑购物车
+// @Param	cartForm	body	forms.CartForm	true	"购物车信息"
+// @Success 200
+// @Failure 400
+// @router /cartEdit [post]
+func (c *CartController) CartEdit() {
+	// 获取用户信息
+	user := c.User
+	//解析 form 表单数据
+	var form forms.CartForm
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 2. 根据 userId 和 product_package_id 来检查是否存在对应的购物车记录
+	rec, err := models.FindCartByUserIdAndPkgId(user.ID, form.ProductPackageId)
+	if err != nil {
+		if err.Error() == gorm.ErrRecordNotFound.Error() {
+			c.ResponseErrJson(errors.New("购物车记录不存在"))
+			return
+		}
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 3.1 存在对应记录则对其数量进行增加
+	rec.Nums = form.Nums
+	rec.Checked = form.Checked
+	err = models.UpdateCart(rec)
 	c.ResponseSuccessJson(nil)
 }
