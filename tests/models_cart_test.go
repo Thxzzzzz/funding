@@ -96,3 +96,11 @@ func TestUpdateAllCheckedStatus(t *testing.T) {
 		t.Failed()
 	}
 }
+
+func TestDeleteAllCheckedCarts(t *testing.T) {
+	userId := uint64(20003)
+	err := models.DeleteAllCheckedCarts(userId)
+	if err != nil {
+		t.Failed()
+	}
+}

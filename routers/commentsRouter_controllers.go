@@ -81,6 +81,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:CartController"] = append(beego.GlobalControllerRouter["funding/controllers:CartController"],
         beego.ControllerComments{
+            Method: "DelCartChecked",
+            Router: `/delCartChecked`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:CartController"] = append(beego.GlobalControllerRouter["funding/controllers:CartController"],
+        beego.ControllerComments{
             Method: "EditCheckAll",
             Router: `/editCheckAll`,
             AllowHTTPMethods: []string{"post"},

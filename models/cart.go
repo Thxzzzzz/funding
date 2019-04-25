@@ -117,7 +117,14 @@ func GetCartItemByUserIdAndPkgId(userId uint64, pkgId uint64) (resultModels.Cart
 	return result, err
 }
 
+// 全选/全不选
 func UpdateAllCheckedStatus(userId uint64, checked bool) error {
 	err := db.Table("carts").Where("deleted_at IS NULL AND user_id = ? ", userId).Updates(map[string]interface{}{"checked": checked}).Error
+	return err
+}
+
+// 删除所有选中项
+func DeleteAllCheckedCarts(userId uint64) error {
+	err := db.Table("carts").Where("deleted_at IS NULL AND checked = true AND user_id = ? ", userId).Delete(Cart{}).Error
 	return err
 }

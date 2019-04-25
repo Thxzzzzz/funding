@@ -166,3 +166,19 @@ func (c *CartController) EditCheckAll() {
 	}
 	c.ResponseSuccessJson(nil)
 }
+
+// @Title 删除选中
+// @Description 删除选中
+// @Success 200
+// @Failure 400
+// @router /delCartChecked [post]
+func (c *CartController) DelCartChecked() {
+	// 获取用户信息
+	user := c.User
+	err := models.DeleteAllCheckedCarts(user.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
