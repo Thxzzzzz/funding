@@ -141,3 +141,28 @@ func (c *CartController) CartEdit() {
 	err = models.UpdateCart(rec)
 	c.ResponseSuccessJson(nil)
 }
+
+// @Title 全选/全不选
+// @Description 全选/全不选
+// @Param	cartForm	body	forms.CheckAllForm	true	"购物车信息"
+// @Success 200
+// @Failure 400
+// @router /editCheckAll [post]
+func (c *CartController) EditCheckAll() {
+	// 获取用户信息
+	user := c.User
+	//解析 form 表单数据
+	var form forms.CheckAllForm
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	err = models.UpdateAllCheckedStatus(user.ID, form.Checked)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}

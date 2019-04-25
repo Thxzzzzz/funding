@@ -79,6 +79,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["funding/controllers:CartController"] = append(beego.GlobalControllerRouter["funding/controllers:CartController"],
+        beego.ControllerComments{
+            Method: "EditCheckAll",
+            Router: `/editCheckAll`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/controllers:ObjectController"] = append(beego.GlobalControllerRouter["funding/controllers:ObjectController"],
         beego.ControllerComments{
             Method: "Post",

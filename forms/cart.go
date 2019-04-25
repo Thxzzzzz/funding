@@ -12,3 +12,7 @@ type CartForm struct {
 type DelCartForm struct {
 	ProductPackageId uint64 `form:"product_package_id"` // 套餐 ID
 }
+
+type CheckAllForm struct {
+	Checked bool `json:"checked" form:"checked"`
+}

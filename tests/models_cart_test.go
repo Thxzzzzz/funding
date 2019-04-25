@@ -87,3 +87,12 @@ func TestDeleteCartByUserIdAndPkgId(t *testing.T) {
 		t.Failed()
 	}
 }
+
+func TestUpdateAllCheckedStatus(t *testing.T) {
+	userId := uint64(20003)
+	checked := false
+	err := models.UpdateAllCheckedStatus(userId, checked)
+	if err != nil {
+		t.Failed()
+	}
+}

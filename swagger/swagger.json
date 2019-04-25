@@ -470,6 +470,34 @@
                 }
             }
         },
+        "/user/cart/editCheckAll": {
+            "post": {
+                "tags": [
+                    "user/cart"
+                ],
+                "description": "全选/全不选",
+                "operationId": "CartController.全选/全不选",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "cartForm",
+                        "description": "购物车信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.CheckAllForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/id": {
             "get": {
                 "tags": [
@@ -641,20 +669,25 @@
             "title": "CartForm",
             "type": "object",
             "properties": {
-                "Checked": {
+                "checked": {
                     "type": "boolean"
                 },
-                "Nums": {
+                "nums": {
                     "type": "integer",
                     "format": "int64"
                 },
-                "ProductPackageId": {
+                "product_package_id": {
                     "type": "integer",
                     "format": "int64"
-                },
-                "UserId": {
-                    "type": "integer",
-                    "format": "int64"
+                }
+            }
+        },
+        "forms.CheckAllForm": {
+            "title": "CheckAllForm",
+            "type": "object",
+            "properties": {
+                "checked": {
+                    "type": "boolean"
                 }
             }
         },

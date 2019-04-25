@@ -116,3 +116,8 @@ func GetCartItemByUserIdAndPkgId(userId uint64, pkgId uint64) (resultModels.Cart
 	err := db.Raw(sqlGetCartItemByUserIdAndPkgId, userId, pkgId).Scan(&result).Error
 	return result, err
 }
+
+func UpdateAllCheckedStatus(userId uint64, checked bool) error {
+	err := db.Table("carts").Where("deleted_at IS NULL AND user_id = ? ", userId).Updates(map[string]interface{}{"checked": checked}).Error
+	return err
+}
