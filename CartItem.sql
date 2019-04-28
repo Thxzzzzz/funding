@@ -12,4 +12,4 @@ WHERE
 	p.deleted_at IS NULL  AND
 	pkg.deleted_at IS NULL AND
 	c.user_id = 20003 AND
-	c.product_package_id = 111111114
+	c.product_package_id = 111111112

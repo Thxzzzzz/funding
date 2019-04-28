@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
 -- 正在导出表  funding.addresses 的数据：~6 rows (大约)
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
 REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-20 15:42:18', NULL),
+	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-23 21:24:44', NULL),
 	(2, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 00:31:47', '2019-04-16 00:33:11', '2019-04-16 00:33:11'),
 	(3, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:54:39', '2019-04-16 01:54:39', NULL),
 	(4, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:56:50', '2019-04-16 01:59:21', '2019-04-16 01:59:21'),
@@ -70,13 +70,15 @@ CREATE TABLE IF NOT EXISTS `carts` (
   KEY `idx_carts_deleted_at` (`deleted_at`),
   KEY `idx_carts_user_id` (`user_id`) USING BTREE,
   KEY `idx_product_package_id` (`product_package_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
 
--- 正在导出表  funding.carts 的数据：~0 rows (大约)
+-- 正在导出表  funding.carts 的数据：~4 rows (大约)
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
 REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 20003, 111111113, 1, 1, '2019-04-22 20:54:49', '2019-04-22 20:54:49', NULL),
-	(2, 20003, 111111114, 1, 1, '2019-04-22 21:08:45', '2019-04-22 21:08:45', NULL);
+	(1, 20003, 111111113, 4, 1, '2019-04-22 20:54:49', '2019-04-25 21:18:25', NULL),
+	(2, 20003, 111111114, 10, 0, '2019-04-22 21:08:45', '2019-04-25 21:11:22', '2019-04-25 21:11:23'),
+	(3, 20003, 111111112, 5, 0, '2019-04-25 17:02:18', '2019-04-25 21:14:07', NULL),
+	(13, 20003, 111111114, 1, 1, '2019-04-25 21:18:24', '2019-04-25 21:18:24', NULL);
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 
 -- 导出  表 funding.licenses 结构
@@ -101,6 +103,33 @@ CREATE TABLE IF NOT EXISTS `licenses` (
 REPLACE INTO `licenses` (`id`, `compony_name`, `user_id`, `address`, `phone`, `license_image_url`, `verify`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(11111111, '北京驰讯通科技有限公司', 'chixuntech', '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '2019-03-09 18:40:38', '2019-03-09 18:43:35', NULL);
 /*!40000 ALTER TABLE `licenses` ENABLE KEYS */;
+
+-- 导出  表 funding.orders 结构
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
+  `user_id` bigint(24) unsigned NOT NULL COMMENT '用户 ID',
+  `seller_id` bigint(24) unsigned NOT NULL COMMENT '卖家 ID (可简化字段)',
+  `product_id` bigint(24) unsigned NOT NULL COMMENT '产品 ID(可简化字段)',
+  `product_package_id` bigint(24) unsigned NOT NULL COMMENT '产品套餐 ID',
+  `nums` int(5) unsigned NOT NULL DEFAULT '0' COMMENT '购买数量',
+  `unit_price` double NOT NULL DEFAULT '0' COMMENT '单价(可简化字段)',
+  `total_price` double NOT NULL DEFAULT '0' COMMENT '总价(或许也是可简化)',
+  `status` int(5) NOT NULL DEFAULT '0' COMMENT '订单装填，0:下单,1:付款,2:配货,3:出库,200:交易成功,400:交易关闭',
+  `checking_number` varchar(24) NOT NULL DEFAULT '' COMMENT '物流单号',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间(软删除) NULL 为未删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_orders_deleted_at` (`deleted_at`),
+  KEY `idx_orders_user_id` (`user_id`),
+  KEY `idx_orders_seller_id` (`seller_id`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_orders_package_id` (`product_package_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- 正在导出表  funding.orders 的数据：~0 rows (大约)
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 
 -- 导出  表 funding.permissions 结构
 CREATE TABLE IF NOT EXISTS `permissions` (
@@ -252,7 +281,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),
 	(20002, 'chixuntech', '123456', '驰讯通科技', '', '0', 2, 0, '', 0, '11111111', '2019-03-09 17:03:37', '2019-04-08 18:47:28', NULL),
-	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 5, '', '2019-04-15 14:22:26', '2019-04-20 15:58:26', NULL),
+	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 1, '', '2019-04-15 14:22:26', '2019-04-23 21:24:44', NULL),
 	(20004, 'test2', '123456', '测试2', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 20:47:28', '2019-04-15 20:50:00', NULL),
 	(20005, 'test3', '123456', '测试3', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:11:16', '2019-04-15 21:12:23', NULL),
 	(20006, 'test4', '123456', '测试4', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:14:30', '2019-04-15 21:14:30', NULL),
