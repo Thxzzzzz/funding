@@ -28,6 +28,49 @@ c.ServeJSON()
 }
 ```
 
+### 请求解析
+
+#### Get 请求的字段解析到 Struct
+
+> Parsing query string to struct like forms. · Issue #645 · astaxie/beego
+>  https://github.com/astaxie/beego/issues/645
+
+以 `ProductListForm` 的解析为例子
+
+首先是 `ProductListForm` 的定义，这里一定要有 form 的 tag
+
+``` go
+// 路径 ./forms/product.go
+package forms
+// 获取产品列表的表单
+type ProductListForm struct {
+	Page     int     `form:"page"`      // 页码
+	PageSize int     `form:"page_size"` // 每页数量
+	Type     int     `form:"type"`      // 产品类型
+	Sort     int     `form:"sort"`      // 排序方式
+	Status   int     `form:"status"`    // form众筹状态
+	PriceGt  float64 `form:"price_gt"`  // 价格大于
+	PriceLte float64 `form:"price_lte"` // 价格小于
+}
+```
+
+在 Controller 下的 写法
+
+``` go
+func (c *ProductController) GetProductByPage() {
+	// TODO 据页码和其他条件获取产品信息
+	form := forms.ProductListForm{}
+    // 获取所有 query 数据组成的 map
+	values := c.Ctx.Request.URL.Query()
+    // 解析到 Struct 中
+	if err := beego.ParseForm(values, &form); err != nil {
+        ……
+	}
+}
+```
+
+
+
 ### 遇到的问题
 
 Controller 用 Get 获取 Url 参数的时候，key 前面记得加上冒号

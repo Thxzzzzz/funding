@@ -94,17 +94,6 @@ paths:
           description: '{string} delete success!'
         "403":
           description: objectId is empty
-  /product/:
-    get:
-      tags:
-      - product
-      description: 据页码和其他条件获取产品信息
-      operationId: ProductController.据页码和其他条件获取产品信息
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: ""
   /product/all:
     get:
       tags:
@@ -142,6 +131,55 @@ paths:
       - product
       description: 获取首页信息
       operationId: ProductController.Get Home Page Info
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+  /product/productList:
+    get:
+      tags:
+      - product
+      description: 据页码和其他条件获取产品信息
+      operationId: ProductController.据页码和其他条件获取产品信息
+      parameters:
+      - in: query
+        name: page
+        description: 页码
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: page_size
+        description: 每页数量
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: type
+        description: 产品类型
+        type: integer
+        format: int64
+      - in: query
+        name: status
+        description: 众筹状态
+        type: integer
+        format: int64
+      - in: query
+        name: sort
+        description: 排序方式
+        type: integer
+        format: int64
+      - in: query
+        name: price_gt
+        description: 价格大于
+        type: number
+        format: double
+      - in: query
+        name: price_lt
+        description: 价格小于
+        type: number
+        format: double
       responses:
         "200":
           description: ""
@@ -304,6 +342,17 @@ paths:
             type: array
             items:
               $ref: '#/definitions/models.Cart'
+        "400":
+          description: ""
+  /user/cart/delCartChecked:
+    post:
+      tags:
+      - user/cart
+      description: 删除选中
+      operationId: CartController.删除选中
+      responses:
+        "200":
+          description: ""
         "400":
           description: ""
   /user/cart/editCheckAll:

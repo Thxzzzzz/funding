@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"funding/forms"
 	"funding/models"
 	"funding/resultModels"
 	"funding/utils"
+	"github.com/astaxie/beego"
 	"time"
 )
 
@@ -94,12 +96,26 @@ func (c *ProductController) GetAll() {
 
 // @Title 据页码和其他条件获取产品信息
 // @Description	据页码和其他条件获取产品信息
-//
+// @Param	page			query	int		true	"页码"
+// @Param	page_size		query	int		true	"每页数量"
+// @Param	type			query	int		false	"产品类型"
+// @Param	status			query	int		false	"众筹状态"
+// @Param	sort			query	int		false	"排序方式"
+// @Param	price_gt		query	float64	false	"价格大于"
+// @Param	price_lt		query	float64	false	"价格小于"
 // @Success 200
 // @Failure 400
-// @router / [get]
+// @router /productList [get]
 func (c *ProductController) GetProductByPage() {
 	// TODO 据页码和其他条件获取产品信息
+	form := forms.ProductListForm{}
+	// 获取所有 query 数据组成的 map
+	values := c.Ctx.Request.URL.Query()
+	// 解析到 Struct 中
+	if err := beego.ParseForm(values, &form); err != nil {
+		fmt.Println(err) //handle error
+	}
+	fmt.Println(form)
 }
 
 // @Title 根据审核状态获取产品信息
