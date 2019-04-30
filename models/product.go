@@ -92,13 +92,25 @@ func GetProductPackages(productId uint64) ([]*ProductPackage, error) {
 	return result, nil
 }
 
+// 根据页码等信息获取产品列表
 func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, error) {
 	result := resultModels.ProductList{}
-	countDB := db
+	var list []*resultModels.ProductContent
+	cDb := db
+	// 如果传入类型不为 0 （传入了 Type)，则根据 Type 查询
 	if form.Type != 0 {
-		countDB = countDB.Where("product_type = ?", form.Type)
+		cDb = cDb.Where("product_type = ?", form.Type)
 	}
-	err := countDB.Table("products").Count(&result.Count).Error
-
+	page, pageSize := 1, 10
+	// 如果页码和每页数量大于 0
+	if form.Page > 0 && form.PageSize > 0 {
+		page = form.Page
+		pageSize = form.PageSize
+	}
+	// 调整 Offset(偏移量，控制页数),和 Limit (数量限制，控制每页数量）
+	cDb = cDb.Offset(page - 1*pageSize).Limit(pageSize)
+	err := cDb.Select(resultModels.ProductContentField).Table("products").Scan(&list).Count(&result.Count).Error
+	result.Page = form.Page
+	result.ProductContents = list
 	return &result, err
 }

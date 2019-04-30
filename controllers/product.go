@@ -112,10 +112,15 @@ func (c *ProductController) GetProductByPage() {
 	// 获取所有 query 数据组成的 map
 	values := c.Ctx.Request.URL.Query()
 	// 解析到 Struct 中
-	if err := beego.ParseForm(values, &form); err != nil {
-		fmt.Println(err) //handle error
+	err := beego.ParseForm(values, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
 	}
-	fmt.Println(form)
+	pl, err := models.GetProductList(form)
+	if err != nil {
+		c.ResponseErrJson(err)
+	}
+	c.ResponseSuccessJson(pl)
 }
 
 // @Title 根据审核状态获取产品信息

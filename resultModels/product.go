@@ -15,6 +15,9 @@ type HomeResult struct {
 	ProductContents []ProductContent `json:"product_contents"`
 }
 
+// ProductList 的字段
+const ProductContentField string = "id,name,product_type,big_img,small_img,current_price,target_price,backers,end_time"
+
 type ProductContent struct {
 	ID           uint64    `json:"product_id"`
 	Name         string    `json:"name"`          //产品名
