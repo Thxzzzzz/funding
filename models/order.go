@@ -22,6 +22,7 @@ const (
 	Prepare                                  //	配货
 	Deliver                                  //	出货 配送
 	Finished                                 //	交易成功
+	Refund                                   // 退款
 	Canceled                                 //	交易失败
 )
 

@@ -7,7 +7,6 @@ import (
 	"funding/resultModels"
 	"funding/utils"
 	"github.com/astaxie/beego"
-	"time"
 )
 
 // 产品相关
@@ -26,7 +25,6 @@ func (c *ProductController) GetHome() {
 	// 轮播图 前端 type == 0 5个
 	//TODO 最新的 5 个产品作为轮播图
 	bannerProduct, err := models.GetProductsByPageAndType(1, 5, 0)
-	currentTime := time.Now()
 	if err != nil {
 
 	} else {
@@ -39,7 +37,6 @@ func (c *ProductController) GetHome() {
 			var productContent resultModels.ProductContent
 			utils.CopyStructJ(&p, &productContent)
 			productContent.ID = p.ID
-			productContent.CurrentTime = currentTime
 			homeBanner.ProductContents = append(homeBanner.ProductContents, productContent)
 		}
 		home = append(home, homeBanner)
@@ -68,7 +65,6 @@ func (c *ProductController) GetHome() {
 			var productContent resultModels.ProductContent
 			utils.CopyStructJ(&p, &productContent)
 			productContent.ID = p.ID
-			productContent.CurrentTime = currentTime
 			techResult.ProductContents = append(techResult.ProductContents, productContent)
 		}
 		home = append(home, techResult)

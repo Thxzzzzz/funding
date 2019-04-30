@@ -27,12 +27,11 @@ type ProductContent struct {
 	CurrentPrice float64   `json:"current_price"` //当前筹集金额
 	TargetPrice  float64   `json:"target_price"`  //目标筹集金额
 	Backers      int       `json:"backers"`       //支持人数
-	CurrentTime  time.Time `json:"current_time"`  //当前时间
 	EndTime      time.Time `json:"end_time"`      //截止时间
 }
 
 // 产品列表
 type ProductList struct {
 	PageInfo
-	ProductContents []*ProductContent
+	ProductContents []*ProductContent `json:"product_contents"`
 }

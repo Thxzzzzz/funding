@@ -109,7 +109,7 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 	}
 	// 调整 Offset(偏移量，控制页数),和 Limit (数量限制，控制每页数量）
 	cDb = cDb.Offset(page - 1*pageSize).Limit(pageSize)
-	err := cDb.Select(resultModels.ProductContentField).Table("products").Scan(&list).Count(&result.Count).Error
+	err := cDb.Select(resultModels.ProductContentField).Table("products").Scan(&list).Count(&result.Total).Error
 	result.Page = form.Page
 	result.ProductContents = list
 	return &result, err
