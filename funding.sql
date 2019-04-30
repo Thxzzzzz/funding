@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `carts` (
   KEY `idx_product_package_id` (`product_package_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
 
--- 正在导出表  funding.carts 的数据：~8 rows (大约)
+-- 正在导出表  funding.carts 的数据：~4 rows (大约)
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
 REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, 111111113, 4, 1, '2019-04-22 20:54:49', '2019-04-29 00:17:13', NULL),
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `idx_orders_seller_id` (`seller_id`),
   KEY `idx_product_id` (`product_id`),
   KEY `idx_orders_package_id` (`product_package_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单信息';
 
 -- 正在导出表  funding.orders 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;

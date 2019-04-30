@@ -1,6 +1,8 @@
 package test
 
 import (
+	"fmt"
+	"funding/forms"
 	"funding/models"
 	"github.com/astaxie/beego"
 	_ "github.com/astaxie/beego/session/redis"
@@ -22,4 +24,15 @@ func TestGetProductsByPageAndType(t *testing.T) {
 	if err != nil || len(results) < 1 {
 		t.Error()
 	}
+}
+
+func TestGetProductList(t *testing.T) {
+	form := forms.ProductListForm{
+		Type: 1,
+	}
+	resutlt, err := models.GetProductList(form)
+	if err != nil {
+		t.Failed()
+	}
+	fmt.Println(resutlt)
 }

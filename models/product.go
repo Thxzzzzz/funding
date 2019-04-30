@@ -2,6 +2,8 @@ package models
 
 import (
 	"errors"
+	"funding/forms"
+	"funding/resultModels"
 	"time"
 )
 
@@ -88,4 +90,15 @@ func GetProductPackages(productId uint64) ([]*ProductPackage, error) {
 		return nil, err
 	}
 	return result, nil
+}
+
+func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, error) {
+	result := resultModels.ProductList{}
+	countDB := db
+	if form.Type != 0 {
+		countDB = countDB.Where("product_type = ?", form.Type)
+	}
+	err := countDB.Table("products").Count(&result.Count).Error
+
+	return &result, err
 }
