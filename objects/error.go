@@ -4,29 +4,45 @@ import (
 	"funding/resultModels"
 )
 
-//type ResultError interface {
-//	Error() string
-//	ErrorCode() resultModels.ErrorCode
-//}
-
-// 没有登录
-type DidntLoginError struct{}
-
-func (e *DidntLoginError) Error() string {
-	return "没有登录"
+type IError interface {
+	Error() string
+	GetErrCode() resultModels.ErrorCode
 }
 
-func (e *DidntLoginError) Code() resultModels.ErrorCode {
-	return resultModels.FALL
+// 错误
+type FundingError struct {
+	Code resultModels.ErrorCode
+	Msg  string
 }
 
-// 用户不存在
-type UserDintExist struct{}
-
-func (e *UserDintExist) Error() string {
-	return "用户不存在"
+func (e *FundingError) Error() string {
+	return e.Msg
 }
 
-func (e *UserDintExist) Code() resultModels.ErrorCode {
-	return resultModels.FALL
+func (e *FundingError) GetErrCode() resultModels.ErrorCode {
+	return e.Code
 }
+
+// 登录和身份验证相关错误
+var (
+	NotLoginError    = FundingError{Code: resultModels.FALL, Msg: "没有登录"}
+	UserNotExitError = FundingError{Code: resultModels.FALL, Msg: "用户不存在"}
+)
+
+// 地址相关
+var (
+	AddressNotFound = FundingError{Code: resultModels.FALL, Msg: "没有找到对应地址"}
+	AddressInfoErr  = FundingError{Code: resultModels.FALL, Msg: "地址信息有误"}
+)
+
+// 产品相关错误
+var (
+	ProductNotFound    = FundingError{Code: resultModels.FALL, Msg: "没有找到相关产品"}
+	ProductPkgNotFound = FundingError{Code: resultModels.FALL, Msg: "没有找到相关套餐"}
+	OutOfStock         = FundingError{Code: resultModels.FALL, Msg: "库存不足"}
+)
+
+// 订单相关错误
+var (
+	OrderCreateErr = FundingError{Code: resultModels.FALL, Msg: "创建订单时发生错误"}
+)

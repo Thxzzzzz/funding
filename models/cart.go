@@ -14,7 +14,7 @@ type Cart struct {
 // 根据 UserId 查询前端所需要的 CartItem 列表 SQL 语句
 const sqlGetCartItemsByUserId = `
 SELECT
-	c.id,c.user_id,c.product_package_id,c.nums,c.checked,pkg.product_id,
+	c.id,c.user_id,p.user_id AS seller_id,c.product_package_id,c.nums,c.checked,pkg.product_id,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description
 FROM
 	carts c

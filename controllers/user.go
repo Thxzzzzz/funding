@@ -26,13 +26,16 @@ func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
 	userId := c.GetSession(SESSION_USER_KEY)
 	var result *models.User
 	if userId == nil {
-		return nil, &resultError.DidntLoginError{}
+		return nil, &resultError.NotLoginError
 	}
-	id, _ := userId.(uint64)
+	id, ok := userId.(uint64)
+	if !ok {
+		return nil, &resultError.NotLoginError
+	}
 	// 获取当前 Session 中的 userId 字段对应的值
 	result, err := models.FindUserById(id)
 	if err != nil {
-		return nil, &resultError.UserDintExist{}
+		return nil, &resultError.NotLoginError
 	}
 	return result, nil
 }

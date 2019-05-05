@@ -1,3 +1,45 @@
+# 具体功能的设计和实现
+
+
+
+## 订单相关
+
+### 新增订单 
+
+> 数据库操作相关代码在 ./models/order.go 的 NewOrderFromForm() 函数
+>
+> 表单相关定义在 ./forms/order.go
+
+需要注意的是，新增订单的时候地址不能保存地址的 ID ，而应该保存姓名、地址、手机号等完整信息，因为地址在之后是有可能被删除的。
+
+新增订单将会从提交的对应信息中（这里是一个列表）创建对应的订单数据，通过数据库事务一次性提交，提交后返回所有提交的订单信息，以便之后的支付订单状态修改。
+
+``` go
+// ./forms/order.go
+package forms
+
+// 单个订单
+type OrderPkgItem struct {
+	UserID           uint64  `json:"user_id"`            // 购买者 ID
+	SellerID         uint64  `json:"seller_id"`          // 卖家 ID
+	ProductID        uint64  `json:"product_id"`         // 产品ID
+	ProductPackageID uint64  `json:"product_package_id"` // 套餐 ID
+	Price            float64 `json:"price"`              // 单价
+	Nums             int     `json:"nums"`               // 数量
+}
+
+// 新订单表单
+type NewOrderForm struct {
+	Name         string         `form:"name"`    // 收件人姓名
+	Address      string         `form:"address"` // 地址
+	Phone        string         `form:"phone"`   // 手机号
+	OrderPkgList []OrderPkgItem `json:"order_pkg_list"`
+	OrderTotal   float64        `json:"order_total"`
+}
+```
+
+
+
 # BeeGo -- 后端框架
 
 ## Controller
