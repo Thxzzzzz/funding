@@ -99,8 +99,8 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
         beego.ControllerComments{
-            Method: "NewOrder",
-            Router: `/newOrder`,
+            Method: "AddOrder",
+            Router: `/addOrder`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

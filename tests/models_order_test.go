@@ -26,8 +26,9 @@ func TestNewOrderFromForm(t *testing.T) {
 			{ProductID: 11111, ProductPackageID: 111111111, Price: 269, Nums: 2, UserID: 20003, SellerID: 20002},
 		},
 	}
-	err := models.NewOrderFromForm(&form)
+	orders, err := models.NewOrderFromForm(20003, &form)
 	if err != nil {
 		t.Failed()
 	}
+	t.Log(orders)
 }

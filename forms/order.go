@@ -4,7 +4,7 @@ package forms
 type OrderPkgItem struct {
 	UserID           uint64  `json:"user_id"`            // 购买者 ID
 	SellerID         uint64  `json:"seller_id"`          // 卖家 ID
-	ProductID        uint64  `json:"product_id"`         // 产品ID
+	ProductID        uint64  `json:"product_id"`         // 产品 ID
 	ProductPackageID uint64  `json:"product_package_id"` // 套餐 ID
 	Price            float64 `json:"price"`              // 单价
 	Nums             int     `json:"nums"`               // 数量

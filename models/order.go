@@ -88,7 +88,7 @@ func UpdateOrder(order *Order) error {
 }
 
 // 从表单信息新增订单
-func NewOrderFromForm(form *forms.NewOrderForm) ([]Order, error) {
+func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) {
 	// 开始事务
 	tx := db.Begin()
 	// 地址信息不能为空
