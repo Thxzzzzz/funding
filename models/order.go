@@ -1,38 +1,28 @@
 package models
 
 import (
+	"funding/enums"
 	"funding/forms"
 	"funding/objects"
+	"funding/resultModels"
 )
 
 // 订单
 type Order struct {
 	BaseModel
-	UserId           uint64      // 买家 Id
-	Name             string      // 收件人姓名
-	Address          string      // 收件人地址
-	Phone            string      // 收件人电话
-	SellerId         uint64      // 卖家 Id
-	ProductId        uint64      // 产品 Id
-	ProductPackageId uint64      // 套餐 Id
-	Nums             int         // 购买数量
-	UnitPrice        float64     // 单价
-	TotalPrice       float64     // 总价
-	Status           OrderStatus // 订单状态
-	CheckingNumber   string      // 物流单号
+	UserId           uint64            // 买家 Id
+	Name             string            // 收件人姓名
+	Address          string            // 收件人地址
+	Phone            string            // 收件人电话
+	SellerId         uint64            // 卖家 Id
+	ProductId        uint64            // 产品 Id
+	ProductPackageId uint64            // 套餐 Id
+	Nums             int               // 购买数量
+	UnitPrice        float64           // 单价
+	TotalPrice       float64           // 总价
+	Status           enums.OrderStatus // 订单状态
+	CheckingNumber   string            // 物流单号
 }
-
-type OrderStatus int
-
-const (
-	Ordered  OrderStatus = OrderStatus(iota) //	下单
-	Paid                                     //	支付
-	Prepare                                  //	配货
-	Deliver                                  //	出货 配送
-	Finished                                 //	交易成功
-	Refund                                   // 退款
-	Canceled                                 //	交易失败
-)
 
 // 根据订单的 ID 来获取订单
 func FindOrderById(orderId uint64) (*Order, error) {
@@ -121,7 +111,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) 
 			UnitPrice:        item.Price,
 			Nums:             item.Nums,
 			TotalPrice:       item.Price * float64(item.Nums),
-			Status:           Ordered,
+			Status:           enums.Ordered,
 		}
 		// 向数据库中插入新订单
 		err := tx.Create(&newOrder).Error
@@ -137,4 +127,52 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) 
 
 	// 这里返回订单列表是为了之后付款时修改状态用
 	return orders, nil
+}
+
+const sqlGetOrderList = `
+SELECT
+	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
+	o.product_package_id,o.nums,o.unit_price,pkg.product_id,
+	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,
+	o.created_at,o.status AS order_status,o.total_price
+FROM
+	orders o
+JOIN
+	product_packages pkg ON o.product_package_id = pkg.id
+JOIN
+	products p ON p.id = o.product_id
+JOIN 
+	users su ON su.id = p.user_id	
+WHERE
+	o.deleted_at IS NULL  AND
+	p.deleted_at IS NULL  AND
+	pkg.deleted_at IS NULL AND
+	o.user_id = (?)
+ORDER BY
+	o.created_at DESC
+LIMIT ? OFFSET ?
+`
+
+// 根据页码和用户信息获取订单
+func GetOrderList(pageForm forms.PageForm, userId uint64) (*resultModels.OrderList, error) {
+	result := resultModels.OrderList{}
+	var list []*resultModels.OrderListItem
+
+	page, pageSize := 1, 5
+	// 如果页码和每页数量大于 0
+	if pageForm.Page > 0 && pageForm.PageSize > 0 {
+		page = pageForm.Page
+		pageSize = pageForm.PageSize
+	}
+
+	// 统计总数
+	err := db.Find(&Order{}).Where("user_id = (?)", userId).Count(&result.Total).Error
+	if err != nil {
+		return nil, err
+	}
+	// 根据 SQL 字符串拼接查询订单相关信息列表
+	err = db.Raw(sqlGetOrderList, userId, pageSize, (page-1)*pageSize).Scan(&list).Error
+	result.Page = page
+	result.OrderList = list
+	return &result, err
 }

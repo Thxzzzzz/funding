@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"funding/forms"
 	"funding/models"
+	"github.com/astaxie/beego"
 )
 
 // 用户订单相关
@@ -42,19 +42,25 @@ func (c *OrderController) AddOrder() {
 // @Param pageForm	body	forms.PageForm	true	"页码信息"
 // @Success	200
 // @Failure 400
-// @router /orderList
+// @router /orderList [get]
 func (c *OrderController) OrderList() {
 	// 获取用户信息
 	user := c.User
 	//解析 form 表单数据
-	var form forms.NewOrderForm
+	var form forms.PageForm
 	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	// 获取所有 query 数据组成的 map
+	values := c.Ctx.Request.URL.Query()
+	// 解析到 Struct 中
+	err := beego.ParseForm(values, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+	}
+
+	result, err := models.GetOrderList(form, user.ID)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
-	fmt.Println(user)
-
-	c.ResponseSuccessJson(nil)
+	c.ResponseSuccessJson(result)
 }

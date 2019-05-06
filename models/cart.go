@@ -26,11 +26,13 @@ WHERE
 	c.deleted_at IS NULL  AND
 	p.deleted_at IS NULL  AND
 	pkg.deleted_at IS NULL AND
-	c.user_id = ? 
+	c.user_id = (?) 
 `
 
 // 根据 UserId 和 Product_package_id  查询前端所对应的 CartItem SQL 语句
-const sqlGetCartItemByUserIdAndPkgId = sqlGetCartItemsByUserId + `AND	c.product_package_id = ?`
+const sqlGetCartItemByUserIdAndPkgId = sqlGetCartItemsByUserId + `AND	c.product_package_id = (?)`
+
+const sqlOrderByCartUpdateDesc = `ORDER BY c.updated_at DESC`
 
 // 根据购物车的 ID 来获取购物车条目
 func FindCartById(cartId uint64) (*Cart, error) {
@@ -105,7 +107,7 @@ func DeleteCartByUserIdAndPkgId(userId uint64, pkgId uint64) error {
 func GetCartItems(userId uint64) ([]resultModels.CartItem, error) {
 	var results []resultModels.CartItem
 	// 执行 SQL 语句，并将结果映射到 results 中
-	err := db.Raw(sqlGetCartItemsByUserId, userId).Scan(&results).Error
+	err := db.Raw(sqlGetCartItemsByUserId+sqlOrderByCartUpdateDesc, userId).Scan(&results).Error
 	return results, err
 }
 
@@ -113,7 +115,7 @@ func GetCartItems(userId uint64) ([]resultModels.CartItem, error) {
 func GetCartItemByUserIdAndPkgId(userId uint64, pkgId uint64) (resultModels.CartItem, error) {
 	var result resultModels.CartItem
 	// 执行 SQL 语句，并将结果映射到 result 中
-	err := db.Raw(sqlGetCartItemByUserIdAndPkgId, userId, pkgId).Scan(&result).Error
+	err := db.Raw(sqlGetCartItemByUserIdAndPkgId+sqlOrderByCartUpdateDesc, userId, pkgId).Scan(&result).Error
 	return result, err
 }
 
