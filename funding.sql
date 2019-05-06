@@ -13,10 +13,12 @@
 
 
 -- 导出 funding 的数据库结构
+DROP DATABASE IF EXISTS `funding`;
 CREATE DATABASE IF NOT EXISTS `funding` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 USE `funding`;
 
 -- 导出  表 funding.addresses 结构
+DROP TABLE IF EXISTS `addresses`;
 CREATE TABLE IF NOT EXISTS `addresses` (
   `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `user_id` bigint(24) unsigned NOT NULL COMMENT '对应的用户id',
@@ -44,6 +46,7 @@ REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 
 -- 导出  表 funding.base_table 结构
+DROP TABLE IF EXISTS `base_table`;
 CREATE TABLE IF NOT EXISTS `base_table` (
   `id` bigint(24) unsigned NOT NULL COMMENT 'Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -58,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `base_table` (
 /*!40000 ALTER TABLE `base_table` ENABLE KEYS */;
 
 -- 导出  表 funding.carts 结构
+DROP TABLE IF EXISTS `carts`;
 CREATE TABLE IF NOT EXISTS `carts` (
   `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `user_id` bigint(24) unsigned NOT NULL COMMENT '用户ID',
@@ -73,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `carts` (
   KEY `idx_product_package_id` (`product_package_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
 
--- 正在导出表  funding.carts 的数据：~7 rows (大约)
+-- 正在导出表  funding.carts 的数据：~8 rows (大约)
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
 REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, 111111113, 4, 1, '2019-04-22 20:54:49', '2019-04-29 00:17:13', NULL),
@@ -87,6 +91,7 @@ REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, 
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 
 -- 导出  表 funding.licenses 结构
+DROP TABLE IF EXISTS `licenses`;
 CREATE TABLE IF NOT EXISTS `licenses` (
   `id` bigint(24) unsigned NOT NULL COMMENT 'Id',
   `compony_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司名称',
@@ -110,6 +115,7 @@ REPLACE INTO `licenses` (`id`, `compony_name`, `user_id`, `address`, `phone`, `l
 /*!40000 ALTER TABLE `licenses` ENABLE KEYS */;
 
 -- 导出  表 funding.orders 结构
+DROP TABLE IF EXISTS `orders`;
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `user_id` bigint(24) unsigned NOT NULL COMMENT '用户 ID',
@@ -142,6 +148,7 @@ REPLACE INTO `orders` (`id`, `user_id`, `name`, `address`, `phone`, `seller_id`,
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 
 -- 导出  表 funding.permissions 结构
+DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE IF NOT EXISTS `permissions` (
   `id` int(3) NOT NULL COMMENT '权限类型的 ID',
   `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '权限名称',
@@ -155,6 +162,7 @@ REPLACE INTO `permissions` (`id`, `name`) VALUES
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
 -- 导出  表 funding.products 结构
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
   `id` bigint(24) unsigned NOT NULL COMMENT '商品ID',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '产品名',
@@ -190,6 +198,7 @@ REPLACE INTO `products` (`id`, `name`, `big_img`, `small_img`, `user_id`, `produ
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 
 -- 导出  表 funding.product_packages 结构
+DROP TABLE IF EXISTS `product_packages`;
 CREATE TABLE IF NOT EXISTS `product_packages` (
   `id` bigint(24) unsigned NOT NULL COMMENT 'Id',
   `product_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '商品 ID',
@@ -221,6 +230,7 @@ REPLACE INTO `product_packages` (`id`, `product_id`, `description`, `image_url`,
 /*!40000 ALTER TABLE `product_packages` ENABLE KEYS */;
 
 -- 导出  表 funding.product_types 结构
+DROP TABLE IF EXISTS `product_types`;
 CREATE TABLE IF NOT EXISTS `product_types` (
   `id` int(3) unsigned NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -236,6 +246,7 @@ REPLACE INTO `product_types` (`id`, `name`) VALUES
 /*!40000 ALTER TABLE `product_types` ENABLE KEYS */;
 
 -- 导出  表 funding.roles 结构
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(2) NOT NULL COMMENT 'ID',
   `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色类型名称',
@@ -252,6 +263,7 @@ REPLACE INTO `roles` (`id`, `name`) VALUES
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 
 -- 导出  表 funding.role_permissions 结构
+DROP TABLE IF EXISTS `role_permissions`;
 CREATE TABLE IF NOT EXISTS `role_permissions` (
   `id` int(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '角色-权限 ID',
   `role_id` int(2) NOT NULL COMMENT '角色 ID',
@@ -267,6 +279,7 @@ REPLACE INTO `role_permissions` (`id`, `role_id`, `permission_id`) VALUES
 /*!40000 ALTER TABLE `role_permissions` ENABLE KEYS */;
 
 -- 导出  表 funding.users 结构
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户名',
@@ -286,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `username_idx` (`username`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=20008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户';
 
--- 正在导出表  funding.users 的数据：~7 rows (大约)
+-- 正在导出表  funding.users 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),
