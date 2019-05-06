@@ -11,8 +11,8 @@ type OrderListItem struct {
 	ProductId        uint64             `json:"product_id"`         // 产品 Id
 	ProductName      string             `json:"product_name"`       // 产品名称
 	ProductPackageId uint64             `json:"product_package_id"` // 套餐 Id
-	Description      string             `json:"description"`        //套餐描述
-	ImageUrl         string             `json:"image_url"`          //图片链接
+	Description      string             `json:"description"`        // 套餐描述
+	ImageUrl         string             `json:"image_url"`          // 图片链接
 	Nums             int                `json:"nums"`               // 购买数量
 	UnitPrice        float64            `json:"unit_price"`         // 单价
 	TotalPrice       float64            `json:"total_price"`        // 总价

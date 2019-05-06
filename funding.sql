@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   KEY `idx_addresses_user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户收货地址表';
 
--- 正在导出表  funding.addresses 的数据：~7 rows (大约)
+-- 正在导出表  funding.addresses 的数据：~6 rows (大约)
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
 REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-23 21:24:44', NULL),
@@ -75,20 +75,17 @@ CREATE TABLE IF NOT EXISTS `carts` (
   KEY `idx_carts_deleted_at` (`deleted_at`),
   KEY `idx_carts_user_id` (`user_id`) USING BTREE,
   KEY `idx_product_package_id` (`product_package_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
 
--- 正在导出表  funding.carts 的数据：~9 rows (大约)
+-- 正在导出表  funding.carts 的数据：~8 rows (大约)
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
 REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 20003, 111111113, 4, 1, '2019-04-22 20:54:49', '2019-04-29 00:17:13', NULL),
+	(1, 20003, 111111113, 4, 0, '2019-04-22 20:54:49', '2019-05-07 00:27:29', NULL),
 	(2, 20003, 111111114, 10, 0, '2019-04-22 21:08:45', '2019-04-25 21:11:22', '2019-04-25 21:11:23'),
 	(3, 20003, 111111112, 2, 0, '2019-04-25 17:02:18', '2019-05-06 21:10:41', '2019-05-06 21:10:39'),
-	(4, 20003, 111111112, 1, 1, '2019-04-23 01:07:43', '2019-05-06 21:11:06', NULL),
-	(13, 20003, 111111114, 1, 1, '2019-04-25 21:18:24', '2019-05-06 21:11:07', NULL),
-	(14, 20003, 0, 0, 0, '2019-04-29 00:12:06', '2019-05-06 21:09:44', '2019-05-06 21:09:44'),
-	(15, 20003, 0, 0, 0, '2019-04-29 00:12:06', '2019-05-06 21:09:44', '2019-05-06 21:09:44'),
-	(16, 20003, 0, 0, 0, '2019-04-29 00:12:06', '2019-05-06 21:09:44', '2019-05-06 21:09:44'),
-	(17, 20003, 0, 0, 0, '2019-05-06 22:41:07', '2019-05-06 22:41:07', NULL);
+	(4, 20003, 111111112, 2, 0, '2019-04-23 01:07:43', '2019-05-07 00:27:29', NULL),
+	(13, 20003, 111111114, 1, 0, '2019-04-25 21:18:24', '2019-05-07 00:27:29', NULL),
+	(18, 20003, 111111145, 1, 0, '2019-05-07 00:27:24', '2019-05-07 00:27:29', NULL);
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 
 -- 导出  表 funding.licenses 结构
@@ -109,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `licenses` (
   KEY `idx_licenses_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
 
--- 正在导出表  funding.licenses 的数据：~1 rows (大约)
+-- 正在导出表  funding.licenses 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `licenses` DISABLE KEYS */;
 REPLACE INTO `licenses` (`id`, `compony_name`, `user_id`, `address`, `phone`, `license_image_url`, `verify`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(11111111, '北京驰讯通科技有限公司', 'chixuntech', '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '2019-03-09 18:40:38', '2019-03-09 18:43:35', NULL);
@@ -142,12 +139,12 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `idx_orders_package_id` (`product_package_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表，用来存储订单信息';
 
--- 正在导出表  funding.orders 的数据：~4 rows (大约)
+-- 正在导出表  funding.orders 的数据：~3 rows (大约)
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 REPLACE INTO `orders` (`id`, `user_id`, `name`, `address`, `phone`, `seller_id`, `product_id`, `product_package_id`, `nums`, `unit_price`, `total_price`, `status`, `checking_number`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, '测试', '阿斯蒂芬', '18545456464', 20002, 11111, 111111111, 2, 269.00, 538.00, 0, '', '2019-05-06 00:49:00', '2019-05-06 00:58:31', '2019-05-06 00:58:30'),
 	(2, 20003, '小明', '桂电', '18512345678', 20002, 11111, 111111111, 2, 269.00, 538.00, 0, '', '2019-05-06 00:59:01', '2019-05-06 01:03:20', '2019-05-06 01:03:19'),
-	(3, 20003, '小明', '桂电', '18512345678', 20002, 11111, 111111111, 2, 269.00, 538.00, 0, '', '2019-05-06 01:03:34', '2019-05-06 01:03:34', NULL),
+	(3, 20003, '小明', '桂电', '18512345678', 20002, 11111, 111111111, 2, 269.00, 538.00, 0, '', '2019-05-06 01:03:34', '2019-05-07 00:12:52', '2019-05-07 00:12:52'),
 	(4, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', 20002, 11111, 111111113, 4, 339.00, 1356.00, 0, '', '2019-05-06 21:07:28', '2019-05-06 21:07:28', NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 
@@ -159,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='权限表，用来存储各种权限的名称';
 
--- 正在导出表  funding.permissions 的数据：~1 rows (大约)
+-- 正在导出表  funding.permissions 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
 REPLACE INTO `permissions` (`id`, `name`) VALUES
 	(1, 'All');
@@ -188,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   KEY `idx_products_user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=11135 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='产品表';
 
--- 正在导出表  funding.products 的数据：~23 rows (大约)
+-- 正在导出表  funding.products 的数据：~8 rows (大约)
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
 REPLACE INTO `products` (`id`, `name`, `big_img`, `small_img`, `user_id`, `product_type`, `current_price`, `target_price`, `VerifyStatus`, `backers`, `end_time`, `detail_html`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(11111, '鑫乐迪运动手环蓝牙耳机二合一', 'https://img30.360buyimg.com/cf/jfs/t1/21081/18/6891/106614/5c6639a2E4d110821/c5802dca70419338.jpg', 'https://img30.360buyimg.com/cf/jfs/t1/28544/16/6906/44121/5c66399bE78db06bd/0b919fb33eaccc26.jpg', 20002, 1, 1098900.00, 100000.00, 1, 2897, '2019-06-15 21:00:47', '<div class="tab-div tab-current">\r\n                <!--无缝滚动公告-->\r\n                <div class="tab-public-mess clearfix" style="display:none" id="officeTopic">\r\n                    <span class="mess-public-title"><i class="laba"></i>众筹官方：</span>\r\n                    <div class="mess-box-w" id="MBW">\r\n                        <div class="scroll-box clearfix">\r\n                            <ul class="mess-box" id="messBox1">\r\n                                <li class="mess-list"></li>\r\n                            </ul>\r\n                            <ul class="mess-box mess-box2" id="messBox2">\r\n                                <li class="mess-list"></li>\r\n                            </ul>\r\n                        </div>\r\n                    </div>\r\n                    <div class="close-btn-area">\r\n                        <span>×</span>\r\n                    </div>\r\n                </div>\r\n                <!--图片部分-->\r\n                <div class=" tab-img-group-old" style="width:733px;margin:0 auto;padding:0;text-align:center;">\r\n					                        <iframe src="http://newbuz.360buyimg.com/video/4.5/jdvideo.html?autoplay=false&amp;fuScrnEnabled=true&amp;playbackRateEnabled=true&amp;fileid=150308713247805441&amp;appid=1251412368&amp;sw=1280&amp;sh=720" width="100%" height="422px" frameborder="0"></iframe>\r\n					                </div>\r\n                <div class="                            new-story-container\r\n                            ">\r\n                        \r\n \r\n \r\n  <p class="title">众筹故事</p>\r\n  <p><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/12114/22/10496/190054/5c85f8c0Ead5ae439/a39092bf70d60ea7.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/12114/22/10496/190054/5c85f8c0Ead5ae439/a39092bf70d60ea7.jpg" alt="鑫乐迪运动手环蓝牙耳机二合一" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/20186/11/7010/369749/5c6639cfEf0deed9e/f21e34a7f63fa92a.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/20186/11/7010/369749/5c6639cfEf0deed9e/f21e34a7f63fa92a.jpg" alt="京东众筹" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/30810/29/2136/263567/5c6639d6E49863816/e55c0299b1fa7391.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/30810/29/2136/263567/5c6639d6E49863816/e55c0299b1fa7391.jpg" alt="众筹网" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/19762/14/6984/242480/5c6639dfEebbd8f69/cbad99b8d73553c2.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/19762/14/6984/242480/5c6639dfEebbd8f69/cbad99b8d73553c2.jpg" alt="科技众筹" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/32345/10/2129/315696/5c6639e7E43010088/04f21a674e084ed2.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/32345/10/2129/315696/5c6639e7E43010088/04f21a674e084ed2.jpg" alt="京东产品众筹平台" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/23583/17/6920/201057/5c6639eeEf05a4001/8c26bd69db316547.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/23583/17/6920/201057/5c6639eeEf05a4001/8c26bd69db316547.jpg" alt="众筹网站" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/21145/9/6967/281372/5c6639f5Eb796cd19/121156915b61031f.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/21145/9/6967/281372/5c6639f5Eb796cd19/121156915b61031f.jpg" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/11422/39/7833/284106/5c663a02E0e3ef54d/c27db2a8e67fb24c.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/11422/39/7833/284106/5c663a02E0e3ef54d/c27db2a8e67fb24c.jpg" alt="鑫乐迪运动手环蓝牙耳机二合一" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/22161/19/7014/173831/5c663a09E41fbe85a/d8dec990605e93dd.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/22161/19/7014/173831/5c663a09E41fbe85a/d8dec990605e93dd.jpg" alt="京东众筹" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/19222/7/7813/477969/5c6fac10E6fb5857f/76d21f15cee97561.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/19222/7/7813/477969/5c6fac10E6fb5857f/76d21f15cee97561.jpg" alt="众筹网" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/8956/33/14423/184511/5c663a17E05c4388b/b74dc7364b17e567.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/8956/33/14423/184511/5c663a17E05c4388b/b74dc7364b17e567.jpg" alt="科技众筹" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/28885/10/6847/154142/5c663a26Ec10ed136/327f2b6d17fabc7f.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/28885/10/6847/154142/5c663a26Ec10ed136/327f2b6d17fabc7f.jpg" alt="京东产品众筹平台" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/10699/9/10551/124702/5c663a2eE4a7af395/87521de309725121.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/10699/9/10551/124702/5c663a2eE4a7af395/87521de309725121.jpg" alt="众筹网站" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/21964/31/7067/137559/5c663a35Eb5769f56/c7d3a2c5afc320fc.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/21964/31/7067/137559/5c663a35Eb5769f56/c7d3a2c5afc320fc.jpg" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/14476/8/6983/133632/5c663a3dE354a4d92/a6f0372963795a1c.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/14476/8/6983/133632/5c663a3dE354a4d92/a6f0372963795a1c.jpg" alt="鑫乐迪运动手环蓝牙耳机二合一" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/10899/39/10466/81372/5c663a44Ef7603a92/cf184a14801ce22e.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/10899/39/10466/81372/5c663a44Ef7603a92/cf184a14801ce22e.jpg" alt="京东众筹" style="display: inline;"></p>\r\n  <p class="title">为什么众筹</p>\r\n  <p><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/19412/15/7293/93187/5c6cefc0E687a6a61/00ae401a398e61e5.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/19412/15/7293/93187/5c6cefc0E687a6a61/00ae401a398e61e5.jpg" alt="众筹网" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/9106/5/14712/288452/5c663a53Edfb55609/261f2d28b3cc49ce.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/9106/5/14712/288452/5c663a53Edfb55609/261f2d28b3cc49ce.jpg" alt="科技众筹" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/32790/25/2106/211297/5c663a5fE70e434ea/758bfd3c1890112c.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/32790/25/2106/211297/5c663a5fE70e434ea/758bfd3c1890112c.jpg" alt="京东产品众筹平台" style="display: inline;"><img class="lazyout-detail" src="http://img30.360buyimg.com/cf/jfs/t1/23457/21/7012/41323/5c663a65E23ac333c/9d0b44eeb672e339.jpg" data-original="http://img30.360buyimg.com/cf/jfs/t1/23457/21/7012/41323/5c663a65E23ac333c/9d0b44eeb672e339.jpg" alt="众筹网站" style="display: inline;"></p>\r\n  <p class="zc-qrcode"><img class="lazyout-detail" src="http://storage.jd.com/zc-ued-fe/zc_oa_qrcode.jpg" data-original="http://storage.jd.com/zc-ued-fe/zc_oa_qrcode.jpg" style="display: inline;"></p>\r\n  <p class="para al-center">推荐关注「京东众筹」公众号，我们会为您提供咨询服务，及时同步最新项目进展和优惠活动。</p>\r\n \r\n                </div>\r\n\r\n                <!--图片部分end-->\r\n\r\n            </div>', '2019-03-06 00:16:54', '2019-04-30 21:52:13', NULL),
@@ -219,14 +216,14 @@ REPLACE INTO `products` (`id`, `name`, `big_img`, `small_img`, `user_id`, `produ
 -- 导出  表 funding.product_packages 结构
 DROP TABLE IF EXISTS `product_packages`;
 CREATE TABLE IF NOT EXISTS `product_packages` (
-  `id` bigint(24) unsigned NOT NULL COMMENT 'Id',
+  `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `product_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '商品 ID',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '套餐描述',
   `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '图片 Url',
   `price` decimal(9,2) NOT NULL DEFAULT '0.00' COMMENT '商品价格',
   `stock` int(10) unsigned NOT NULL COMMENT '库存 剩余数量',
   `total` int(10) unsigned NOT NULL COMMENT '限额数 总备货数',
-  `backer` int(10) NOT NULL DEFAULT '0' COMMENT '支持人数',
+  `backers` int(10) NOT NULL DEFAULT '0' COMMENT '支持人数',
   `freight` decimal(7,2) NOT NULL DEFAULT '0.00' COMMENT '运费',
   `delivery_day` int(10) unsigned NOT NULL COMMENT '项目众筹成功后多少天内发送回报（发货）',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -235,11 +232,11 @@ CREATE TABLE IF NOT EXISTS `product_packages` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_product_packages_product_id` (`product_id`) USING BTREE COMMENT '商品 ID 索引',
   KEY `idx_product_packages_deleted_at` (`deleted_at`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='产品套餐表，对应不同的众筹套餐';
+) ENGINE=InnoDB AUTO_INCREMENT=111111184 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='产品套餐表，对应不同的众筹套餐';
 
--- 正在导出表  funding.product_packages 的数据：~73 rows (大约)
+-- 正在导出表  funding.product_packages 的数据：~6 rows (大约)
 /*!40000 ALTER TABLE `product_packages` DISABLE KEYS */;
-REPLACE INTO `product_packages` (`id`, `product_id`, `description`, `image_url`, `price`, `stock`, `total`, `backer`, `freight`, `delivery_day`, `created_at`, `updated_at`, `deleted_at`) VALUES
+REPLACE INTO `product_packages` (`id`, `product_id`, `description`, `image_url`, `price`, `stock`, `total`, `backers`, `freight`, `delivery_day`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(111111111, '11111', '感谢您的支持，您将以众筹专属价格269元获得智能手环运动蓝牙耳机二合一（运动版）1副', 'https://img30.360buyimg.com/cf/jfs/t1/8310/15/14533/53034/5c663b99E2c623c38/d9786ddce73c06b2.jpg', 269.00, 0, 700, 700, 0.00, 30, '2019-03-09 21:13:25', '2019-03-21 20:22:33', NULL),
 	(111111112, '11111', '感谢您的支持，您将以众筹专属价格299元获得智能手环运动蓝牙耳机二合一（运动版）1副', 'https://img30.360buyimg.com/cf/jfs/t1/14505/24/6901/53034/5c663becE003e7921/060318eb1da6e9d1.jpg', 299.00, 2320, 3000, 679, 0.00, 30, '2019-03-09 21:20:34', '2019-03-21 20:22:48', NULL),
 	(111111113, '11111', '感谢您的支持，您将以众筹专属价格339元获得智能手环运动蓝牙耳机二合一（商务版）1副', 'https://img30.360buyimg.com/cf/jfs/t1/29636/4/6858/52719/5c663c31E7812cb0d/77ef257f10a2ac2f.jpg', 339.00, 1036, 2000, 963, 0.00, 30, '2019-03-09 21:23:53', '2019-03-21 20:23:07', NULL),
@@ -323,7 +320,7 @@ CREATE TABLE IF NOT EXISTS `product_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='产品类型';
 
--- 正在导出表  funding.product_types 的数据：~3 rows (大约)
+-- 正在导出表  funding.product_types 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `product_types` DISABLE KEYS */;
 REPLACE INTO `product_types` (`id`, `name`) VALUES
 	(1, '数码'),
@@ -340,7 +337,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='角色表，记录角色类型';
 
--- 正在导出表  funding.roles 的数据：~4 rows (大约)
+-- 正在导出表  funding.roles 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 REPLACE INTO `roles` (`id`, `name`) VALUES
 	(0, '普通用户'),
@@ -359,7 +356,7 @@ CREATE TABLE IF NOT EXISTS `role_permissions` (
   KEY `idx_role_permissions_role_id` (`role_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='角色权限表，记录每个角色对应的权限';
 
--- 正在导出表  funding.role_permissions 的数据：~1 rows (大约)
+-- 正在导出表  funding.role_permissions 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `role_permissions` DISABLE KEYS */;
 REPLACE INTO `role_permissions` (`id`, `role_id`, `permission_id`) VALUES
 	(1, 0, 1);
@@ -386,7 +383,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `username_idx` (`username`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=20008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户';
 
--- 正在导出表  funding.users 的数据：~7 rows (大约)
+-- 正在导出表  funding.users 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),
