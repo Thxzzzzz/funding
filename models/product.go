@@ -107,9 +107,21 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 		page = form.Page
 		pageSize = form.PageSize
 	}
+
+	// 只查询指定字段
+	cDb = cDb.Select(resultModels.ProductContentField)
+	// 未软删除的行
+	cDb = cDb.Where("deleted_at IS NULL").Table("products")
+	// 排序
+	cDb = cDb.Order("created_at DESC,end_time DESC")
+	// 统计总数
+	err := cDb.Count(&result.Total).Error
+	if err != nil {
+		return nil, err
+	}
 	// 调整 Offset(偏移量，控制页数),和 Limit (数量限制，控制每页数量）
-	cDb = cDb.Offset(page - 1*pageSize).Limit(pageSize)
-	err := cDb.Select(resultModels.ProductContentField).Table("products").Scan(&list).Count(&result.Total).Error
+	cDb = cDb.Offset((page - 1) * pageSize).Limit(pageSize)
+	err = cDb.Scan(&list).Error
 	result.Page = form.Page
 	result.ProductContents = list
 	return &result, err
