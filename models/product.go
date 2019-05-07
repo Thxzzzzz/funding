@@ -54,8 +54,10 @@ func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Produ
 	if productType != 0 {
 		pDb = pDb.Where("product_type = ?", productType)
 	}
+	// 只查询通过验证的
+	pDb = pDb.Where("verify_status = 1")
 	//倒序查询
-	pDb = pDb.Order("id desc")
+	pDb = pDb.Order("created_at DESC,end_time DESC")
 
 	err := pDb.Find(&results).Error
 	if err != nil {
@@ -110,6 +112,8 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 
 	// 只查询指定字段
 	cDb = cDb.Select(resultModels.ProductContentField)
+	// 只查询已通过验证的
+	cDb = cDb.Where("verify_status = 1")
 	// 未软删除的行
 	cDb = cDb.Where("deleted_at IS NULL").Table("products")
 	// 排序

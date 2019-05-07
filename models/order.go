@@ -129,6 +129,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) 
 	return orders, nil
 }
 
+// 根据页码和用户信息来获取订单列表
 const sqlGetOrderList = `
 SELECT
 	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,

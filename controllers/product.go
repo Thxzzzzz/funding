@@ -26,7 +26,8 @@ func (c *ProductController) GetHome() {
 	//TODO 最新的 5 个产品作为轮播图
 	bannerProduct, err := models.GetProductsByPageAndType(1, 5, 0)
 	if err != nil {
-
+		c.ResponseErrJson(err)
+		return
 	} else {
 		homeBanner := resultModels.HomeResult{
 			Name:     "轮播图",
@@ -54,7 +55,8 @@ func (c *ProductController) GetHome() {
 	var techType = 1
 	techProduct, err := models.GetProductsByPageAndType(1, 7, techType)
 	if err != nil {
-
+		c.ResponseErrJson(err)
+		return
 	} else {
 		techResult := resultModels.HomeResult{
 			Name:     "科技精选",
