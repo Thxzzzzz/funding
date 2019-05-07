@@ -8,6 +8,88 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/order/addOrder": {
+            "post": {
+                "tags": [
+                    "order"
+                ],
+                "description": "新增订单",
+                "operationId": "OrderController.新增订单",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "orderForm",
+                        "description": "新增订单信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.NewOrderForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/order/orderInIds": {
+            "get": {
+                "tags": [
+                    "order"
+                ],
+                "description": "根据订单 Id 列表来获取订单列表",
+                "operationId": "OrderController.根据订单 Id 列表来获取订单列表",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "orderId",
+                        "description": "订单列表的Json字符串",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/order/orderList": {
+            "get": {
+                "tags": [
+                    "order"
+                ],
+                "description": "根据页面信息来获取订单列表",
+                "operationId": "OrderController.根据页面信息来获取订单列表",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "pageForm",
+                        "description": "页码信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.PageForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/product/all": {
             "get": {
                 "tags": [
@@ -531,23 +613,6 @@
                 }
             }
         },
-        "/user/order/newOrder": {
-            "post": {
-                "tags": [
-                    "user/order"
-                ],
-                "description": "新订单",
-                "operationId": "OrderController.新订单",
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/user/register": {
             "post": {
                 "tags": [
@@ -645,6 +710,75 @@
                 },
                 "Username": {
                     "type": "string"
+                }
+            }
+        },
+        "forms.NewOrderForm": {
+            "title": "NewOrderForm",
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Phone": {
+                    "type": "string"
+                },
+                "order_pkg_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/forms.OrderPkgItem"
+                    }
+                },
+                "order_total": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "forms.OrderPkgItem": {
+            "title": "OrderPkgItem",
+            "type": "object",
+            "properties": {
+                "nums": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "product_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "product_package_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "seller_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "forms.PageForm": {
+            "title": "PageForm",
+            "type": "object",
+            "properties": {
+                "Page": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "PageSize": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         },
@@ -884,7 +1018,7 @@
             "description": "用户购物车相关\n"
         },
         {
-            "name": "user/order",
+            "name": "order",
             "description": "用户订单相关\n"
         }
     ]

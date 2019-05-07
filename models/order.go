@@ -78,7 +78,7 @@ func UpdateOrder(order *Order) error {
 }
 
 // 从表单信息新增订单
-func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) {
+func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error) {
 	// 开始事务
 	tx := db.Begin()
 	// 地址信息不能为空
@@ -86,7 +86,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) 
 		return nil, &resultError.AddressInfoErr
 	}
 	orders := []Order{}
-
+	orderIdList := []uint64{}
 	// 多个订单循环插入
 	for _, item := range form.OrderPkgList {
 		// 检查产品 ID 是否存在
@@ -121,21 +121,26 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]Order, error) 
 		}
 		// 将添加的订单信息添加到 slice 中
 		orders = append(orders, newOrder)
+		orderIdList = append(orderIdList, newOrder.ID)
 	}
 	// 提交事务
 	tx.Commit()
 
 	// 这里返回订单列表是为了之后付款时修改状态用
-	return orders, nil
+	//return orders, nil
+
+	// 还是返回订单 Id 列表，方便后续结算
+	return orderIdList, nil
 }
 
-// 根据页码和用户信息来获取订单列表
-const sqlGetOrderList = `
+// 查询订单列表的 SQL 字段
+const sqlOrderListField = `
 SELECT
 	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
-	o.product_package_id,o.nums,o.unit_price,pkg.product_id,
+	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,
-	o.created_at,o.status AS order_status,o.total_price
+	o.created_at,o.status AS order_status,o.total_price,
+	o.name,o.address,o.phone
 FROM
 	orders o
 JOIN
@@ -143,7 +148,11 @@ JOIN
 JOIN
 	products p ON p.id = o.product_id
 JOIN 
-	users su ON su.id = p.user_id	
+	users su ON su.id = p.user_id
+`
+
+// 根据页码和用户信息来获取订单列表
+const sqlGetOrderList = sqlOrderListField + `
 WHERE
 	o.deleted_at IS NULL  AND
 	p.deleted_at IS NULL  AND
@@ -176,4 +185,23 @@ func GetOrderList(pageForm forms.PageForm, userId uint64) (*resultModels.OrderLi
 	result.Page = page
 	result.OrderList = list
 	return &result, err
+}
+
+const sqlGetOrderListInOrderIds = sqlOrderListField + `
+WHERE
+	o.deleted_at IS NULL  AND
+	p.deleted_at IS NULL  AND
+	pkg.deleted_at IS NULL AND
+	o.user_id = (?) AND
+    o.id IN (?)
+ORDER BY
+	o.created_at DESC
+`
+
+// 根据订单id列表和用户 Id 查询订单信息
+func GetOrderListByOrderIds(orderIds []uint64, userId uint64) ([]*resultModels.OrderListItem, error) {
+	var list []*resultModels.OrderListItem
+	// 根据 SQL 字符串拼接查询订单相关信息列表
+	err := db.Raw(sqlGetOrderListInOrderIds, userId, orderIds).Scan(&list).Error
+	return list, err
 }

@@ -32,3 +32,13 @@ func TestNewOrderFromForm(t *testing.T) {
 	}
 	t.Log(orders)
 }
+
+func TestGetOrderListByOrderIds(t *testing.T) {
+	orderIds := []uint64{3, 4, 5}
+	userId := uint64(20003)
+	orderItems, err := models.GetOrderListByOrderIds(orderIds, userId)
+	if err != nil {
+		t.Failed()
+	}
+	t.Log(orderItems)
+}

@@ -18,9 +18,13 @@ type OrderListItem struct {
 	ImageUrl         string            `json:"image_url"`          // 图片链接
 	Nums             int               `json:"nums"`               // 购买数量
 	UnitPrice        float64           `json:"unit_price"`         // 单价
+	Freight          float64           `json:"freight"`            // 运费
 	TotalPrice       float64           `json:"total_price"`        // 总价
 	OrderStatus      enums.OrderStatus `json:"order_status"`       // 订单状态
 	CreatedAt        time.Time         `json:"created_at"`         // 创建日期
+	Name             string            `json:"name"`               // 收件人姓名
+	Phone            string            `json:"phone"`              // 收件人电话
+	Address          string            `json:"address"`            // 收件人地址
 	//CheckingNumber   string             `json:"checking_number"`    // 物流单号
 }
 

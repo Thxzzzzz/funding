@@ -64,3 +64,27 @@ func (c *OrderController) OrderList() {
 	}
 	c.ResponseSuccessJson(result)
 }
+
+// @Title 根据订单 Id 列表来获取订单列表
+// @Description 根据订单 Id 列表来获取订单列表
+// @Param	orderId	query	string	true	"订单列表的Json字符串"
+// @Success 200
+// @Failure 400
+// @router /orderInIds [get]
+func (c *OrderController) OrderInIds() {
+	user := c.User
+	// 获取 Json 字符串
+	ids := c.GetString("orderId")
+	orderIds := []uint64{}
+	err := json.Unmarshal([]byte(ids), &orderIds)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.GetOrderListByOrderIds(orderIds, user.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
