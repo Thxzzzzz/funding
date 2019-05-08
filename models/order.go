@@ -176,7 +176,7 @@ func GetOrderList(pageForm forms.PageForm, userId uint64) (*resultModels.OrderLi
 	}
 
 	// 统计总数
-	err := db.Find(&Order{}).Where("user_id = (?)", userId).Count(&result.Total).Error
+	err := db.Table("orders").Where("user_id = (?) AND deleted_at IS  NULL", userId).Count(&result.Total).Error
 	if err != nil {
 		return nil, err
 	}
