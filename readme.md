@@ -49,30 +49,30 @@
 
 新增订单将会从提交的对应信息中（这里是一个列表）创建对应的订单数据，通过数据库事务一次性提交，提交后返回所有提交的订单信息，以便之后的支付订单状态修改。
 
-``` go
-// ./forms/order.go
-package forms
 
-// 单个订单
-type OrderPkgItem struct {
-	UserID           uint64  `json:"user_id"`            // 购买者 ID
-	SellerID         uint64  `json:"seller_id"`          // 卖家 ID
-	ProductID        uint64  `json:"product_id"`         // 产品ID
-	ProductPackageID uint64  `json:"product_package_id"` // 套餐 ID
-	Price            float64 `json:"price"`              // 单价
-	Nums             int     `json:"nums"`               // 数量
-}
 
-// 新订单表单
-type NewOrderForm struct {
-	Name         string         `form:"name"`    // 收件人姓名
-	Address      string         `form:"address"` // 地址
-	Phone        string         `form:"phone"`   // 手机号
-	OrderPkgList []OrderPkgItem `json:"order_pkg_list"`
-	OrderTotal   float64        `json:"order_total"`
-}
-```
+由于众筹系统一般是没有购物车的，但是这里前端加入购物车有一个酷炫的动画，不舍得不用，所以在结算的时候后端会根据每一个套餐产生一个订单号（每个套餐对应一个订单），然后将订单号列表返回给前端，付款的时候再根据这个订单号列表即可完成多个订单商品同时查询和批量付款。
 
+
+
+同理在查看商品详情页的时候实际上也是通过一个订单号列表来进行查询单个订单（因为没有必要再做一个只查询一个订单的接口，能查多个那肯定能查单个）
+
+
+
+### 支付
+
+支付这里还没有接入第三方支付平台（本来是要接入支付宝的，但是时间不够了），所以这里点击支付之后会做几件事：
+-  发送订单 ID 给后端，请求后端支付对应订单
+-  根据订单 ID 查询出对应订单信息
+-  将对应订单状态更新为已支付
+-  根据订单查询出对应产品
+-  检查产品是否已超过众筹时间（众筹结束）如果已结束则回归之前的修改，并返回错误信息，支付失败，否则进入下一步
+-  增加对应产品支持者人数，增加已筹集金额
+-  根据订单查询出对应套餐
+-  检查套餐库存是否足够，如果不够则回归之前的修改，并返回错误信息，支付失败，否则进入下一步
+-  减少对应套餐相应的库存，增加支持人数
+-  完成支付，返回 OK
+以上步骤在进行数据库更更改时会在一个数据库事务中进行，如有一步发生错误则将会全部回滚，保证数据正确性
 
 
 # BeeGo -- 后端框架
