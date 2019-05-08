@@ -15,7 +15,7 @@ type Cart struct {
 const sqlGetCartItemsByUserId = `
 SELECT
 	c.id,c.user_id,p.user_id AS seller_id,c.product_package_id,c.nums,c.checked,pkg.product_id,
-	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description
+	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,p.end_time
 FROM
 	carts c
 JOIN

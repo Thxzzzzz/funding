@@ -130,3 +130,36 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 	result.ProductContents = list
 	return &result, err
 }
+
+const sqlGetCheckoutPkgInfo = `
+SELECT
+	p.id AS product_id,pkg.id AS product_package_id,
+	p.name AS product_name, pkg.price AS price,
+	p.user_id AS seller_id ,u.nickname AS seller_nickname,
+	pkg.image_url,pkg.description,
+	pkg.stock,p.end_time
+FROM
+	products p LEFT JOIN
+	product_packages pkg ON p.id = pkg.product_id
+	JOIN users u ON p.user_id = u.id
+WHERE
+	p.deleted_at IS NULL 
+	AND pkg.deleted_at IS NULL
+	AND p.verify_status = 1
+	AND pkg.id = (?) 
+`
+
+// 从套餐 ID 获取所需的结算信息
+func GetCheckoutPkgInfoFromPkgId(pkgId uint64) (*resultModels.CheckoutPkgInfo, error) {
+	var result resultModels.CheckoutPkgInfo
+	// 根据 SQL 字符串拼接查询订单相关信息列表
+	err := db.Raw(sqlGetCheckoutPkgInfo, pkgId).Scan(&result).Error
+	return &result, err
+}
+
+// 获取产品的截止日期,这个可以用作购物车的失效处理,或者在获取购物车列表的时候就处理？
+//func GetEndTimeListInProductId(productIds []uint64) ([]time.Time, error) {
+//	results := []time.Time{}
+//	err := db.Select("end_time").Table("products").Where("id IN (?)", productIds).Error
+//	return results, err
+//}

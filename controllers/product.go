@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"funding/forms"
 	"funding/models"
+	"funding/objects"
 	"funding/resultModels"
 	"funding/utils"
 	"github.com/astaxie/beego"
@@ -162,4 +163,27 @@ func (c *ProductController) GetProductWithPkg() {
 		result = resultModels.SuccessResult(dbResult)
 	}
 	c.ResponseJson(result)
+}
+
+// @Title 获取结算所需的套餐信息 （给“立即支持”这个功能用）
+// @Description 获取结算所需的套餐信息 （给“立即支持”这个功能用）
+// @Param	product_package_id	query	int	true	"套餐ID"
+// @Success	200 {object} resultModels.CheckoutPkgInfo
+// @Failure 400
+// @router /checkoutPkgInfo [get]
+func (c *ProductController) GetCheckoutPkgInfo() {
+	// 从请求参数中获取 product_package_id 的值
+	pkgId, err := c.GetUint64("product_package_id")
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	// 到数据库中查询
+	result, err := models.GetCheckoutPkgInfoFromPkgId(pkgId)
+
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
 }

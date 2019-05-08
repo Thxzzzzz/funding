@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"funding/forms"
 	"funding/models"
 	"github.com/astaxie/beego"
@@ -34,5 +33,14 @@ func TestGetProductList(t *testing.T) {
 	if err != nil {
 		t.Failed()
 	}
-	fmt.Println(resutlt)
+	t.Log(resutlt)
+}
+
+func TestGetCheckoutPkgInfoFromPkgId(t *testing.T) {
+	id := uint64(111111113)
+	result, err := models.GetCheckoutPkgInfoFromPkgId(id)
+	if err != nil {
+		t.Failed()
+	}
+	t.Log(result)
 }

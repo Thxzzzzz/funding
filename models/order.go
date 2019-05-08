@@ -101,7 +101,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error)
 		}
 		// 根据表单创建新订单
 		newOrder := Order{
-			UserId:           item.UserID,
+			UserId:           userId,
 			Name:             form.Name,
 			Address:          form.Address,
 			Phone:            form.Phone,
@@ -111,7 +111,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error)
 			UnitPrice:        item.Price,
 			Nums:             item.Nums,
 			TotalPrice:       item.Price * float64(item.Nums),
-			Status:           enums.Ordered,
+			Status:           enums.OrderStatus_Ordered,
 		}
 		// 向数据库中插入新订单
 		err := tx.Create(&newOrder).Error
@@ -204,4 +204,20 @@ func GetOrderListByOrderIds(orderIds []uint64, userId uint64) ([]*resultModels.O
 	// 根据 SQL 字符串拼接查询订单相关信息列表
 	err := db.Raw(sqlGetOrderListInOrderIds, userId, orderIds).Scan(&list).Error
 	return list, err
+}
+
+// 订单支付，支付后需要 更新订单状态、产品增加众筹金额和人数、相应套餐减少库存增加支持人数
+// 需要在事务中处理，错了一步就全部回退并返回错误信息
+func PayOrderByOrderId(orderId uint64) error {
+	// 开始事务
+	tx := db.Begin()
+
+	tx.Commit()
+	return nil
+}
+
+// 更新订单状态,订单状态的定义在 enums 里面 以 OrderStatus_ 开头
+func UpdateOrderStatusByOrderId(orderId uint64) error {
+
+	return nil
 }

@@ -23,6 +23,11 @@ func (e *FundingError) GetErrCode() resultModels.ErrorCode {
 	return e.Code
 }
 
+// 表单错误
+var (
+	FormParamErr = FundingError{Code: resultModels.FALL, Msg: "请求参数有误"}
+)
+
 // 登录和身份验证相关错误
 var (
 	NotLoginError    = FundingError{Code: resultModels.FALL, Msg: "没有登录"}
