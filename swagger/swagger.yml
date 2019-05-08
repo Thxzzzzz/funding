@@ -58,6 +58,27 @@ paths:
           description: ""
         "400":
           description: ""
+  /order/orderPay:
+    post:
+      tags:
+      - order
+      description: 根据订单 ID 列表来进行支付
+      operationId: OrderController.根据订单 ID 列表来进行支付
+      parameters:
+      - in: body
+        name: orderIds
+        description: 订单ID列表
+        required: true
+        schema:
+          type: array
+          items:
+            format: int64
+            type: integer
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /product/all:
     get:
       tags:
@@ -67,6 +88,26 @@ paths:
       responses:
         "200":
           description: ""
+        "400":
+          description: ""
+  /product/checkoutPkgInfo:
+    get:
+      tags:
+      - product
+      description: 获取结算所需的套餐信息 （给“立即支持”这个功能用）
+      operationId: ProductController.获取结算所需的套餐信息 （给“立即支持”这个功能用）
+      parameters:
+      - in: query
+        name: product_package_id
+        description: 套餐ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/resultModels.CheckoutPkgInfo'
         "400":
           description: ""
   /product/detail:
@@ -457,7 +498,7 @@ definitions:
     title: DelCartForm
     type: object
     properties:
-      ProductPackageId:
+      product_package_id:
         type: integer
         format: int64
   forms.LoginForm:
@@ -670,6 +711,36 @@ definitions:
         format: int64
       username:
         type: string
+  resultModels.CheckoutPkgInfo:
+    title: CheckoutPkgInfo
+    type: object
+    properties:
+      description:
+        type: string
+      end_time:
+        type: string
+        format: datetime
+      image_url:
+        type: string
+      price:
+        type: number
+        format: double
+      product_id:
+        type: integer
+        format: int64
+      product_name:
+        type: string
+      product_package_id:
+        type: integer
+        format: int64
+      seller_id:
+        type: integer
+        format: int64
+      seller_nickname:
+        type: string
+      stock:
+        type: integer
+        format: int64
 tags:
 - name: product
   description: |

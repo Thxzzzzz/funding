@@ -17,6 +17,6 @@ const (
 	OrderStatus_Prepare                                  //	正在配货
 	OrderStatus_Deliver                                  //	出货 配送
 	OrderStatus_Finished                                 //	交易成功
-	OrderStatus_Refund                                   // 申请退款
+	OrderStatus_Refund                                   // 正在退款
 	OrderStatus_Canceled                                 //	交易取消
 )

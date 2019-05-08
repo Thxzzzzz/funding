@@ -23,6 +23,9 @@ type Order struct {
 	TotalPrice       float64           // 总价
 	Status           enums.OrderStatus // 订单状态
 	CheckingNumber   string            // 物流单号
+	PaidAt           time.Time         // 支付时间
+	CloseAt          time.Time         // 关闭时间
+	FinishedAt       time.Time         // 交易成功时间
 }
 
 // 根据订单的 ID 来获取订单
@@ -138,10 +141,10 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error)
 const sqlOrderListField = `
 SELECT
 	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
-	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,
-	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,
+	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,p.end_time,
+	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
 	o.created_at,o.status AS order_status,o.total_price,
-	o.name,o.address,o.phone
+	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at
 FROM
 	orders o
 JOIN

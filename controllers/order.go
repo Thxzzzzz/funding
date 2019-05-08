@@ -88,3 +88,24 @@ func (c *OrderController) OrderInIds() {
 	}
 	c.ResponseSuccessJson(result)
 }
+
+// @Title 根据订单 ID 列表来进行支付
+// @Description  根据订单 ID 列表来进行支付
+// @Param	orderIds	body	[]uint64	true	"订单ID列表"
+// @Success 200
+// @Failure 400
+// @router /orderPay [Post]
+func (c *OrderController) OrderPay() {
+	orderIds := []uint64{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &orderIds)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	err = models.PayOrderByOrderIdList(orderIds)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
