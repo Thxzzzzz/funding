@@ -222,9 +222,14 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 			tx.Rollback()
 			return resultError.NewFallFundingErr("订单查询出错")
 		}
+		if order.Status != enums.OrderStatus_Ordered {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("订单已支付")
+		}
 		// 根据订单 ID 将订单状态更新为已支付
 		order.Status = enums.OrderStatus_Paid
-		err = tx.Model(&order).Update("status").Error
+		err = tx.Model(&order).Update("status", order.Status).Error
+		//err = tx.Save(&order).Error
 		if err != nil {
 			tx.Rollback()
 			return resultError.NewFallFundingErr("订单状态发生错误")
@@ -246,7 +251,10 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 		product.Backers++
 		// 增加筹集金额
 		product.CurrentPrice += order.TotalPrice
-		err = tx.Model(&product).Update("backers", "current_price").Error
+		//err = tx.Model(&product).Update("backers", "current_price").Error
+		err = tx.Model(&product).Updates(map[string]interface{}{"backers": product.Backers, "current_price": product.CurrentPrice}).Error
+
+		//err = tx.Save(&product).Error
 		if err != nil {
 			tx.Rollback()
 			return resultError.NewFallFundingErr("产品状态更新时发生错误")
@@ -266,7 +274,8 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 			tx.Rollback()
 			return resultError.NewFallFundingErr("库存不足")
 		}
-		err = tx.Model(&pkg).Update("backers", "stock").Error
+		err = tx.Model(&pkg).Updates(map[string]interface{}{"backers": pkg.Backers, "stock": pkg.Stock}).Error
+		//err = tx.Save(&pkg).Error
 		if err != nil {
 			tx.Rollback()
 			return resultError.NewFallFundingErr("套餐状态更新时发生错误")
@@ -274,11 +283,5 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 	}
 	// 提交事务
 	tx.Commit()
-	return nil
-}
-
-// 更新订单状态,订单状态的定义在 enums 里面 以 OrderStatus_ 开头
-func UpdateOrderStatusByOrderId(orderId uint64) error {
-
 	return nil
 }
