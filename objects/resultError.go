@@ -15,6 +15,10 @@ type FundingError struct {
 	Msg  string
 }
 
+func NewFallFundingErr(msg string) *FundingError {
+	return &FundingError{Code: resultModels.FALL, Msg: msg}
+}
+
 func (e *FundingError) Error() string {
 	return e.Msg
 }

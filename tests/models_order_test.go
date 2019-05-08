@@ -28,7 +28,7 @@ func TestNewOrderFromForm(t *testing.T) {
 	}
 	orders, err := models.NewOrderFromForm(20003, &form)
 	if err != nil {
-		t.Failed()
+		t.Fail()
 	}
 	t.Log(orders)
 }
@@ -38,7 +38,16 @@ func TestGetOrderListByOrderIds(t *testing.T) {
 	userId := uint64(20003)
 	orderItems, err := models.GetOrderListByOrderIds(orderIds, userId)
 	if err != nil {
-		t.Failed()
+		t.Fail()
 	}
 	t.Log(orderItems)
+}
+
+func TestPayOrderByOrderIdList(t *testing.T) {
+	orderIds := []uint64{8}
+	err := models.PayOrderByOrderIdList(orderIds)
+	if err != nil {
+		t.Log(err.Error())
+		t.Fail()
+	}
 }

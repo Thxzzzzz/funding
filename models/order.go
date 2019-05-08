@@ -5,6 +5,7 @@ import (
 	"funding/forms"
 	"funding/objects"
 	"funding/resultModels"
+	"time"
 )
 
 // 订单
@@ -206,12 +207,72 @@ func GetOrderListByOrderIds(orderIds []uint64, userId uint64) ([]*resultModels.O
 	return list, err
 }
 
+// 根据订单 ID 列表来支付
 // 订单支付，支付后需要 更新订单状态、产品增加众筹金额和人数、相应套餐减少库存增加支持人数
 // 需要在事务中处理，错了一步就全部回退并返回错误信息
-func PayOrderByOrderId(orderId uint64) error {
+func PayOrderByOrderIdList(orderIds []uint64) error {
 	// 开始事务
 	tx := db.Begin()
 
+	for _, orderId := range orderIds {
+		// 先查询出对应订单信息
+		order := Order{}
+		err := tx.Last(&order, orderId).Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("订单查询出错")
+		}
+		// 根据订单 ID 将订单状态更新为已支付
+		order.Status = enums.OrderStatus_Paid
+		err = tx.Model(&order).Update("status").Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("订单状态发生错误")
+		}
+		// 对应的产品增加支持人数 以及筹集金额
+		product := Product{}
+		err = tx.Last(&product, order.ProductId).Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("获取产品时发生错误")
+		}
+
+		if time.Now().After(product.EndTime) {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("众筹已结束")
+		}
+
+		// 增加支持者人数
+		product.Backers++
+		// 增加筹集金额
+		product.CurrentPrice += order.TotalPrice
+		err = tx.Model(&product).Update("backers", "current_price").Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("产品状态更新时发生错误")
+		}
+		// 相应的套餐减少库存 增加支持人数
+		pkg := ProductPackage{}
+		err = tx.Last(&pkg, order.ProductPackageId).Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("获取套餐时发生错误")
+		}
+		// 增加支持者人数
+		pkg.Backers++
+		// 减少库存
+		pkg.Stock -= int64(order.Nums)
+		if pkg.Stock < 0 {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("库存不足")
+		}
+		err = tx.Model(&pkg).Update("backers", "stock").Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("套餐状态更新时发生错误")
+		}
+	}
+	// 提交事务
 	tx.Commit()
 	return nil
 }
