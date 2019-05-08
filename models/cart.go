@@ -99,7 +99,7 @@ func UpdateCartByUserIdAndPkgId(cart *Cart) error {
 
 // 根据用户 id 和 套餐 id 来删除对应购物车信息
 func DeleteCartByUserIdAndPkgId(userId uint64, pkgId uint64) error {
-	err := db.Delete(Cart{}, "user_id = ? AND product_package_id = ?", userId, pkgId).Error
+	err := db.Table("carts").Where("deleted_at IS NULL AND user_id = ? AND product_package_id = ?", userId, pkgId).Delete(Cart{}).Error
 	return err
 }
 

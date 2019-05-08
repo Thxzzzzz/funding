@@ -10,7 +10,7 @@ type CartForm struct {
 
 // 删除购物车 item 表单
 type DelCartForm struct {
-	ProductPackageId uint64 `form:"product_package_id"` // 套餐 ID
+	ProductPackageId uint64 `json:"product_package_id" form:"product_package_id"` // 套餐 ID
 }
 
 type CheckAllForm struct {
