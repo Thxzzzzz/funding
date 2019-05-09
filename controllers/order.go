@@ -109,3 +109,39 @@ func (c *OrderController) OrderPay() {
 	}
 	c.ResponseSuccessJson(nil)
 }
+
+/////////////////// 			商家相关的订单接口					/////////////////
+
+// 这个的 swagger 应该是用不了的，因为懒得把每个字段写进去。。
+// @Title 商家获取订单列表
+// @Description  商家获取订单列表
+// @Param	form	body	forms.SellerGetOrderListForm	true	"订单ID列表"
+// @Success 200
+// @Failure 400
+// @router /orderListToSeller [get]
+func (c *OrderController) GetOrderListToSeller() {
+	// 校验卖家身份
+	err := c.VerifySeller()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 获取用户信息
+	user := c.User
+	//解析 form 表单数据
+	var form forms.SellerGetOrderListForm
+	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
+	// 获取所有 query 数据组成的 map
+	values := c.Ctx.Request.URL.Query()
+	// 解析到 Struct 中
+	err = beego.ParseForm(values, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+	}
+	form.SellerId = user.ID
+	result, err := models.GetOrderListToSeller(&form)
+	if err != nil {
+		c.ResponseErrJson(err)
+	}
+	c.ResponseSuccessJson(result)
+}

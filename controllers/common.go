@@ -3,7 +3,9 @@ package controllers
 import (
 	"errors"
 	"fmt"
+	"funding/enums"
 	"funding/models"
+	"funding/objects"
 	"funding/resultModels"
 	"github.com/astaxie/beego"
 )
@@ -39,6 +41,34 @@ func (c *VailUserController) Prepare() {
 	}
 	fmt.Println(result)
 	c.User = result
+}
+
+// 校验是否为对应角色
+func (c *VailUserController) verifyRole(roleId int) error {
+	if c.User.RoleId != roleId {
+		return &resultError.UserRoleVerifyError
+	}
+	return nil
+}
+
+// 校验是否是买家
+func (c *VailUserController) VerifyBuyer() error {
+	return c.verifyRole(enums.Role_Buyer)
+}
+
+// 校验是否是卖家
+func (c *VailUserController) VerifySeller() error {
+	return c.verifyRole(enums.Role_Seller)
+}
+
+// 校验是否是审核员
+func (c *VailUserController) VerifyAuditor() error {
+	return c.verifyRole(enums.Role_Auditor)
+}
+
+// 校验是否是审核员
+func (c *VailUserController) VerifySuperAdmin() error {
+	return c.verifyRole(enums.Role_SuperAdmin)
 }
 
 // 用于返回 err 减少代码量

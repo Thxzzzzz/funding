@@ -1,6 +1,7 @@
 package test
 
 import (
+	"funding/enums"
 	"funding/forms"
 	"funding/models"
 	"github.com/astaxie/beego"
@@ -50,4 +51,14 @@ func TestPayOrderByOrderIdList(t *testing.T) {
 		t.Log(err.Error())
 		t.Fail()
 	}
+}
+
+func TestGetOrderListToSeller(t *testing.T) {
+	form := forms.SellerGetOrderListForm{PageForm: forms.PageForm{Page: 1, PageSize: 1}, SellerId: 20002, ProductId: 11111, FundingStatus: enums.FundingStatus_Ing}
+	orders, err := models.GetOrderListToSeller(&form)
+	if err != nil {
+		t.Log(err.Error())
+		t.Fail()
+	}
+	t.Log(orders)
 }

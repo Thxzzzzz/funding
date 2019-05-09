@@ -58,6 +58,24 @@ paths:
           description: ""
         "400":
           description: ""
+  /order/orderListToSeller:
+    get:
+      tags:
+      - order
+      description: 商家获取订单列表
+      operationId: OrderController.商家获取订单列表
+      parameters:
+      - in: body
+        name: form
+        description: 订单ID列表
+        required: true
+        schema:
+          $ref: '#/definitions/forms.SellerGetOrderListForm'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /order/orderPay:
     post:
       tags:
@@ -461,6 +479,19 @@ paths:
         "400":
           description: ""
 definitions:
+  enums.FundingStatus:
+    title: FundingStatus
+    format: int64
+    type: integer
+    enum:
+    - FundingStatus_Success = 1
+    - FundingStatus_Fail = 2
+    - FundingStatus_Ing = 3
+    example: 1
+  enums.OrderStatus:
+    title: OrderStatus
+    format: int64
+    type: integer
   forms.Address:
     title: Address
     type: object
@@ -572,6 +603,26 @@ definitions:
         type: string
       username:
         type: string
+  forms.SellerGetOrderListForm:
+    title: SellerGetOrderListForm
+    type: object
+    properties:
+      Page:
+        type: integer
+        format: int64
+      PageSize:
+        type: integer
+        format: int64
+      funding_status:
+        $ref: '#/definitions/enums.FundingStatus'
+      order_status:
+        $ref: '#/definitions/enums.OrderStatus'
+      product_id:
+        type: integer
+        format: int64
+      seller_id:
+        type: integer
+        format: int64
   models.Address:
     title: Address
     type: object

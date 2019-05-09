@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"funding/enums"
 	"funding/forms"
 	"funding/objects"
@@ -137,14 +138,17 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error)
 	return orderIdList, nil
 }
 
-// 查询订单列表的 SQL 字段
-const sqlOrderListField = `
+const sqlSelectOrderListField = `
 SELECT
 	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
 	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,p.end_time,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
 	o.created_at,o.status AS order_status,o.total_price,
 	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at
+`
+
+// 查询订单列表的 SQL 字段
+const sqlOrderListTable = `
 FROM
 	orders o
 JOIN
@@ -156,7 +160,7 @@ JOIN
 `
 
 // 根据页码和用户信息来获取订单列表
-const sqlGetOrderList = sqlOrderListField + `
+const sqlGetOrderList = sqlSelectOrderListField + sqlOrderListTable + `
 WHERE
 	o.deleted_at IS NULL  AND
 	p.deleted_at IS NULL  AND
@@ -191,7 +195,7 @@ func GetOrderList(pageForm forms.PageForm, userId uint64) (*resultModels.OrderLi
 	return &result, err
 }
 
-const sqlGetOrderListInOrderIds = sqlOrderListField + `
+const sqlGetOrderListInOrderIds = sqlSelectOrderListField + sqlOrderListTable + `
 WHERE
 	o.deleted_at IS NULL  AND
 	p.deleted_at IS NULL  AND
@@ -287,4 +291,75 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 	// 提交事务
 	tx.Commit()
 	return nil
+}
+
+/////////////////// 			商家相关					/////////////////
+
+const sqlCountAsTotal = `SELECT COUNT(1) as total`
+
+// 获取给卖家的订单列表
+func GetOrderListToSeller(form *forms.SellerGetOrderListForm) (*resultModels.OrderList, error) {
+	result := resultModels.OrderList{}
+	var list []*resultModels.OrderListItem
+
+	page, pageSize := 1, 10
+	// 如果页码和每页数量大于 0
+	if form.Page > 0 && form.PageSize > 0 {
+		page = form.Page
+		pageSize = form.PageSize
+	}
+	sql := `WHERE
+	o.deleted_at IS NULL  AND
+	p.deleted_at IS NULL  AND
+	pkg.deleted_at IS NULL AND
+	o.seller_id = (?)
+	`
+	odb := db
+	// 统计总数
+	odb = odb.Table("orders").Where("user_id = (?) AND deleted_at IS  NULL", form.SellerId)
+	// 如果条件有产品 ID
+	if form.ProductId != 0 {
+		odb = odb.Where("product_id = (?)", form.ProductId)
+		sql = sql + `AND o.product_id = ` + fmt.Sprintf("(%d)", form.ProductId)
+	}
+	// 如果条件有订单状态
+	if form.OrderStatus != nil {
+		odb = odb.Where("status = (?)", form.OrderStatus)
+		sql = sql + `AND o.status = ` + fmt.Sprintf("(%d)", form.OrderStatus)
+	}
+	// 如果条件有众筹状态
+	// TODO 这个或许应该改成一个字段返回，每次都返回全部就行了，前端来做过滤
+	if form.FundingStatus != 0 {
+		switch form.FundingStatus {
+		case enums.FundingStatus_Success:
+			success := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price >= p.target_price`
+			//odb = odb.Where(`end_time < CURRENT_TIMESTAMP() AND current_price >= target_price`)
+			sql = sql + `AND ` + success
+		case enums.FundingStatus_Fail:
+			fail := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price < p.target_price`
+			//odb = odb.Where(`end_time < CURRENT_TIMESTAMP() AND current_price < target_price`)
+			sql = sql + `AND ` + fail
+		case enums.FundingStatus_Ing:
+			ing := `p.end_time > CURRENT_TIMESTAMP()`
+			//odb = odb.Where(`end_time > CURRENT_TIMESTAMP()`)
+			sql = sql + `AND ` + ing
+		}
+	}
+
+	err := db.Raw(sqlCountAsTotal+sqlOrderListTable+sql, form.SellerId).Scan(&result).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 分页限制，这里可不能漏掉了 order by 前面的空格
+	sql = sql + ` ORDER BY o.created_at DESC LIMIT ? OFFSET ?`
+
+	// 根据 SQL 字符串拼接查询订单相关信息列表
+	err = db.Raw(sqlSelectOrderListField+sqlOrderListTable+sql, form.SellerId, pageSize, (page-1)*pageSize).Scan(&list).Error
+	if err != nil {
+		return nil, err
+	}
+	result.Page = page
+	result.OrderList = list
+	return &result, err
 }

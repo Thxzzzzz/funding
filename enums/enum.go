@@ -20,3 +20,20 @@ const (
 	OrderStatus_Refund                                   // 正在退款
 	OrderStatus_Canceled                                 //	交易取消
 )
+
+// 角色
+const (
+	Role_Buyer      int = 0   // 买家
+	Role_Auditor    int = 1   // 审核员
+	Role_Seller     int = 2   // 卖家
+	Role_SuperAdmin int = 999 //超级管理员
+)
+
+type FundingStatus int
+
+// 众筹状态
+const (
+	FundingStatus_Success FundingStatus = 1 // 众筹成功
+	FundingStatus_Fail    FundingStatus = 2 // 众筹失败
+	FundingStatus_Ing     FundingStatus = 3 // 正在众筹
+)

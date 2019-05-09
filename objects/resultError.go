@@ -34,8 +34,9 @@ var (
 
 // 登录和身份验证相关错误
 var (
-	NotLoginError    = FundingError{Code: resultModels.FALL, Msg: "没有登录"}
-	UserNotExitError = FundingError{Code: resultModels.FALL, Msg: "用户不存在"}
+	NotLoginError       = FundingError{Code: resultModels.NOT_LOGIN, Msg: "没有登录"}
+	UserNotExitError    = FundingError{Code: resultModels.FALL, Msg: "用户不存在"}
+	UserRoleVerifyError = FundingError{Code: resultModels.VERIFY_FALL, Msg: "用户身份验证失败"}
 )
 
 // 地址相关

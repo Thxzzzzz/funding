@@ -10,8 +10,10 @@ type Result struct {
 type ErrorCode int
 
 const (
-	SUCCESS ErrorCode = 200
-	FALL    ErrorCode = 400
+	SUCCESS     ErrorCode = 200
+	FALL        ErrorCode = 400
+	NOT_LOGIN   ErrorCode = 411
+	VERIFY_FALL ErrorCode = 412
 )
 
 const (

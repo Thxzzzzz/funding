@@ -75,18 +75,21 @@ CREATE TABLE IF NOT EXISTS `carts` (
   KEY `idx_carts_deleted_at` (`deleted_at`),
   KEY `idx_carts_user_id` (`user_id`) USING BTREE,
   KEY `idx_product_package_id` (`product_package_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='购物车';
 
--- 正在导出表  funding.carts 的数据：~7 rows (大约)
+-- 正在导出表  funding.carts 的数据：~10 rows (大约)
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
 REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, 111111113, 6, 1, '2019-04-22 20:54:49', '2019-05-08 22:34:41', '2019-05-08 22:34:41'),
 	(2, 20003, 111111114, 10, 0, '2019-04-22 21:08:45', '2019-04-25 21:11:22', '2019-04-25 21:11:23'),
 	(3, 20003, 111111112, 2, 0, '2019-04-25 17:02:18', '2019-05-06 21:10:41', '2019-05-06 21:10:39'),
-	(4, 20003, 111111112, 8, 0, '2019-04-23 01:07:43', '2019-05-08 20:18:36', NULL),
-	(13, 20003, 111111114, 8, 0, '2019-04-25 21:18:24', '2019-05-09 09:16:05', NULL),
-	(18, 20003, 111111145, 16, 0, '2019-05-07 00:27:24', '2019-05-09 09:16:05', NULL),
-	(23, 20003, 111111162, 8, 1, '2019-05-07 20:43:37', '2019-05-09 09:16:05', NULL);
+	(4, 20003, 111111112, 8, 0, '2019-04-23 01:07:43', '2019-05-10 02:08:37', '2019-05-10 02:08:37'),
+	(13, 20003, 111111114, 8, 0, '2019-04-25 21:18:24', '2019-05-10 02:08:40', '2019-05-10 02:08:41'),
+	(18, 20003, 111111145, 16, 0, '2019-05-07 00:27:24', '2019-05-10 02:08:34', '2019-05-10 02:08:35'),
+	(23, 20003, 111111162, 8, 1, '2019-05-07 20:43:37', '2019-05-10 02:08:39', '2019-05-10 02:08:39'),
+	(24, 20003, 111111164, 2, 1, '2019-05-09 20:55:01', '2019-05-09 20:55:01', NULL),
+	(25, 20003, 111111165, 1, 1, '2019-05-09 20:55:01', '2019-05-09 20:55:01', NULL),
+	(26, 20003, 111111163, 3, 1, '2019-05-09 20:55:01', '2019-05-10 02:08:42', '2019-05-10 02:08:42');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 
 -- 导出  表 funding.licenses 结构
@@ -143,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `idx_orders_package_id` (`product_package_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表，用来存储订单信息';
 
--- 正在导出表  funding.orders 的数据：~11 rows (大约)
+-- 正在导出表  funding.orders 的数据：~12 rows (大约)
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 REPLACE INTO `orders` (`id`, `user_id`, `name`, `address`, `phone`, `seller_id`, `product_id`, `product_package_id`, `nums`, `unit_price`, `total_price`, `status`, `checking_number`, `paid_at`, `close_at`, `finished_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, '测试', '阿斯蒂芬', '18545456464', 20002, 11111, 111111111, 2, 269.00, 538.00, 0, '', NULL, NULL, NULL, '2019-05-06 00:49:00', '2019-05-06 00:58:31', '2019-05-06 00:58:30'),
