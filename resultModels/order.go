@@ -27,9 +27,9 @@ type OrderListItem struct {
 	Name             string            `json:"name"`               // 收件人姓名
 	Phone            string            `json:"phone"`              // 收件人电话
 	Address          string            `json:"address"`            // 收件人地址
-	PaidAt           time.Time         `json:"paid_at"`            // 支付时间
-	CloseAt          time.Time         `json:"close_at"`           // 关闭时间
-	FinishedAt       time.Time         `json:"finished_at"`        // 交易成功时间
+	PaidAt           *time.Time        `json:"paid_at"`            // 支付时间
+	CloseAt          *time.Time        `json:"close_at"`           // 关闭时间
+	FinishedAt       *time.Time        `json:"finished_at"`        // 交易成功时间
 	//CheckingNumber   string             `json:"checking_number"`    // 物流单号
 }
 

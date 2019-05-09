@@ -23,9 +23,9 @@ type Order struct {
 	TotalPrice       float64           // 总价
 	Status           enums.OrderStatus // 订单状态
 	CheckingNumber   string            // 物流单号
-	PaidAt           time.Time         // 支付时间
-	CloseAt          time.Time         // 关闭时间
-	FinishedAt       time.Time         // 交易成功时间
+	PaidAt           *time.Time        // 支付时间
+	CloseAt          *time.Time        // 关闭时间
+	FinishedAt       *time.Time        // 交易成功时间
 }
 
 // 根据订单的 ID 来获取订单
