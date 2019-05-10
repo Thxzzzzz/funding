@@ -12,13 +12,13 @@ type OrderStatus int
 
 // 订单状态
 const (
-	OrderStatus_Ordered  OrderStatus = OrderStatus(iota) //	下单
-	OrderStatus_Paid                                     //	已支付
-	OrderStatus_Prepare                                  //	正在配货
-	OrderStatus_Deliver                                  //	出货 配送
-	OrderStatus_Finished                                 //	交易成功
-	OrderStatus_Refund                                   // 正在退款
-	OrderStatus_Canceled                                 //	交易取消
+	OrderStatus_Ordered  OrderStatus = OrderStatus(iota) + 1 //	下单
+	OrderStatus_Paid                                         //	已支付
+	OrderStatus_Prepare                                      //	正在配货
+	OrderStatus_Deliver                                      //	出货 配送
+	OrderStatus_Finished                                     //	交易成功
+	OrderStatus_Refund                                       // 正在退款
+	OrderStatus_Canceled                                     //	交易取消
 )
 
 // 角色

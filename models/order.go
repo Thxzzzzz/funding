@@ -259,7 +259,8 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 		// 增加筹集金额
 		product.CurrentPrice += order.TotalPrice
 		//err = tx.Model(&product).Update("backers", "current_price").Error
-		err = tx.Model(&product).Updates(map[string]interface{}{"backers": product.Backers, "current_price": product.CurrentPrice}).Error
+		err = tx.Model(&product).
+			Updates(map[string]interface{}{"backers": product.Backers, "current_price": product.CurrentPrice}).Error
 
 		//err = tx.Save(&product).Error
 		if err != nil {
@@ -314,39 +315,34 @@ func GetOrderListToSeller(form *forms.SellerGetOrderListForm) (*resultModels.Ord
 	pkg.deleted_at IS NULL AND
 	o.seller_id = (?)
 	`
-	odb := db
-	// 统计总数
-	odb = odb.Table("orders").Where("user_id = (?) AND deleted_at IS  NULL", form.SellerId)
+
 	// 如果条件有产品 ID
-	if form.ProductId != 0 {
-		odb = odb.Where("product_id = (?)", form.ProductId)
+	if form.ProductId > 0 {
 		sql = sql + `AND o.product_id = ` + fmt.Sprintf("(%d)", form.ProductId)
 	}
 	// 如果条件有订单状态
-	if form.OrderStatus != nil {
-		odb = odb.Where("status = (?)", form.OrderStatus)
+	if form.OrderStatus > 0 {
 		sql = sql + `AND o.status = ` + fmt.Sprintf("(%d)", form.OrderStatus)
 	}
 	// 如果条件有众筹状态
 	// TODO 这个或许应该改成一个字段返回，每次都返回全部就行了，前端来做过滤
-	if form.FundingStatus != 0 {
+	if form.FundingStatus > 0 {
 		switch form.FundingStatus {
 		case enums.FundingStatus_Success:
 			success := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price >= p.target_price`
-			//odb = odb.Where(`end_time < CURRENT_TIMESTAMP() AND current_price >= target_price`)
 			sql = sql + `AND ` + success
 		case enums.FundingStatus_Fail:
 			fail := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price < p.target_price`
-			//odb = odb.Where(`end_time < CURRENT_TIMESTAMP() AND current_price < target_price`)
 			sql = sql + `AND ` + fail
 		case enums.FundingStatus_Ing:
 			ing := `p.end_time > CURRENT_TIMESTAMP()`
-			//odb = odb.Where(`end_time > CURRENT_TIMESTAMP()`)
 			sql = sql + `AND ` + ing
 		}
 	}
 
-	err := db.Raw(sqlCountAsTotal+sqlOrderListTable+sql, form.SellerId).Scan(&result).Error
+	// 统计数量
+	err := db.Raw(sqlCountAsTotal+sqlOrderListTable+sql, form.SellerId).
+		Scan(&result).Error
 	if err != nil {
 		return nil, err
 	}
@@ -355,9 +351,15 @@ func GetOrderListToSeller(form *forms.SellerGetOrderListForm) (*resultModels.Ord
 	sql = sql + ` ORDER BY o.created_at DESC LIMIT ? OFFSET ?`
 
 	// 根据 SQL 字符串拼接查询订单相关信息列表
-	err = db.Raw(sqlSelectOrderListField+sqlOrderListTable+sql, form.SellerId, pageSize, (page-1)*pageSize).Scan(&list).Error
+	err = db.Raw(sqlSelectOrderListField+sqlOrderListTable+sql, form.SellerId, pageSize, (page-1)*pageSize).
+		Scan(&list).Error
 	if err != nil {
 		return nil, err
+	}
+
+	// 返回众筹状态
+	for i := range list {
+		list[i].FundingStatus = form.FundingStatus
 	}
 	result.Page = page
 	result.OrderList = list

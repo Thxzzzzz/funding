@@ -26,8 +26,8 @@ type NewOrderForm struct {
 // 卖家获取订单的 Form
 type SellerGetOrderListForm struct {
 	PageForm                          // 页码信息
-	SellerId      uint64              `json:"seller_id"`      // 卖家 ID
-	OrderStatus   *enums.OrderStatus  `json:"order_status"`   // 订单状态
-	FundingStatus enums.FundingStatus `json:"funding_status"` // 众筹状态 （0 :全部 ,1:众筹成功,2:失败,3:正在进行）
-	ProductId     uint64              `json:"product_id"`     // 商品ID
+	SellerId      uint64              `json:"seller_id"`                            // 卖家 ID
+	OrderStatus   enums.OrderStatus   `json:"order_status" form:"order_status"`     // 订单状态
+	FundingStatus enums.FundingStatus `json:"funding_status" form:"funding_status"` // 众筹状态 （0 :全部 ,1:众筹成功,2:失败,3:正在进行）
+	ProductId     uint64              `json:"product_id"`                           // 商品ID
 }
