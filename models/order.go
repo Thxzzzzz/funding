@@ -160,36 +160,85 @@ JOIN
 `
 
 // 根据页码和用户信息来获取订单列表
-const sqlGetOrderList = sqlSelectOrderListField + sqlOrderListTable + `
-WHERE
-	o.deleted_at IS NULL  AND
-	p.deleted_at IS NULL  AND
-	pkg.deleted_at IS NULL AND
-	o.user_id = (?)
-ORDER BY
-	o.created_at DESC
-LIMIT ? OFFSET ?
-`
+//const sqlGetOrderList = sqlSelectOrderListField + sqlOrderListTable + `
+//WHERE
+//	o.deleted_at IS NULL  AND
+//	p.deleted_at IS NULL  AND
+//	pkg.deleted_at IS NULL AND
+//	o.user_id = (?)
+//ORDER BY
+//	o.created_at DESC
+//LIMIT ? OFFSET ?
+//`
+const sqlCountAsTotal = `SELECT COUNT(1) as total`
 
 // 根据页码和用户信息获取订单
-func GetOrderList(pageForm forms.PageForm, userId uint64) (*resultModels.OrderList, error) {
+func GetOrderListByUserId(form *forms.SellerGetOrderListForm, userId uint64, roleId int) (*resultModels.OrderList, error) {
 	result := resultModels.OrderList{}
 	var list []*resultModels.OrderListItem
 
-	page, pageSize := 1, 5
+	page, pageSize := 1, 10
 	// 如果页码和每页数量大于 0
-	if pageForm.Page > 0 && pageForm.PageSize > 0 {
-		page = pageForm.Page
-		pageSize = pageForm.PageSize
+	if form.Page > 0 && form.PageSize > 0 {
+		page = form.Page
+		pageSize = form.PageSize
+	}
+	sql := `WHERE
+	o.deleted_at IS NULL  AND
+	p.deleted_at IS NULL  AND
+	pkg.deleted_at IS NULL
+	`
+	// 判断角色，如果是商家就查找 seller_id
+	if roleId == 2 {
+		sql = sql + ` AND o.seller_id = (?) `
+	} else {
+		sql = sql + ` AND o.user_id = (?) `
 	}
 
-	// 统计总数
-	err := db.Table("orders").Where("user_id = (?) AND deleted_at IS  NULL", userId).Count(&result.Total).Error
+	// 如果条件有产品 ID
+	if form.ProductId > 0 {
+		sql = sql + `AND o.product_id = ` + fmt.Sprintf("(%d)", form.ProductId)
+	}
+	// 如果条件有订单状态
+	if form.OrderStatus > 0 {
+		sql = sql + `AND o.status = ` + fmt.Sprintf("(%d)", form.OrderStatus)
+	}
+	// 如果条件有众筹状态
+	if form.FundingStatus > 0 {
+		switch form.FundingStatus {
+		case enums.FundingStatus_Success:
+			success := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price >= p.target_price`
+			sql = sql + `AND ` + success
+		case enums.FundingStatus_Fail:
+			fail := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price < p.target_price`
+			sql = sql + `AND ` + fail
+		case enums.FundingStatus_Ing:
+			ing := `p.end_time > CURRENT_TIMESTAMP()`
+			sql = sql + `AND ` + ing
+		}
+	}
+
+	// 统计数量
+	err := db.Raw(sqlCountAsTotal+sqlOrderListTable+sql, userId).
+		Scan(&result).Error
 	if err != nil {
 		return nil, err
 	}
+
+	// 分页限制，这里可不能漏掉了 order by 前面的空格
+	sql = sql + ` ORDER BY o.created_at DESC LIMIT ? OFFSET ?`
+
 	// 根据 SQL 字符串拼接查询订单相关信息列表
-	err = db.Raw(sqlGetOrderList, userId, pageSize, (page-1)*pageSize).Scan(&list).Error
+	err = db.Raw(sqlSelectOrderListField+sqlOrderListTable+sql, userId, pageSize, (page-1)*pageSize).
+		Scan(&list).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 返回众筹状态
+	for i := range list {
+		list[i].FundingStatus = form.FundingStatus
+	}
 	result.Page = page
 	result.OrderList = list
 	return &result, err
@@ -312,73 +361,3 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 }
 
 /////////////////// 			商家相关					/////////////////
-
-const sqlCountAsTotal = `SELECT COUNT(1) as total`
-
-// 获取给卖家的订单列表
-func GetOrderListToSeller(form *forms.SellerGetOrderListForm) (*resultModels.OrderList, error) {
-	result := resultModels.OrderList{}
-	var list []*resultModels.OrderListItem
-
-	page, pageSize := 1, 10
-	// 如果页码和每页数量大于 0
-	if form.Page > 0 && form.PageSize > 0 {
-		page = form.Page
-		pageSize = form.PageSize
-	}
-	sql := `WHERE
-	o.deleted_at IS NULL  AND
-	p.deleted_at IS NULL  AND
-	pkg.deleted_at IS NULL AND
-	o.seller_id = (?)
-	`
-
-	// 如果条件有产品 ID
-	if form.ProductId > 0 {
-		sql = sql + `AND o.product_id = ` + fmt.Sprintf("(%d)", form.ProductId)
-	}
-	// 如果条件有订单状态
-	if form.OrderStatus > 0 {
-		sql = sql + `AND o.status = ` + fmt.Sprintf("(%d)", form.OrderStatus)
-	}
-	// 如果条件有众筹状态
-	// TODO 这个或许应该改成一个字段返回，每次都返回全部就行了，前端来做过滤
-	if form.FundingStatus > 0 {
-		switch form.FundingStatus {
-		case enums.FundingStatus_Success:
-			success := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price >= p.target_price`
-			sql = sql + `AND ` + success
-		case enums.FundingStatus_Fail:
-			fail := `p.end_time < CURRENT_TIMESTAMP() AND p.current_price < p.target_price`
-			sql = sql + `AND ` + fail
-		case enums.FundingStatus_Ing:
-			ing := `p.end_time > CURRENT_TIMESTAMP()`
-			sql = sql + `AND ` + ing
-		}
-	}
-
-	// 统计数量
-	err := db.Raw(sqlCountAsTotal+sqlOrderListTable+sql, form.SellerId).
-		Scan(&result).Error
-	if err != nil {
-		return nil, err
-	}
-
-	// 分页限制，这里可不能漏掉了 order by 前面的空格
-	sql = sql + ` ORDER BY o.created_at DESC LIMIT ? OFFSET ?`
-
-	// 根据 SQL 字符串拼接查询订单相关信息列表
-	err = db.Raw(sqlSelectOrderListField+sqlOrderListTable+sql, form.SellerId, pageSize, (page-1)*pageSize).
-		Scan(&list).Error
-	if err != nil {
-		return nil, err
-	}
-
-	// 返回众筹状态
-	for i := range list {
-		list[i].FundingStatus = form.FundingStatus
-	}
-	result.Page = page
-	result.OrderList = list
-	return &result, err
-}

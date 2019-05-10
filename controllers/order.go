@@ -47,7 +47,7 @@ func (c *OrderController) OrderList() {
 	// 获取用户信息
 	user := c.User
 	//解析 form 表单数据
-	var form forms.PageForm
+	var form forms.SellerGetOrderListForm
 	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
 	// 获取所有 query 数据组成的 map
 	values := c.Ctx.Request.URL.Query()
@@ -57,7 +57,7 @@ func (c *OrderController) OrderList() {
 		c.ResponseErrJson(err)
 	}
 
-	result, err := models.GetOrderList(form, user.ID)
+	result, err := models.GetOrderListByUserId(&form, user.ID, user.RoleId)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
@@ -138,8 +138,7 @@ func (c *OrderController) GetOrderListToSeller() {
 	if err != nil {
 		c.ResponseErrJson(err)
 	}
-	form.SellerId = user.ID
-	result, err := models.GetOrderListToSeller(&form)
+	result, err := models.GetOrderListByUserId(&form, user.ID, user.RoleId)
 	if err != nil {
 		c.ResponseErrJson(err)
 	}
