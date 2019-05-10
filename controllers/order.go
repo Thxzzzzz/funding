@@ -75,13 +75,13 @@ func (c *OrderController) OrderInIds() {
 	user := c.User
 	// 获取 Json 字符串
 	ids := c.GetString("orderId")
-	orderIds := []uint64{}
+	var orderIds []uint64
 	err := json.Unmarshal([]byte(ids), &orderIds)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
-	result, err := models.GetOrderListByOrderIds(orderIds, user.ID)
+	result, err := models.GetOrderListByOrderIds(orderIds, user.ID, user.RoleId)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return

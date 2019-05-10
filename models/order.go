@@ -206,11 +206,28 @@ ORDER BY
 	o.created_at DESC
 `
 
+const sqlSellerGetOrderList = sqlSelectOrderListField + sqlOrderListTable + `
+WHERE
+	o.deleted_at IS NULL  AND
+	p.deleted_at IS NULL  AND
+	pkg.deleted_at IS NULL AND
+	o.seller_id = (?) AND
+    o.id IN (?)
+ORDER BY
+	o.created_at DESC`
+
 // 根据订单id列表和用户 Id 查询订单信息
-func GetOrderListByOrderIds(orderIds []uint64, userId uint64) ([]*resultModels.OrderListItem, error) {
+func GetOrderListByOrderIds(orderIds []uint64, userId uint64, roleId int) ([]*resultModels.OrderListItem, error) {
 	var list []*resultModels.OrderListItem
+	var sql string
+	switch roleId {
+	case 0:
+		sql = sqlGetOrderListInOrderIds
+	case 2:
+		sql = sqlSellerGetOrderList
+	}
 	// 根据 SQL 字符串拼接查询订单相关信息列表
-	err := db.Raw(sqlGetOrderListInOrderIds, userId, orderIds).Scan(&list).Error
+	err := db.Raw(sql, userId, orderIds).Scan(&list).Error
 	return list, err
 }
 
