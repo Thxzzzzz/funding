@@ -13,6 +13,9 @@ type OrderListItem struct {
 	SellerNickname   string              `json:"seller_nickname"`    // 卖家昵称
 	ProductId        uint64              `json:"product_id"`         // 产品 Id
 	ProductName      string              `json:"product_name"`       // 产品名称
+	ProductType      int                 `json:"product_type"`       //产品类型
+	CurrentPrice     float64             `json:"current_price"`      //当前筹集金额
+	TargetPrice      float64             `json:"target_price"`       //目标筹集金额
 	EndTime          time.Time           `json:"end_time"`           // 众筹截止时间
 	ProductPackageId uint64              `json:"product_package_id"` // 套餐 Id
 	Stock            int                 `json:"stock"`              // 库存

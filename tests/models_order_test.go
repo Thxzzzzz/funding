@@ -37,7 +37,8 @@ func TestNewOrderFromForm(t *testing.T) {
 func TestGetOrderListByOrderIds(t *testing.T) {
 	orderIds := []uint64{3, 4, 5}
 	userId := uint64(20003)
-	orderItems, err := models.GetOrderListByOrderIds(orderIds, userId)
+	roleId := enums.Role_Buyer
+	orderItems, err := models.GetOrderListByOrderIds(orderIds, userId, roleId)
 	if err != nil {
 		t.Fail()
 	}
@@ -53,12 +54,15 @@ func TestPayOrderByOrderIdList(t *testing.T) {
 	}
 }
 
-func TestGetOrderListToSeller(t *testing.T) {
-	form := forms.SellerGetOrderListForm{PageForm: forms.PageForm{Page: 1, PageSize: 1}, SellerId: 20002, ProductId: 11111, FundingStatus: enums.FundingStatus_Ing}
-	orders, err := models.GetOrderListToSeller(&form)
+func TestSendOutOrderById(t *testing.T) {
+	form := forms.OrderSendOutForm{
+		OrderId:        5,
+		CheckingNumber: "12345678",
+	}
+	userId := uint64(20002)
+	err := models.SendOutOrderById(&form, userId)
 	if err != nil {
-		t.Log(err.Error())
+		t.Log(err)
 		t.Fail()
 	}
-	t.Log(orders)
 }

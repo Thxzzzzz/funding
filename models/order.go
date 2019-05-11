@@ -7,6 +7,7 @@ import (
 	"funding/objects"
 	"funding/resultModels"
 	"time"
+	"unicode/utf8"
 )
 
 // 订单
@@ -143,6 +144,7 @@ SELECT
 	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
 	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,p.end_time,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
+	p.current_price,p.target_price,
 	o.created_at,o.status AS order_status,o.total_price,
 	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at
 `
@@ -235,10 +237,29 @@ func GetOrderListByUserId(form *forms.SellerGetOrderListForm, userId uint64, rol
 		return nil, err
 	}
 
-	// 返回众筹状态
-	for i := range list {
-		list[i].FundingStatus = form.FundingStatus
+	// 返回众筹状态 TODO 这里做一个每天凌晨的定时器去更新状态到数据库里会省事一点
+	if form.FundingStatus > 0 {
+		for i := range list {
+			list[i].FundingStatus = form.FundingStatus
+			// 如果为已付款状态而且众筹成功了则为备货状态
+			if list[i].FundingStatus == enums.FundingStatus_Success &&
+				list[i].OrderStatus == enums.OrderStatus_Paid {
+				list[i].OrderStatus = enums.OrderStatus_Prepare
+			}
+		}
+	} else {
+		timeNow := time.Now()
+		for i := range list {
+			list[i].FundingStatus = CalcFundingStatus(timeNow, list[i].EndTime,
+				list[i].CurrentPrice, list[i].TargetPrice)
+			// 如果为已付款状态而且众筹成功了则为备货状态
+			if list[i].FundingStatus == enums.FundingStatus_Success &&
+				list[i].OrderStatus == enums.OrderStatus_Paid {
+				list[i].OrderStatus = enums.OrderStatus_Prepare
+			}
+		}
 	}
+
 	result.Page = page
 	result.OrderList = list
 	return &result, err
@@ -277,6 +298,16 @@ func GetOrderListByOrderIds(orderIds []uint64, userId uint64, roleId int) ([]*re
 	}
 	// 根据 SQL 字符串拼接查询订单相关信息列表
 	err := db.Raw(sql, userId, orderIds).Scan(&list).Error
+	timeNow := time.Now()
+	for i := range list {
+		list[i].FundingStatus = CalcFundingStatus(timeNow, list[i].EndTime,
+			list[i].CurrentPrice, list[i].TargetPrice)
+		// 如果为已付款状态而且众筹成功了则为备货状态
+		if list[i].FundingStatus == enums.FundingStatus_Success &&
+			list[i].OrderStatus == enums.OrderStatus_Paid {
+			list[i].OrderStatus = enums.OrderStatus_Prepare
+		}
+	}
 	return list, err
 }
 
@@ -286,7 +317,7 @@ func GetOrderListByOrderIds(orderIds []uint64, userId uint64, roleId int) ([]*re
 func PayOrderByOrderIdList(orderIds []uint64) error {
 	// 开始事务
 	tx := db.Begin()
-
+	timeNow := time.Now()
 	for _, orderId := range orderIds {
 		// 先查询出对应订单信息
 		order := Order{}
@@ -297,11 +328,13 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 		}
 		if order.Status != enums.OrderStatus_Ordered {
 			tx.Rollback()
-			return resultError.NewFallFundingErr("订单已支付")
+			return resultError.NewFallFundingErr("订单已支付或已关闭")
 		}
 		// 根据订单 ID 将订单状态更新为已支付
 		order.Status = enums.OrderStatus_Paid
-		err = tx.Model(&order).Update("status", order.Status).Error
+		err = tx.Model(&order).
+			Updates(map[string]interface{}{"status": order.Status, "paid_at": timeNow}).Error
+
 		//err = tx.Save(&order).Error
 		if err != nil {
 			tx.Rollback()
@@ -361,3 +394,34 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 }
 
 /////////////////// 			商家相关					/////////////////
+
+// 发货
+func SendOutOrderById(form *forms.OrderSendOutForm, sellerId uint64) error {
+	// 如果物流单号小于 4 则返回错误
+	if utf8.RuneCountInString(form.CheckingNumber) < 4 {
+		return &resultError.FormParamErr
+	}
+	order := Order{}
+
+	// 首先查找相关订单记录
+	err := db.Last(&order, form.OrderId).Error
+	if err != nil {
+		return resultError.NewFallFundingErr("没有找到相关订单")
+	}
+	// 如果订单不是这个卖家的则返回错误
+	if order.SellerId != sellerId {
+		return resultError.NewFallFundingErr("这不是你的订单")
+	}
+	// 如果订单状态不是已支付或者待发货，就返回错误
+	if order.Status != enums.OrderStatus_Paid && order.Status != enums.OrderStatus_Prepare {
+		return resultError.NewFallFundingErr("订单状态有误")
+	}
+	// 将状态改为已发货，并更新订单号
+	err = db.Model(&order).
+		Updates(map[string]interface{}{"status": enums.OrderStatus_Deliver,
+			"checking_number": form.CheckingNumber}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

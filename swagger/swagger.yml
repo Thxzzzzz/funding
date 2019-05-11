@@ -97,6 +97,24 @@ paths:
           description: ""
         "400":
           description: ""
+  /order/sendOutOrder:
+    post:
+      tags:
+      - order
+      description: 发货
+      operationId: OrderController.发货
+      parameters:
+      - in: body
+        name: form
+        description: 发货参数
+        required: true
+        schema:
+          $ref: '#/definitions/forms.OrderSendOutForm'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /product/all:
     get:
       tags:
@@ -579,6 +597,15 @@ definitions:
       user_id:
         type: integer
         format: int64
+  forms.OrderSendOutForm:
+    title: OrderSendOutForm
+    type: object
+    properties:
+      checking_number:
+        type: string
+      order_id:
+        type: integer
+        format: int64
   forms.PageForm:
     title: PageForm
     type: object
@@ -618,9 +645,6 @@ definitions:
       order_status:
         $ref: '#/definitions/enums.OrderStatus'
       product_id:
-        type: integer
-        format: int64
-      seller_id:
         type: integer
         format: int64
   models.Address:

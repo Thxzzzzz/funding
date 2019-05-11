@@ -34,3 +34,9 @@ type SellerGetOrderListForm struct {
 	FundingStatus enums.FundingStatus `json:"funding_status" form:"funding_status"` // 众筹状态 （0 :全部 ,1:众筹成功,2:失败,3:正在进行）
 	ProductId     uint64              `json:"product_id"`                           // 商品ID
 }
+
+// 发货请求的表单
+type OrderSendOutForm struct {
+	OrderId        uint64 `json:"order_id"`        // 订单ID
+	CheckingNumber string `json:"checking_number"` // 物流单号
+}

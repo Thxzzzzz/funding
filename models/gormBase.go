@@ -20,6 +20,7 @@ var (
 )
 
 func init() {
+	fmt.Println("Gorm init")
 	InitDB()
 }
 

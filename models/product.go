@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"funding/enums"
 	"funding/forms"
 	"funding/resultModels"
 	"time"
@@ -42,23 +43,35 @@ func init() {
 	//db.AutoMigrate(&Product{}, &ProductPackage{})
 }
 
+// 计算众筹状态
+func CalcFundingStatus(currentTime time.Time, endTime time.Time,
+	current_price float64, target_price float64) enums.FundingStatus {
+	if currentTime.Before(endTime) {
+		return enums.FundingStatus_Ing
+	}
+	if current_price >= target_price {
+		return enums.FundingStatus_Success
+	}
+	return enums.FundingStatus_Fail
+}
+
 // 根据 分页 和 产品类型(0 为全部) 获取产品
 func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Product, error) {
 	if page <= 0 || pageSize <= 0 {
 		return nil, errors.New("参数错误")
 	}
 	var results []*Product
-	//分页限制
+	// 分页限制
 	pDb := db.Limit(pageSize).Offset((page - 1) * pageSize)
-	//类型为 0 时不限制类型
+	// 类型为 0 时不限制类型
 	if productType != 0 {
 		pDb = pDb.Where("product_type = ?", productType)
 	}
 	// 只查询通过验证的
 	pDb = pDb.Where("verify_status = 1")
-	//倒序查询
+	// 倒序查询
 	pDb = pDb.Order("created_at DESC,end_time DESC")
-
+	// 查询所有符合条件的数据返回到 results 里面
 	err := pDb.Find(&results).Error
 	if err != nil {
 		return nil, err

@@ -144,3 +144,30 @@ func (c *OrderController) GetOrderListToSeller() {
 	}
 	c.ResponseSuccessJson(result)
 }
+
+// @Title 发货
+// @Description 发货
+// @Param	form	body	forms.OrderSendOutForm	true	"发货参数"
+// @Success 200
+// @Failure 400
+// @router /sendOutOrder [post]
+func (c *OrderController) SendOutOrder() {
+	// 校验卖家身份
+	err := c.VerifySeller()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	form := forms.OrderSendOutForm{}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	err = models.SendOutOrderById(&form, c.User.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
