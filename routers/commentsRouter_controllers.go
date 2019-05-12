@@ -198,6 +198,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
         beego.ControllerComments{
+            Method: "GetProductTypeList",
+            Router: `/typeList`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
+        beego.ControllerComments{
             Method: "GetVerifyProduct",
             Router: `/verify`,
             AllowHTTPMethods: []string{"get"},
@@ -255,6 +264,24 @@ func init() {
             Method: "Register",
             Router: `/register`,
             AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
+        beego.ControllerComments{
+            Method: "UploadImage",
+            Router: `/uploadImage`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
+        beego.ControllerComments{
+            Method: "OptionsUploadImage",
+            Router: `/uploadImage`,
+            AllowHTTPMethods: []string{"options"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

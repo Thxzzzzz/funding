@@ -25,18 +25,10 @@ type Product struct {
 	ProductPackages []ProductPackage `json:"product_packages"`               //商品套餐
 }
 
-//产品套餐
-type ProductPackage struct {
-	BaseModel
-	ProductId   string  `json:"product_id"`   //对应产品 Id
-	Description string  `json:"description"`  //套餐描述
-	ImageUrl    string  `json:"image_url"`    //图片链接
-	Price       float64 `json:"price"`        //套餐价格
-	Stock       int64   `json:"stock"`        //剩余库存
-	Total       int64   `json:"total"`        //套餐总数
-	Backers     int     `json:"backers"`      //支持人数
-	Freight     float64 `json:"freight"`      //运费
-	DeliveryDay int64   `json:"delivery_day"` //发货时间 (众筹成功后多少天内)
+// 产品类型
+type ProductType struct {
+	ID   uint64 `json:"id" gorm:"primary_key"` //类型 id
+	Name string `json:"name"`                  //类型名称
 }
 
 func init() {
@@ -53,6 +45,57 @@ func CalcFundingStatus(currentTime time.Time, endTime time.Time,
 		return enums.FundingStatus_Success
 	}
 	return enums.FundingStatus_Fail
+}
+
+/////////////////////			基本增删改查			/////////////////////
+
+// 根据产品的 ID 来获取产品条目
+func FindProductById(productId uint64) (*Product, error) {
+	var ret Product
+	err := db.First(&ret, productId).Error
+	if err != nil {
+		return nil, err
+	}
+	return &ret, nil
+}
+
+// 根据用户 ID 来获取产品列表
+func FindProductsByUserId(userId uint64) ([]*Product, error) {
+	var rets []*Product
+	err := db.Find(&rets).Where("user_id = ?", userId).Error
+	return rets, err
+}
+
+// 新增产品
+func InsertProduct(product *Product) error {
+	err := db.Create(product).Error
+	return err
+}
+
+//删除产品条目 由于这里是软删除，所以只是把 delete_at 设置了一个值，实际上还存在数据库中,但并不能用 gorm 查到
+func DeleteProductById(id uint64) error {
+	err := db.Delete(Product{}, "id = ?", id).Error
+	return err
+}
+
+//根据 productID 来更新其他相应的字段
+func UpdateProduct(product *Product) error {
+	var rec Product
+	err := db.First(&rec, "id = ?", product.ID).Error
+	if err != nil {
+		return err
+	}
+	err = db.Model(&rec).Updates(product).Error
+	return err
+}
+
+/////////////////////		EMD	基本增删改查			/////////////////////
+
+// 获取产品类型列表
+func GetProductTypeList() ([]ProductType, error) {
+	results := []ProductType{}
+	err := db.Find(&results).Error
+	return results, err
 }
 
 // 根据 分页 和 产品类型(0 为全部) 获取产品

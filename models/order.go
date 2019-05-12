@@ -79,7 +79,7 @@ func UpdateOrder(order *Order) error {
 	if err != nil {
 		return err
 	}
-	err = db.Model(&rec).Update(order).Error
+	err = db.Model(&rec).Updates(order).Error
 	return err
 }
 

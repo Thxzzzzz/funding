@@ -142,6 +142,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "SendOutOrder",
+            Router: `/sendOutOrder`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
         beego.ControllerComments{
             Method: "GetAll",
@@ -182,6 +191,15 @@ func init() {
         beego.ControllerComments{
             Method: "GetProductByPage",
             Router: `/productList`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
+        beego.ControllerComments{
+            Method: "GetProductTypeList",
+            Router: `/typeList`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -245,6 +263,15 @@ func init() {
         beego.ControllerComments{
             Method: "Register",
             Router: `/register`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
+        beego.ControllerComments{
+            Method: "UploadImage",
+            Router: `/uploadImage`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

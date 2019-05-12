@@ -43,6 +43,6 @@ func UpdateUser(user *User) error {
 	if err != nil {
 		return err
 	}
-	err = db.Model(&ret).Update(user).Error
+	err = db.Model(&ret).Updates(user).Error
 	return err
 }

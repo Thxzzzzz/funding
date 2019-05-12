@@ -342,6 +342,29 @@
                 }
             }
         },
+        "/product/typeList": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "获取产品类型列表",
+                "operationId": "ProductController.获取产品类型列表",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProductType"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/product/verify": {
             "get": {
                 "tags": [
@@ -758,6 +781,37 @@
                     }
                 }
             }
+        },
+        "/user/uploadImage": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "上传图片",
+                "operationId": "UserControllers.上传图片",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "image",
+                        "description": "图片文件",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/multipart.File"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1130,6 +1184,19 @@
                 }
             }
         },
+        "models.ProductType": {
+            "title": "ProductType",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "title": "User",
             "type": "object",
@@ -1169,6 +1236,10 @@
                     "type": "string"
                 }
             }
+        },
+        "multipart.File": {
+            "title": "File",
+            "type": "object"
         },
         "resultModels.CheckoutPkgInfo": {
             "title": "CheckoutPkgInfo",
@@ -1233,6 +1304,10 @@
         {
             "name": "order",
             "description": "用户订单相关\n"
+        },
+        {
+            "name": "pm",
+            "description": "产品管理相关（商家 审核员）\n为了方便，这个 Controller 的 URL 地址缩写为 /pm\n"
         }
     ]
 }

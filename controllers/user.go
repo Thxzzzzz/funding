@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"funding/forms"
 	"funding/models"
 	"funding/objects"
@@ -9,6 +10,8 @@ import (
 	"funding/utils"
 	"github.com/astaxie/beego/validation"
 	"github.com/jinzhu/gorm"
+	"path"
+	"time"
 )
 
 //type UserValid interface {
@@ -224,4 +227,42 @@ func (c *UserControllers) Info() {
 	}
 	result = resultModels.SuccessResult(user)
 	c.ResponseJson(result)
+}
+
+const imagesPath = "uploadfile/images"
+const baseUrl = "http://127.0.0.1:8080/"
+
+// @Title 上传图片
+// @Description 上传图片
+// @Param	file	formData	multipart.File	true	"图片文件"
+// @Accept form
+// @Success 200
+// @Failure 400
+// @router /uploadImage [post]
+func (c *UserControllers) UploadImage() {
+	_, err := c.CheckAndGetUser()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	file, information, err := c.GetFile("file") //返回文件，文件信息头，错误信息
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	defer file.Close()                                                      //关闭上传的文件，否则出现临时文件不清除的情况
+	filename := fmt.Sprintf("%d", time.Now().Unix()) + information.Filename //将文件信息头的信息赋值给filename变量
+	imgPath := path.Join(imagesPath, filename)                              //图片保存地址
+	err = c.SaveToFile("file", imgPath)                                     //保存文件的路径。保存在static/upload中   （文件名）
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(baseUrl + imgPath)
+}
+
+// 仅仅是为了配合 element-ui 的上传空间写的 options 请求 api,返回成功即可
+// @router /uploadImage [options]
+func (c *UserControllers) OptionsUploadImage() {
+	c.ResponseSuccessJson(nil)
 }

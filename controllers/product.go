@@ -15,11 +15,25 @@ type ProductController struct {
 	BaseController
 }
 
+// @Title 获取产品类型列表
+// @Description 获取产品类型列表
+// @Success 200 {object} []models.ProductType
+// @Failure 400
+// @router /typeList [get]
+func (c *ProductController) GetProductTypeList() {
+	results, err := models.GetProductTypeList()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(results)
+}
+
 // @Title Get Home Page Info
 // @Description 获取首页信息
 // @Success 200
 // @Failure 400
-// @router /home
+// @router /home [get]
 func (c *ProductController) GetHome() {
 	var home []resultModels.HomeResult
 	var result resultModels.Result

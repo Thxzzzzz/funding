@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"funding/enums"
 	"funding/forms"
 	"funding/models"
+	"funding/objects"
 	"github.com/astaxie/beego"
 )
 
@@ -21,6 +23,11 @@ type OrderController struct {
 func (c *OrderController) AddOrder() {
 	// 获取用户信息
 	user := c.User
+	// 不是买家就不能新增订单了吧
+	if user.RoleId != enums.Role_Buyer {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是买家"))
+		return
+	}
 	//解析 form 表单数据
 	var form forms.NewOrderForm
 	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json

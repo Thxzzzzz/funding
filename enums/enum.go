@@ -2,9 +2,10 @@ package enums
 
 //审核状态枚举
 const (
-	Verify_Fail    = 0 //未通过
-	Verify_Success = 1 //已通过
-	Verify_Wait    = 2 //未审核
+	Verify_Success  = 1 // 已通过
+	Verify_Wait     = 2 // 未审核
+	Verify_UnSubmit = 3 // 未提交审核
+	Verify_Fail     = 4 // 未通过
 )
 
 // 订单状态

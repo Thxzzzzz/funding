@@ -44,3 +44,12 @@ func TestGetCheckoutPkgInfoFromPkgId(t *testing.T) {
 	}
 	t.Log(result)
 }
+
+func TestGetProductTypeList(t *testing.T) {
+	results, err := models.GetProductTypeList()
+	if err != nil {
+		t.Fail()
+		t.Log(err.Error())
+	}
+	t.Log(results)
+}

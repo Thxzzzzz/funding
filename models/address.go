@@ -47,6 +47,6 @@ func UpdateAddress(address *Address) error {
 	if err != nil {
 		return err
 	}
-	err = db.Model(&rec).Update(address).Error
+	err = db.Model(&rec).Updates(address).Error
 	return err
 }

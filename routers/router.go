@@ -37,6 +37,12 @@ func init() {
 				&controllers.OrderController{},
 			),
 		),
+		// productManager
+		beego.NSNamespace("/pm",
+			beego.NSInclude(
+				&controllers.ProductMangerController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
