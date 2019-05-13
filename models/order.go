@@ -43,7 +43,7 @@ func FindOrderById(orderId uint64) (*Order, error) {
 // 根据用户 ID 来获取订单列表
 func FindOrdersByUserId(userId uint64) ([]*Order, error) {
 	var rets []*Order
-	err := db.Find(&rets).Where("user_id = ?", userId).Error
+	err := db.Where("user_id = ?", userId).Find(&rets).Error
 	if err != nil {
 		return nil, err
 	}

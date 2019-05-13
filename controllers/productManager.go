@@ -34,7 +34,6 @@ func (c *ProductMangerController) SaveProduct() {
 		c.ResponseErrJson(err)
 		return
 	}
-
 	// 获取传过来的产品信息
 	form := models.Product{}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
@@ -69,6 +68,85 @@ func (c *ProductMangerController) SaveProduct() {
 		err = models.UpdateProduct(&form)
 	} else {
 		err = models.InsertProduct(&form)
+	}
+	// 发生错误则返回错误
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 成功保存,返回已保存的数据
+	c.ResponseSuccessJson(form)
+}
+
+// @Title 保存产品
+// @Description 保存产品
+// @Param	form	body	models.ProductPackage	true	"产品model"
+// @Success 200
+// @Failure 400
+// @router /saveProductPackage [post]
+func (c *ProductMangerController) SaveProductPackage() {
+	// 如果不是卖家，也不是审核员，也不是管理员，那就返回错误
+	err := c.VerifySeller()
+	if err != nil {
+		err = c.VerifyAuditor()
+	}
+	if err != nil {
+		err = c.VerifySuperAdmin()
+	}
+	if err != nil {
+		beego.BeeLogger.Warn(err.Error())
+		c.ResponseErrJson(err)
+		return
+	}
+	// 获取传过来的产品信息
+	form := models.ProductPackage{}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 先检查有没有套餐对应的产品
+	oldProduct, err := models.FindProductById(form.ProductId)
+	// 如果出错返回错误
+	if err != nil {
+		c.ResponseErrJson(resultError.NewFallFundingErr("保存套餐时出错，获取对应产品信息时出错"))
+		beego.BeeLogger.Warn("获取对应产品信息时出错")
+		return
+	}
+	// userId 对不上 也返回错误
+	if c.User.ID != oldProduct.UserId {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的产品"))
+		return
+	}
+
+	isUpdate := false
+	//  如果有 product_id 先查询是否存在 对应产品，存在则说明是要更新而不是新增
+	if form.ID > 0 {
+		oldPkg, err := models.FindProductPackageById(form.ID)
+		// 如果出错返回错误
+		if err != nil && err != gorm.ErrRecordNotFound {
+			c.ResponseErrJson(err)
+			return
+			// 如果没找到记录则标记一下，后面将新建套餐
+		} else if gorm.IsRecordNotFoundError(err) {
+			isUpdate = false
+		} else {
+			// 如果找到了记录，则标记为更新，后面对相应的套餐进行更新
+			isUpdate = true
+		}
+		// 总数增加，对库存进行校正
+		if isUpdate && form.Total != 0 && oldPkg.Total != form.Total {
+			form.Stock += (form.Total - oldPkg.Total)
+		}
+		beego.BeeLogger.Info("%s", oldPkg)
+	}
+
+	if isUpdate {
+		err = models.UpdateProductPackage(&form)
+	} else {
+		// 新建的库存等于总数
+		form.Stock = form.Total
+		err = models.InsertProductPackage(&form)
 	}
 	// 发生错误则返回错误
 	if err != nil {

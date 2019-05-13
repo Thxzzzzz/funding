@@ -62,7 +62,7 @@ func FindProductById(productId uint64) (*Product, error) {
 // 根据用户 ID 来获取产品列表
 func FindProductsByUserId(userId uint64) ([]*Product, error) {
 	var rets []*Product
-	err := db.Find(&rets).Where("user_id = ?", userId).Error
+	err := db.Where("user_id = ?", userId).Find(&rets).Error
 	return rets, err
 }
 

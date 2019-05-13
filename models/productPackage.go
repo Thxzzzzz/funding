@@ -3,7 +3,7 @@ package models
 //产品套餐
 type ProductPackage struct {
 	BaseModel
-	ProductId   string  `json:"product_id"`   //对应产品 Id
+	ProductId   uint64  `json:"product_id"`   //对应产品 Id
 	Description string  `json:"description"`  //套餐描述
 	ImageUrl    string  `json:"image_url"`    //图片链接
 	Price       float64 `json:"price"`        //套餐价格
@@ -29,14 +29,14 @@ func FindProductPackageById(productPackageId uint64) (*ProductPackage, error) {
 // 根据用户 ID 来获取产品套餐列表
 func FindProductPackagesByUserId(userId uint64) ([]*ProductPackage, error) {
 	var rets []*ProductPackage
-	err := db.Find(&rets).Where("user_id = ?", userId).Error
+	err := db.Where("user_id = ?", userId).Find(&rets).Error
 	return rets, err
 }
 
 // 根据产品 ID 来获取产品套餐列表
 func FindProductPackagesByProductId(productId uint64) ([]*ProductPackage, error) {
 	var rets []*ProductPackage
-	err := db.Find(&rets).Where("product_id = ?", productId).Error
+	err := db.Where("product_id = ?", productId).Find(&rets).Error
 	return rets, err
 }
 
