@@ -33,6 +33,13 @@ func FindProductPackagesByUserId(userId uint64) ([]*ProductPackage, error) {
 	return rets, err
 }
 
+// 根据产品 ID 来获取产品套餐列表
+func FindProductPackagesByProductId(productId uint64) ([]*ProductPackage, error) {
+	var rets []*ProductPackage
+	err := db.Find(&rets).Where("product_id = ?", productId).Error
+	return rets, err
+}
+
 // 新增产品套餐
 func InsertProductPackage(productPackage *ProductPackage) error {
 	err := db.Create(productPackage).Error

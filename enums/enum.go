@@ -2,6 +2,7 @@ package enums
 
 //审核状态枚举
 const (
+	Verify_All      = 0 // 全部状态
 	Verify_Success  = 1 // 已通过
 	Verify_Wait     = 2 // 未审核
 	Verify_UnSubmit = 3 // 未提交审核

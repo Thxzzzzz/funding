@@ -14,11 +14,11 @@ type Product struct {
 	Name            string           `json:"name"`                           //产品名
 	BigImg          string           `json:"big_img"`                        //顶部大图
 	SmallImg        string           `json:"small_img"`                      //列表小图
-	UserId          string           `json:"user_id"`                        //发布者ID
+	UserId          uint64           `json:"user_id"`                        //发布者ID
 	ProductType     int              `json:"product_type"`                   //产品类型
 	CurrentPrice    float64          `json:"current_price"`                  //当前筹集金额
 	TargetPrice     float64          `json:"target_price"`                   //目标筹集金额
-	VerifyStatus    int              `json:"verify_status" gorm:"default:2"` //审核状态(0:未通过 1:已通过 2:待审核(默认))
+	VerifyStatus    int              `json:"verify_status" gorm:"default:3"` //审核状态(1：已通过 2：待审核 3:待提交（默认） 4:未通过 )
 	Backers         int              `json:"backers"`                        //支持人数
 	EndTime         time.Time        `json:"end_time"`                       //截止时间
 	DetailHtml      string           `json:"detail_html"`                    //介绍页详情 Html
@@ -111,7 +111,7 @@ func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Produ
 		pDb = pDb.Where("product_type = ?", productType)
 	}
 	// 只查询通过验证的
-	pDb = pDb.Where("verify_status = 1")
+	pDb = pDb.Where("verify_status = ?", enums.Verify_Success)
 	// 倒序查询
 	pDb = pDb.Order("created_at DESC,end_time DESC")
 	// 查询所有符合条件的数据返回到 results 里面
