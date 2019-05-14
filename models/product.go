@@ -11,18 +11,19 @@ import (
 //产品
 type Product struct {
 	BaseModel
-	Name            string           `json:"name"`                           //产品名
-	BigImg          string           `json:"big_img"`                        //顶部大图
-	SmallImg        string           `json:"small_img"`                      //列表小图
-	UserId          uint64           `json:"user_id"`                        //发布者ID
-	ProductType     int              `json:"product_type"`                   //产品类型
-	CurrentPrice    float64          `json:"current_price"`                  //当前筹集金额
-	TargetPrice     float64          `json:"target_price"`                   //目标筹集金额
-	VerifyStatus    int              `json:"verify_status" gorm:"default:3"` //审核状态(1：已通过 2：待审核 3:待提交（默认） 4:未通过 )
-	Backers         int              `json:"backers"`                        //支持人数
-	EndTime         time.Time        `json:"end_time"`                       //截止时间
-	DetailHtml      string           `json:"detail_html"`                    //介绍页详情 Html
-	ProductPackages []ProductPackage `json:"product_packages"`               //商品套餐
+	Name            string              `json:"name"`                           //产品名
+	BigImg          string              `json:"big_img"`                        //顶部大图
+	SmallImg        string              `json:"small_img"`                      //列表小图
+	UserId          uint64              `json:"user_id"`                        //发布者ID
+	ProductType     int                 `json:"product_type"`                   //产品类型
+	CurrentPrice    float64             `json:"current_price"`                  //当前筹集金额
+	TargetPrice     float64             `json:"target_price"`                   //目标筹集金额
+	VerifyStatus    int                 `json:"verify_status" gorm:"default:3"` //审核状态(1：已通过 2：待审核 3:待提交（默认） 4:未通过 )
+	FundingStatus   enums.FundingStatus `json:"funding_status"`                 //众筹状态 TODO:(现在这个字段数据库里还没有)
+	Backers         int                 `json:"backers"`                        //支持人数
+	EndTime         time.Time           `json:"end_time"`                       //截止时间
+	DetailHtml      string              `json:"detail_html"`                    //介绍页详情 Html
+	ProductPackages []ProductPackage    `json:"product_packages"`               //商品套餐
 }
 
 // 产品类型
@@ -61,10 +62,20 @@ func FindProductById(productId uint64) (*Product, error) {
 
 // 根据用户 ID 来获取产品列表
 func FindProductsByUserId(userId uint64) ([]*Product, error) {
-	var rets []*Product
-	err := db.Where("user_id = ?", userId).Find(&rets).Error
-	return rets, err
+	var result []*Product
+	err := db.Where("user_id = ?", userId).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	timeNow := time.Now()
+	for i := range result {
+		result[i].FundingStatus = CalcFundingStatus(timeNow, result[i].EndTime,
+			result[i].CurrentPrice, result[i].TargetPrice)
+	}
+	return result, err
 }
+
+//func FinProductByVerifyStatus()
 
 // 新增产品
 func InsertProduct(product *Product) error {
@@ -119,6 +130,12 @@ func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Produ
 	if err != nil {
 		return nil, err
 	}
+
+	timeNow := time.Now()
+	for i := range results {
+		results[i].FundingStatus = CalcFundingStatus(timeNow, results[i].EndTime,
+			results[i].CurrentPrice, results[i].TargetPrice)
+	}
 	return results, nil
 }
 
@@ -169,7 +186,7 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 	// 只查询指定字段
 	cDb = cDb.Select(resultModels.ProductContentField)
 	// 只查询已通过验证的
-	cDb = cDb.Where("verify_status = 1")
+	cDb = cDb.Where("verify_status = ?", enums.Verify_Success)
 	// 未软删除的行
 	cDb = cDb.Where("deleted_at IS NULL").Table("products")
 	// 排序
@@ -182,6 +199,12 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 	// 调整 Offset(偏移量，控制页数),和 Limit (数量限制，控制每页数量）
 	cDb = cDb.Offset((page - 1) * pageSize).Limit(pageSize)
 	err = cDb.Scan(&list).Error
+
+	timeNow := time.Now()
+	for i := range list {
+		list[i].FundingStatus = CalcFundingStatus(timeNow, list[i].EndTime,
+			list[i].CurrentPrice, list[i].TargetPrice)
+	}
 	result.Page = form.Page
 	result.ProductContents = list
 	return &result, err

@@ -225,6 +225,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:ProductMangerController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductMangerController"],
         beego.ControllerComments{
+            Method: "GetAllProductBySellerId",
+            Router: `/allProductBySellerId`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:ProductMangerController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductMangerController"],
+        beego.ControllerComments{
             Method: "GetPkgListByProductId",
             Router: `/pkgListByProductId`,
             AllowHTTPMethods: []string{"get"},

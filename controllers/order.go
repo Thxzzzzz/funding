@@ -36,12 +36,13 @@ func (c *OrderController) AddOrder() {
 		c.ResponseErrJson(err)
 		return
 	}
-	orders, err := models.NewOrderFromForm(user.ID, &form)
+	// 返回订单 ID 列表
+	orderIdList, err := models.NewOrderFromForm(user.ID, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
-	c.ResponseSuccessJson(orders)
+	c.ResponseSuccessJson(orderIdList)
 }
 
 // @Title 根据页面信息来获取订单列表

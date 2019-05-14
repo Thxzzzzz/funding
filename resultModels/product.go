@@ -1,6 +1,7 @@
 package resultModels
 
 import (
+	"funding/enums"
 	"time"
 )
 
@@ -19,15 +20,16 @@ type HomeResult struct {
 const ProductContentField string = "id,name,product_type,big_img,small_img,current_price,target_price,backers,end_time"
 
 type ProductContent struct {
-	ID           uint64    `json:"product_id"`
-	Name         string    `json:"name"`          //产品名
-	ProductType  int       `json:"product_type"`  //产品类型
-	BigImg       string    `json:"big_img"`       //大图
-	SmallImg     string    `json:"small_img"`     //列表小图
-	CurrentPrice float64   `json:"current_price"` //当前筹集金额
-	TargetPrice  float64   `json:"target_price"`  //目标筹集金额
-	Backers      int       `json:"backers"`       //支持人数
-	EndTime      time.Time `json:"end_time"`      //截止时间
+	ID            uint64              `json:"product_id"`
+	Name          string              `json:"name"`           //产品名
+	ProductType   int                 `json:"product_type"`   //产品类型
+	BigImg        string              `json:"big_img"`        //大图
+	SmallImg      string              `json:"small_img"`      //列表小图
+	CurrentPrice  float64             `json:"current_price"`  //当前筹集金额
+	TargetPrice   float64             `json:"target_price"`   //目标筹集金额
+	Backers       int                 `json:"backers"`        //支持人数
+	EndTime       time.Time           `json:"end_time"`       //截止时间
+	FundingStatus enums.FundingStatus `json:"funding_status"` //众筹状态
 }
 
 // 产品列表

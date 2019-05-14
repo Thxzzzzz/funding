@@ -190,3 +190,21 @@ func (c *ProductMangerController) GetPkgListByProductId() {
 	}
 	c.ResponseSuccessJson(result)
 }
+
+// 根据卖家UserID 获取产品信息
+// @router /allProductBySellerId [get]
+func (c *ProductMangerController) GetAllProductBySellerId() {
+	err := c.VerifySeller()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 根据卖家 ID 获取
+	result, err := models.FindProductsByUserId(c.User.ID)
+
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
