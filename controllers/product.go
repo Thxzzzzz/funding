@@ -230,3 +230,13 @@ func (c *ProductController) GetSellerByProductId() {
 	//TODO 查询对应的License信息
 
 }
+
+// @Title 获取统计信息
+// @Description 获取统计信息
+// @Success	200
+// @Failure 400
+// @router /getProductCountInfo [get]
+func (c *ProductController) GetProductCountInfo() {
+
+	//TODO 获取统计信息
+}
