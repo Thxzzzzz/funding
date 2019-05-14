@@ -29,7 +29,7 @@ type Product struct {
 
 // 产品类型
 type ProductType struct {
-	ID   uint64 `json:"id" gorm:"primary_key"` //类型 id
+	ID   int    `json:"id" gorm:"primary_key"` //类型 id
 	Name string `json:"name"`                  //类型名称
 }
 

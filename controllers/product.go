@@ -8,6 +8,7 @@ import (
 	"funding/resultModels"
 	"funding/utils"
 	"github.com/astaxie/beego"
+	"github.com/jinzhu/gorm"
 )
 
 // 产品相关
@@ -66,26 +67,42 @@ func (c *ProductController) GetHome() {
 
 	// XXX精选 前端 type == 3 7个
 	//TODO 几大类别的热门
-	//科技类
-	var techType = 1
-	techProduct, err := models.GetProductsByPageAndType(1, 7, techType)
+	productTypes, err := models.GetProductTypeList()
 	if err != nil {
-		c.ResponseErrJson(err)
+		c.ResponseErrJson(resultError.NewFallFundingErr("获取产品类型失败"))
 		return
-	} else {
+	}
+	for _, productType := range productTypes {
+		//var techType = 1
+		products, err := models.GetProductsByPageAndType(1, 7, productType.ID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			c.ResponseErrJson(err)
+			return
+		}
+		// 这个类别没有记录就跳到下一个
+		if err == gorm.ErrRecordNotFound {
+			continue
+		}
+		// 小于 6 个 就跳过
+		if len(products) < 6 {
+			continue
+		}
 		techResult := resultModels.HomeResult{
-			Name:     "科技精选",
+			Name:     productType.Name + "精选",
 			LimitNum: 7,
 			Type:     3,
 		}
-		for _, p := range techProduct {
+
+		for _, p := range products {
 			var productContent resultModels.ProductContent
 			utils.CopyStructJ(&p, &productContent)
 			productContent.ID = p.ID
 			techResult.ProductContents = append(techResult.ProductContents, productContent)
 		}
 		home = append(home, techResult)
+
 	}
+
 	result = resultModels.SuccessResult(home)
 	c.ResponseJson(result)
 }
