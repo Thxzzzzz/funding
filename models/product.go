@@ -19,6 +19,7 @@ type Product struct {
 	CurrentPrice    float64             `json:"current_price"`                  //当前筹集金额
 	TargetPrice     float64             `json:"target_price"`                   //目标筹集金额
 	VerifyStatus    int                 `json:"verify_status" gorm:"default:3"` //审核状态(1：已通过 2：待审核 3:待提交（默认） 4:未通过 )
+	VerifyMessage   string              `json:"verify_message"`                 //审核消息（审核失败的原因）
 	FundingStatus   enums.FundingStatus `json:"funding_status"`                 //众筹状态 TODO:(现在这个字段数据库里还没有)
 	Backers         int                 `json:"backers"`                        //支持人数
 	EndTime         time.Time           `json:"end_time"`                       //截止时间

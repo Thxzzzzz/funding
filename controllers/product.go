@@ -201,3 +201,32 @@ func (c *ProductController) GetCheckoutPkgInfo() {
 	}
 	c.ResponseSuccessJson(result)
 }
+
+// @Title 根据商品 ID 获取商家信息
+// @Description 根据商品 ID 获取商家信息
+// @Param	product_id	query	int	true	"套餐ID"
+// @Success	200
+// @Failure 400
+// @router /getSellerByProductId [get]
+func (c *ProductController) GetSellerByProductId() {
+	productId, err := c.GetUint64("product_id")
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	// 查询对应订单
+	product, err := models.FindProductById(productId)
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	// 查询对应卖家
+	user, err := models.FindUserById(product.UserId)
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	fmt.Println(user)
+	//TODO 查询对应的License信息
+
+}
