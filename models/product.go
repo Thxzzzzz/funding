@@ -237,6 +237,20 @@ func GetCheckoutPkgInfoFromPkgId(pkgId uint64) (*resultModels.CheckoutPkgInfo, e
 	return &result, err
 }
 
+const sqlCountProduct = `
+SUM(current_price) AS support_price_count,
+MAX(current_price) AS max_support_price,
+SUM(backers) AS backers_count,
+MAX(backers) AS max_backers
+`
+
+// 统计产品信息
+func GetAllProductCountInfo() (resultModels.ProductCountInfo, error) {
+	countInfo := resultModels.ProductCountInfo{}
+	err := db.Table("products").Select(sqlCountProduct).Scan(&countInfo).Error
+	return countInfo, err
+}
+
 // 获取产品的截止日期,这个可以用作购物车的失效处理,或者在获取购物车列表的时候就处理？
 //func GetEndTimeListInProductId(productIds []uint64) ([]time.Time, error) {
 //	results := []time.Time{}

@@ -53,3 +53,12 @@ func TestGetProductTypeList(t *testing.T) {
 	}
 	t.Log(results)
 }
+
+func TestGetAllProductCountInfo(t *testing.T) {
+	result, err := models.GetAllProductCountInfo()
+	if err != nil {
+		t.Fail()
+		t.Log(err)
+	}
+	t.Log(result)
+}

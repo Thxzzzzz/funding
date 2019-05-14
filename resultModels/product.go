@@ -52,6 +52,14 @@ type CheckoutPkgInfo struct {
 	EndTime          time.Time `json:"end_time"`           // 截止时间
 }
 
+// 产品统计信息
+type ProductCountInfo struct {
+	SupportPriceCount float64 `json:"support_price_count"` // 累计支持金额
+	MaxSupportPrice   float64 `json:"max_support_price"`   // 最高筹集金额
+	BackersCount      uint64  `json:"backers_count"`       // 累计支持人数
+	MaxBackers        uint64  `json:"max_backers"`         // 单项最高支持人数
+}
+
 //// 截止时间信息
 //type EndTimeItem struct {
 //	ProductId uint64    `json:"product_id"` // 产品 Id

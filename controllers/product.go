@@ -254,6 +254,39 @@ func (c *ProductController) GetSellerByProductId() {
 // @Failure 400
 // @router /getProductCountInfo [get]
 func (c *ProductController) GetProductCountInfo() {
+	// 累计支持金额
+	// 最高筹集金额
+	// 累计支持人数
+	// 单项最高支持人数
+	countInfo, err := models.GetAllProductCountInfo()
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	c.ResponseSuccessJson(countInfo)
+}
 
-	//TODO 获取统计信息
+// @Title 根据商品 ID 获取商家信息
+// @Description 根据商品 ID 获取商家信息
+// @Param	product_id	query	int	true	"套餐ID"
+// @Param	page	query	int	true	"页码"
+// @Param	page_size	query	int	true	"每页数量"
+// @Success	200
+// @Failure 400
+// @router /getCommentInfoByProductId [get]
+func (c *ProductController) GetCommentInfoByProductId() {
+	form := forms.CommentListByProductForm{}
+	// 获取所有 query 数据组成的 map
+	values := c.Ctx.Request.URL.Query()
+	// 解析到 Struct 中
+	err := beego.ParseForm(values, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+	}
+	results, err := models.GetResultCommentInfosByProductId(&form)
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	c.ResponseSuccessJson(results)
 }
