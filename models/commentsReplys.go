@@ -11,6 +11,12 @@ type CommentsReply struct {
 	Content   string `json:"content"`    // 评论内容
 }
 
+// 由于 CommentsReply 对应的数据库表命名为 comments_replys 不是标准的英文复数形式，不符合 Gorm 的约定
+// 所以这里要对 CommentsReply 对应的表名进行声明
+func (CommentsReply) TableName() string {
+	return "comments_replys"
+}
+
 // 返回给前端的回复信息
 type ResultCommentReply struct {
 	ID        uint64    `json:"id" gorm:"primary_key"`
