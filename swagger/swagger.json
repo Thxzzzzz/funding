@@ -895,6 +895,66 @@
                 }
             }
         },
+        "/user/getInfoById": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "根据 UserId 来获取对应 User 的信息",
+                "operationId": "UserControllers.根据 UserId 来获取对应 User 的信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "用户ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/getLicenseByUserId": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "根据 user_id 来获取对应 License 的信息",
+                "operationId": "UserControllers.根据 user_id 来获取对应 License 的信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "user_id",
+                        "description": "用户ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/id": {
             "get": {
                 "tags": [

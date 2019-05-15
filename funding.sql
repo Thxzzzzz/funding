@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_addresses_deleted_at` (`deleted_at`),
   KEY `idx_addresses_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户收货地址表';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户收货地址表';
 
 -- 正在导出表  funding.addresses 的数据：~7 rows (大约)
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
@@ -42,7 +42,15 @@ REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_
 	(4, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:56:50', '2019-04-16 01:59:21', '2019-04-16 01:59:21'),
 	(5, 20003, '测试大佬update', '广西壮族自治区桂林市四电之一', '18512345521', '2019-04-16 02:00:30', '2019-04-20 15:58:26', NULL),
 	(6, 20003, '什么鬼', '桂林电子科技大学', '18511123456', '2019-04-20 14:51:14', '2019-04-20 15:30:24', '2019-04-20 15:30:24'),
-	(7, 20003, '测试大佬123', '桂林电子科技大学', '185123123123', '2019-04-30 00:31:19', '2019-04-30 00:31:19', NULL);
+	(7, 20003, '测试大佬123', '桂林电子科技大学', '185123123123', '2019-04-30 00:31:19', '2019-04-30 00:31:19', NULL),
+	(8, 20003, '新地址', '桂电123', '12345678901', '2019-05-15 22:04:50', '2019-05-15 22:06:29', '2019-05-15 22:06:30'),
+	(9, 20003, '新的人', '新的地址', '1234567801', '2019-05-15 22:10:20', '2019-05-15 22:11:56', '2019-05-15 22:11:56'),
+	(10, 20003, '新的人', '新的地址', '1234567801', '2019-05-15 22:12:07', '2019-05-15 22:25:27', '2019-05-15 22:25:27'),
+	(11, 20003, '新的人', '新的地址', '18511112345', '2019-05-15 22:25:40', '2019-05-15 22:27:04', '2019-05-15 22:27:05'),
+	(12, 20003, '新的人', '新的地址', '123456', '2019-05-15 22:27:13', '2019-05-15 22:28:02', '2019-05-15 22:28:02'),
+	(13, 20003, '新的人', '新的地址', '1234567801', '2019-05-15 22:28:11', '2019-05-15 22:28:48', '2019-05-15 22:28:49'),
+	(14, 20003, '新的人', '新的地址', '1234567890', '2019-05-15 22:28:59', '2019-05-15 22:30:21', '2019-05-15 22:30:21'),
+	(15, 20003, '新的人', '新的地址', '12345646712', '2019-05-15 22:30:33', '2019-05-15 22:30:33', NULL);
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 
 -- 导出  表 funding.base_table 结构
@@ -87,8 +95,8 @@ REPLACE INTO `carts` (`id`, `user_id`, `product_package_id`, `nums`, `checked`, 
 	(13, 20003, 111111114, 8, 0, '2019-04-25 21:18:24', '2019-05-10 02:08:40', '2019-05-10 02:08:41'),
 	(18, 20003, 111111145, 16, 0, '2019-05-07 00:27:24', '2019-05-10 02:08:34', '2019-05-10 02:08:35'),
 	(23, 20003, 111111162, 8, 1, '2019-05-07 20:43:37', '2019-05-10 02:08:39', '2019-05-10 02:08:39'),
-	(24, 20003, 111111164, 2, 1, '2019-05-09 20:55:01', '2019-05-11 22:44:07', NULL),
-	(25, 20003, 111111165, 1, 1, '2019-05-09 20:55:01', '2019-05-09 20:55:01', NULL),
+	(24, 20003, 111111164, 2, 1, '2019-05-09 20:55:01', '2019-05-15 22:30:39', '2019-05-15 22:30:39'),
+	(25, 20003, 111111165, 1, 1, '2019-05-09 20:55:01', '2019-05-15 22:30:39', '2019-05-15 22:30:39'),
 	(26, 20003, 111111163, 3, 1, '2019-05-09 20:55:01', '2019-05-10 02:08:42', '2019-05-10 02:08:42'),
 	(27, 20002, 111111114, 8, 0, '2019-05-10 16:03:24', '2019-05-10 16:03:24', NULL),
 	(28, 20002, 111111162, 8, 1, '2019-05-10 16:03:24', '2019-05-10 16:03:24', NULL),
@@ -155,25 +163,26 @@ REPLACE INTO `comments_replys` (`id`, `comment_id`, `user_id`, `is_seller`, `con
 -- 导出  表 funding.licenses 结构
 DROP TABLE IF EXISTS `licenses`;
 CREATE TABLE IF NOT EXISTS `licenses` (
-  `id` bigint(24) unsigned NOT NULL COMMENT 'Id',
-  `compony_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司名称',
-  `user_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '对应账号ID',
+  `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
+  `company_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司名称',
+  `description` varchar(500) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司描述',
+  `user_id` bigint(24) NOT NULL COMMENT '对应账号ID',
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '联系地址',
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '官方电话',
   `license_image_url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '执照图片地址',
-  `verify` tinyint(1) NOT NULL DEFAULT '2' COMMENT '审核情况 0->审核不通过 1->审核通过 2->未审核',
+  `verify` tinyint(1) NOT NULL DEFAULT '2' COMMENT '审核情况 1：已通过 2：待审核 3: 待提交 4: 未通过 ',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间(软删除) NULL为未删除',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_licenses_user_id` (`user_id`) USING BTREE,
+  UNIQUE KEY `idx_licenses_user_id` (`user_id`) USING BTREE,
   KEY `idx_licenses_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
+) ENGINE=InnoDB AUTO_INCREMENT=11111112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
 
 -- 正在导出表  funding.licenses 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `licenses` DISABLE KEYS */;
-REPLACE INTO `licenses` (`id`, `compony_name`, `user_id`, `address`, `phone`, `license_image_url`, `verify`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(11111111, '北京驰讯通科技有限公司', 'chixuntech', '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '2019-03-09 18:40:38', '2019-03-09 18:43:35', NULL);
+REPLACE INTO `licenses` (`id`, `company_name`, `description`, `user_id`, `address`, `phone`, `license_image_url`, `verify`, `created_at`, `updated_at`, `deleted_at`) VALUES
+	(11111111, '北京驰讯通科技有限公司', '我们是一家科技服务公司', 20002, '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '2019-03-09 18:40:38', '2019-05-16 01:27:32', NULL);
 /*!40000 ALTER TABLE `licenses` ENABLE KEYS */;
 
 -- 导出  表 funding.orders 结构
@@ -204,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `idx_orders_seller_id` (`seller_id`),
   KEY `idx_product_id` (`product_id`),
   KEY `idx_orders_package_id` (`product_package_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表，用来存储订单信息';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表，用来存储订单信息';
 
 -- 正在导出表  funding.orders 的数据：~12 rows (大约)
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
@@ -220,7 +229,9 @@ REPLACE INTO `orders` (`id`, `user_id`, `name`, `address`, `phone`, `seller_id`,
 	(9, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '185123123123', 20002, 11111, 111111113, 3, 339.00, 1017.00, 4, '94918760318', '2019-05-11 20:41:43', NULL, NULL, '2019-05-08 00:44:54', '2019-05-12 02:46:15', NULL),
 	(10, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', 20002, 11132, 111111175, 1, 39.00, 39.00, 2, '', '2019-05-11 20:48:33', NULL, NULL, '2019-05-08 22:12:54', '2019-05-11 20:48:33', NULL),
 	(11, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', 20002, 11128, 111111162, 4, 139.00, 556.00, 1, '', NULL, NULL, NULL, '2019-05-08 22:34:52', '2019-05-10 16:40:57', NULL),
-	(12, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', 20002, 11121, 111111132, 1, 278.00, 278.00, 2, '', '2019-05-11 20:41:46', NULL, NULL, '2019-05-09 09:22:49', '2019-05-11 20:41:47', NULL);
+	(12, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', 20002, 11121, 111111132, 1, 278.00, 278.00, 2, '', '2019-05-11 20:41:46', NULL, NULL, '2019-05-09 09:22:49', '2019-05-11 20:41:47', NULL),
+	(13, 20003, '新的人', '新的地址', '12345646712', 20002, 11128, 111111164, 2, 595.00, 1190.00, 1, '', NULL, NULL, NULL, '2019-05-15 22:30:39', '2019-05-15 22:30:39', NULL),
+	(14, 20003, '新的人', '新的地址', '12345646712', 20002, 11128, 111111165, 1, 1090.00, 1090.00, 1, '', NULL, NULL, NULL, '2019-05-15 22:30:39', '2019-05-15 22:30:39', NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 
 -- 导出  表 funding.permissions 结构
@@ -442,7 +453,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),
-	(20002, 'shangjia1', '123456', '驰讯通科技', '', '0', 2, 0, '', 0, '11111111', '2019-03-09 17:03:37', '2019-05-08 20:39:30', NULL),
+	(20002, 'shangjia1', '123456', '驰讯通科技', 'cxt@cxt.com', '0', 2, 0, '', 0, '11111111', '2019-03-09 17:03:37', '2019-05-16 01:29:05', NULL),
 	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 3, '', '2019-04-15 14:22:26', '2019-04-30 00:27:32', NULL),
 	(20004, 'test2', '123456', '测试2', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 20:47:28', '2019-04-15 20:50:00', NULL),
 	(20005, 'test3', '123456', '测试3', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:11:16', '2019-04-15 21:12:23', NULL),

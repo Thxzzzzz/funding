@@ -228,6 +228,46 @@ func (c *UserControllers) Info() {
 	c.ResponseJson(result)
 }
 
+// @Title 根据 UserId 来获取对应 User 的信息
+// @Description 根据 UserId 来获取对应 User 的信息
+// @Param	id	query	int	true	"用户ID"
+// @Success 200	{object} models.User
+// @Failure 400
+// @router /getInfoById [get]
+func (c *UserControllers) GetInfoById() {
+	id, err := c.GetUint64("id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.FindUserById(id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
+
+// @Title 根据 user_id 来获取对应 License 的信息
+// @Description 根据 user_id 来获取对应 License 的信息
+// @Param	user_id	query	int	true	"用户ID"
+// @Success 200	{object} models.User
+// @Failure 400
+// @router /getLicenseByUserId [get]
+func (c *UserControllers) GetLicenseByUserId() {
+	id, err := c.GetUint64("user_id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.FindLicensesByUserId(id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
+
 const imagesPath = "uploadfile/images"
 const baseUrl = "http://127.0.0.1:8080/"
 
