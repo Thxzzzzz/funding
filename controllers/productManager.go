@@ -174,7 +174,11 @@ func (c *ProductMangerController) GetProductById() {
 	c.ResponseSuccessJson(result)
 }
 
-// 根据产品 Id 获取产品信息
+// @Title 根据产品 Id 获取产品信息
+// @Description 根据卖家UserID 根据产品 Id 获取产品信息
+// @Param	product_id	query	int	true	"套餐ID"
+// @Success	200
+// @Failure 400
 // @router /pkgListByProductId [get]
 func (c *ProductMangerController) GetPkgListByProductId() {
 	// 获取传过来的Id
@@ -191,9 +195,13 @@ func (c *ProductMangerController) GetPkgListByProductId() {
 	c.ResponseSuccessJson(result)
 }
 
-// 根据卖家UserID 获取产品信息
+// @Title 根据卖家UserID 获取产品信息 (从Token里取UserID)
+// @Description 根据卖家UserID 获取产品信息 (从Token里取UserID)
+// @Success	200
+// @Failure 400
 // @router /allProductBySellerId [get]
 func (c *ProductMangerController) GetAllProductBySellerId() {
+	// 验证是否是卖家
 	err := c.VerifySeller()
 	if err != nil {
 		c.ResponseErrJson(err)

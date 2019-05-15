@@ -178,6 +178,169 @@
                 }
             }
         },
+        "/pm/allProductBySellerId": {
+            "get": {
+                "tags": [
+                    "pm"
+                ],
+                "description": "根据卖家UserID 获取产品信息 (从Token里取UserID)",
+                "operationId": "ProductMangerController.根据卖家UserID 获取产品信息 (从Token里取UserID)",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/pm/pkgListByProductId": {
+            "get": {
+                "tags": [
+                    "pm"
+                ],
+                "description": "根据卖家UserID 根据产品 Id 获取产品信息",
+                "operationId": "ProductMangerController.根据产品 Id 获取产品信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "product_id",
+                        "description": "套餐ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/pm/productById": {
+            "get": {
+                "tags": [
+                    "pm"
+                ]
+            }
+        },
+        "/pm/save": {
+            "post": {
+                "tags": [
+                    "pm"
+                ],
+                "description": "保存产品",
+                "operationId": "ProductMangerController.保存产品",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "产品model",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/pm/saveCommentsInfo": {
+            "post": {
+                "tags": [
+                    "pm"
+                ],
+                "description": "保存评论信息",
+                "operationId": "ProductMangerController.保存评论信息",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "评论信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CommentsInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/pm/saveCommentsReply": {
+            "post": {
+                "tags": [
+                    "pm"
+                ],
+                "description": "保存回复信息",
+                "operationId": "ProductMangerController.保存回复信息",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "回复信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CommentsReply"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/pm/saveProductPackage": {
+            "post": {
+                "tags": [
+                    "pm"
+                ],
+                "description": "保存产品",
+                "operationId": "ProductMangerController.保存产品",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "产品model",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductPackage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/product/all": {
             "get": {
                 "tags": [
@@ -248,6 +411,93 @@
                         "schema": {
                             "$ref": "#/definitions/models.Product"
                         }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/product/getCommentInfoByProductId": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "根据商品 ID 获取商家信息",
+                "operationId": "ProductController.根据商品 ID 获取商家信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "product_id",
+                        "description": "套餐ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "页码",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "description": "每页数量",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/product/getProductCountInfo": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "获取统计信息",
+                "operationId": "ProductController.获取统计信息",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/product/getSellerByProductId": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "根据商品 ID 获取商家信息",
+                "operationId": "ProductController.根据商品 ID 获取商家信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "product_id",
+                        "description": "套餐ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
                     },
                     "400": {
                         "description": ""
@@ -795,7 +1045,7 @@
                 "parameters": [
                     {
                         "in": "formData",
-                        "name": "image",
+                        "name": "file",
                         "description": "图片文件",
                         "required": true,
                         "schema": {
@@ -811,6 +1061,11 @@
                         "description": ""
                     }
                 }
+            },
+            "options": {
+                "tags": [
+                    "user"
+                ]
             }
         }
     },
@@ -1086,6 +1341,54 @@
                 }
             }
         },
+        "models.CommentsInfo": {
+            "title": "CommentsInfo",
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "is_seller": {
+                    "type": "boolean"
+                },
+                "product_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.CommentsReply": {
+            "title": "CommentsReply",
+            "type": "object",
+            "properties": {
+                "comment_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "is_seller": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
         "models.Product": {
             "title": "Product",
             "type": "object",
@@ -1107,6 +1410,9 @@
                 "end_time": {
                     "type": "string",
                     "format": "datetime"
+                },
+                "funding_status": {
+                    "$ref": "#/definitions/enums.FundingStatus"
                 },
                 "id": {
                     "type": "integer",
@@ -1133,6 +1439,10 @@
                     "format": "double"
                 },
                 "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "verify_message": {
                     "type": "string"
                 },
                 "verify_status": {
@@ -1172,7 +1482,8 @@
                     "format": "double"
                 },
                 "product_id": {
-                    "type": "string"
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "stock": {
                     "type": "integer",

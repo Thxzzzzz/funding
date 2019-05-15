@@ -42,6 +42,11 @@ func init() {
 				&controllers.ProductMangerController{},
 			),
 		),
+		beego.NSNamespace("/comments",
+			beego.NSInclude(
+				&controllers.CommentController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

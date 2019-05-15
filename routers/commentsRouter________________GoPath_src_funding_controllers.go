@@ -97,6 +97,24 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["funding/controllers:CommentController"] = append(beego.GlobalControllerRouter["funding/controllers:CommentController"],
+        beego.ControllerComments{
+            Method: "SaveCommentsInfo",
+            Router: `/saveCommentsInfo`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:CommentController"] = append(beego.GlobalControllerRouter["funding/controllers:CommentController"],
+        beego.ControllerComments{
+            Method: "SaveCommentsReply",
+            Router: `/saveCommentsReply`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
         beego.ControllerComments{
             Method: "AddOrder",
