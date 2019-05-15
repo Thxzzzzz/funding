@@ -25,6 +25,7 @@ type ResultCommentInfo struct {
 	Content   string               `json:"content"`    // 评论内容
 	CreatedAt time.Time            `json:"created_at"` // 创建时间
 	Username  string               `json:"username"`   // 用户名
+	Nickname  string               `json:"nickname"`   // 昵称
 	IconUrl   string               `json:"icon_url"`   // 用户头像
 	Replys    []ResultCommentReply `json:"replys"`     // 回复信息
 }
@@ -82,7 +83,7 @@ func UpdateCommentsInfo(commentsInfo *CommentsInfo) error {
 // 根据产品 ID 获取对应产品的评论
 const sqlGetResultCommentInfosByProductId = `
  SELECT
- 	c.*,u.username,u.icon_url
+ 	c.*,u.username,u.nickname,u.icon_url
  FROM 
  comments_infos c JOIN
  users u ON c.user_id = u.id

@@ -20,6 +20,7 @@ type ResultCommentReply struct {
 	Content   string    `json:"content"`    // 评论内容
 	CreatedAt time.Time `json:"created_at"` // 创建时间
 	Username  string    `json:"username"`   // 用户名
+	Nickname  string    `json:"nickname"`   // 昵称
 	IconUrl   string    `json:"icon_url"`   // 用户头像
 }
 
@@ -76,7 +77,7 @@ func UpdateCommentsReply(commentsReply *CommentsReply) error {
 // 根据产品 ID 获取对应产品的评论
 const sqlGetResultCommentReplaysByCommentId = `
  SELECT
- 	c.*,u.username,u.icon_url
+ 	c.*,u.username,u.nickname,u.icon_url
  FROM 
  comments_replys c JOIN
  users u ON c.user_id = u.id
