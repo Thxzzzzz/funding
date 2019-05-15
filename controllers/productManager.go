@@ -79,8 +79,7 @@ func (c *ProductMangerController) SaveProduct() {
 }
 
 // @Title 保存产品
-// @Description 保存产品
-// @Param	form	body	models.ProductPackage	true	"产品model"
+// @Description 保存产品 不知道怎么写文件参数，所以这个API 没法用 swagger 测试
 // @Success 200
 // @Failure 400
 // @router /saveProductPackage [post]

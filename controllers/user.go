@@ -179,14 +179,14 @@ func (c *UserControllers) Login() {
 
 	// 这是商城端的登录接口，所以只能是商家或者买家登录
 	if dbResult.RoleId != enums.Role_Buyer && dbResult.RoleId != enums.Role_Seller {
-		c.ResponseErrJson(&resultError.UserNotExitError)
+		c.ResponseErrJson(&resultError.UserPasswordError)
 		return
 	}
 
 	// 3. 比较得出结果后，如果正确登录则将信息加入到 Session 中
 	if dbResult.Password != loginForm.Password {
 		// 密码不正确也返回错误
-		c.ResponseErrJson(&resultError.UserNotExitError)
+		c.ResponseErrJson(&resultError.UserPasswordError)
 		return
 	}
 

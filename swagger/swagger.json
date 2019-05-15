@@ -8,6 +8,62 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/comments/saveCommentsInfo": {
+            "post": {
+                "tags": [
+                    "comments"
+                ],
+                "description": "保存评论信息",
+                "operationId": "CommentController.保存评论信息",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "评论信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CommentsInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/comments/saveCommentsReply": {
+            "post": {
+                "tags": [
+                    "comments"
+                ],
+                "description": "保存回复信息",
+                "operationId": "CommentController.保存回复信息",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "回复信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CommentsReply"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/order/addOrder": {
             "post": {
                 "tags": [
@@ -257,80 +313,13 @@
                 }
             }
         },
-        "/pm/saveCommentsInfo": {
-            "post": {
-                "tags": [
-                    "pm"
-                ],
-                "description": "保存评论信息",
-                "operationId": "ProductMangerController.保存评论信息",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "form",
-                        "description": "评论信息",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CommentsInfo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/pm/saveCommentsReply": {
-            "post": {
-                "tags": [
-                    "pm"
-                ],
-                "description": "保存回复信息",
-                "operationId": "ProductMangerController.保存回复信息",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "form",
-                        "description": "回复信息",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CommentsReply"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/pm/saveProductPackage": {
             "post": {
                 "tags": [
                     "pm"
                 ],
-                "description": "保存产品",
+                "description": "保存产品 不知道怎么写文件参数，所以这个API 没法用 swagger 测试",
                 "operationId": "ProductMangerController.保存产品",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "form",
-                        "description": "产品model",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ProductPackage"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": ""
@@ -1619,6 +1608,10 @@
         {
             "name": "pm",
             "description": "产品管理相关（商家 审核员）\n为了方便，这个 Controller 的 URL 地址缩写为 /pm\n"
+        },
+        {
+            "name": "comments",
+            "description": "产品详情获取评论列表是写在 /controller/product.go 里面\n评论相关 主要是提交评论和回复，需要验证身份\n"
         }
     ]
 }
