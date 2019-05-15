@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"funding/enums"
 	"funding/forms"
 	"funding/models"
 	"funding/objects"
@@ -158,14 +159,7 @@ func (c *UserControllers) Login() {
 	// 1. 首先获取请求中的数据
 	//先声明一个 struct 其结构对应请求的 form 表单数据
 	loginForm := forms.LoginForm{}
-	var result resultModels.Result
-	////将 RequestBody 的值填充到 struct 之中
-	//err := c.ParseForm(&loginForm)
-	////如果解析时出现错误，则说明请求的参数有误
-	//if err != nil {
-	//	c.ResponseErrJson(err)
-	//	return
-	//}
+	//var result resultModels.Result
 
 	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &loginForm)
@@ -183,15 +177,20 @@ func (c *UserControllers) Login() {
 		return
 	}
 
-	// 3. 比较得出结果后，如果正确登录则将信息加入到 Session 中
-	if dbResult.Password != loginForm.Password {
-		// 密码不正确也返回错误
-		result = resultModels.ErrorResult(resultModels.FALL, "用户名或密码错误")
-		c.ResponseJson(result)
+	// 这是商城端的登录接口，所以只能是商家或者买家登录
+	if dbResult.RoleId != enums.Role_Buyer && dbResult.RoleId != enums.Role_Seller {
+		c.ResponseErrJson(&resultError.UserNotExitError)
 		return
 	}
 
-	result = resultModels.SuccessResult(dbResult)
+	// 3. 比较得出结果后，如果正确登录则将信息加入到 Session 中
+	if dbResult.Password != loginForm.Password {
+		// 密码不正确也返回错误
+		c.ResponseErrJson(&resultError.UserNotExitError)
+		return
+	}
+
+	result := resultModels.SuccessResult(dbResult)
 	//向当前 Session 写入 userId
 	c.SetSession(SESSION_USER_KEY, dbResult.ID)
 	//TODO 单点登录
