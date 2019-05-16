@@ -181,8 +181,8 @@ CREATE TABLE IF NOT EXISTS `licenses` (
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '联系地址',
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '官方电话',
   `license_image_url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '执照图片地址',
-  `verify_status` tinyint(1) NOT NULL DEFAULT '2' COMMENT '审核情况 1：已通过 2：待审核 3: 待提交 4: 未通过 ',
-  `verify_message` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '审核消息（不通过时显示）',
+  `verify_status` tinyint(3) NOT NULL DEFAULT '3' COMMENT '审核情况 1：已通过 2：待审核 3: 待提交 4: 未通过 ',
+  `verify_message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '审核消息（不通过时显示）',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间(软删除) NULL为未删除',
@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `licenses` (
   KEY `idx_licenses_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11111112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
 
--- 正在导出表  funding.licenses 的数据：~1 rows (大约)
+-- 正在导出表  funding.licenses 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `licenses` DISABLE KEYS */;
 REPLACE INTO `licenses` (`id`, `company_name`, `description`, `user_id`, `address`, `phone`, `license_image_url`, `verify_status`, `verify_message`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(11111111, '北京驰讯通科技有限公司', '我们是一家科技服务公司', 20002, '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '', '2019-03-09 18:40:38', '2019-05-16 01:27:32', NULL);
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `nums` int(5) unsigned NOT NULL DEFAULT '0' COMMENT '购买数量',
   `unit_price` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '单价(可简化字段)',
   `total_price` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '总价(或许也是可简化)',
-  `status` int(5) NOT NULL DEFAULT '1' COMMENT '订单装填，1:下单,2:付款,3:配货,4:出库,5:交易成功,6:退款,7:交易取消',
+  `status` int(5) NOT NULL DEFAULT '1' COMMENT '订单状态，1:下单,2:付款,3:配货,4:出库,5:交易成功,6:退款,7:交易取消',
   `checking_number` varchar(24) NOT NULL DEFAULT '' COMMENT '物流单号',
   `paid_at` timestamp NULL DEFAULT NULL COMMENT '支付时间',
   `close_at` timestamp NULL DEFAULT NULL COMMENT '订单关闭时间',
@@ -417,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='角色表，记录角色类型';
 
--- 正在导出表  funding.roles 的数据：~4 rows (大约)
+-- 正在导出表  funding.roles 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 REPLACE INTO `roles` (`id`, `name`) VALUES
 	(0, '普通用户'),
@@ -447,7 +447,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `username_idx` (`username`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=20008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户';
 
--- 正在导出表  funding.users 的数据：~7 rows (大约)
+-- 正在导出表  funding.users 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),

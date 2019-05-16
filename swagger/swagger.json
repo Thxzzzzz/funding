@@ -1033,7 +1033,7 @@
                     "user"
                 ],
                 "description": "用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期",
-                "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息",
+                "operationId": "ManagerUserController.根据当前的 Session 查询对应的用户信息",
                 "responses": {
                     "200": {
                         "description": "",
@@ -1053,7 +1053,7 @@
                     "user"
                 ],
                 "description": "用账号密码登录",
-                "operationId": "UserControllers.登录",
+                "operationId": "ManagerUserController.登录",
                 "parameters": [
                     {
                         "in": "body",
@@ -1084,7 +1084,7 @@
                     "user"
                 ],
                 "description": "注销",
-                "operationId": "UserControllers.注销",
+                "operationId": "ManagerUserController.注销",
                 "responses": {
                     "200": {
                         "description": ""
@@ -1101,15 +1101,15 @@
                     "user"
                 ],
                 "description": "注册",
-                "operationId": "UserControllers.注册",
+                "operationId": "ManagerUserController.注册",
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "registerForm",
+                        "name": "user",
                         "description": "注册信息",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/forms.RegisterForm"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -1714,6 +1714,14 @@
         {
             "name": "comments",
             "description": "产品详情获取评论列表是写在 /controller/product.go 里面\n评论相关 主要是提交评论和回复，需要验证身份\n"
+        },
+        {
+            "name": "license",
+            "description": "执照信息相关的 API\nBASE_API 应该为 /manager/ 但是自动生成的是错的，不知道怎么改,所以这个端口 SWAGGER 不能正常测试\n"
+        },
+        {
+            "name": "user",
+            "description": "管理端的 UserController\n"
         }
     ]
 }

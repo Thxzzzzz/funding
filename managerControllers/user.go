@@ -2,7 +2,6 @@ package managerControllers
 
 import (
 	"encoding/json"
-	"funding/controllers"
 	"funding/enums"
 	"funding/forms"
 	"funding/models"
@@ -12,9 +11,8 @@ import (
 )
 
 // 管理端的 UserController
-// 一些通用的 API 还是会用 /controllers 里面的
 type ManagerUserController struct {
-	controllers.BaseController
+	ManagerBaseController
 }
 
 // @Title 注册
@@ -109,8 +107,37 @@ func (c *ManagerUserController) Login() {
 
 	result := resultModels.SuccessResult(dbResult)
 	//向当前 Session 写入 userId
-	c.SetSession(controllers.SESSION_USER_KEY, dbResult.ID)
+	c.SetSession(SESSION_MANAGER_KEY, dbResult.ID)
 
 	//  4.. 返回 Json 信息
+	c.ResponseJson(result)
+}
+
+// @Title 注销
+// @Description 注销
+// @Success 200
+// @Failure 400
+// @router /logout [post]
+func (c *ManagerUserController) Logout() {
+	var result resultModels.Result
+	//直接销毁 Session
+	c.DestroySession()
+	result = resultModels.SuccessResult(nil)
+	c.ResponseJson(result)
+}
+
+// @Title 根据当前的 Session 查询对应的用户信息
+// @Description 用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期
+// @Success 200	{object} models.User
+// @Failure 400
+// @router /info [get]
+func (c *ManagerUserController) Info() {
+	var result resultModels.Result
+	user, err := c.CheckAndGetUser()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result = resultModels.SuccessResult(user)
 	c.ResponseJson(result)
 }
