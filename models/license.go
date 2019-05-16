@@ -63,3 +63,10 @@ func GetAllLicense() ([]*License, error) {
 }
 
 /////////////////////		EMD	基本增删改查			/////////////////////
+
+// 根据审核状态获取执照列表
+func GetLicenseByVerifyStatus(verifyStatus int) ([]*License, error) {
+	var results []*License
+	err := db.Where("verify_status = ?", verifyStatus).Find(&results).Error
+	return results, err
+}

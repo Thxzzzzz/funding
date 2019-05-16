@@ -64,6 +64,48 @@
                 }
             }
         },
+        "/license/all": {
+            "get": {
+                "tags": [
+                    "license"
+                ],
+                "operationId": "LicenseController.获取全部执照信息",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/license/getByVerifyStatus": {
+            "get": {
+                "tags": [
+                    "license"
+                ],
+                "operationId": "LicenseController.获取对应状态的执照信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "verify_status",
+                        "description": "验证状态",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/order/addOrder": {
             "post": {
                 "tags": [

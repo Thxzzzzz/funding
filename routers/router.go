@@ -7,6 +7,7 @@ package routers
 
 import (
 	"funding/controllers"
+	"funding/managerControllers"
 	"github.com/astaxie/beego"
 )
 
@@ -48,5 +49,22 @@ func init() {
 			),
 		),
 	)
+
+	// 管理端 API 路由
+	managerNs := beego.NewNamespace("/manager",
+		beego.NSNamespace("/license",
+			beego.NSInclude(
+				&managerControllers.LicenseController{},
+			),
+		),
+		beego.NSNamespace("/user",
+			beego.NSInclude(
+				&managerControllers.ManagerUserController{},
+			),
+		),
+	)
+
 	beego.AddNamespace(ns)
+	beego.AddNamespace(managerNs)
+
 }
