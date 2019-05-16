@@ -25,25 +25,6 @@ type UserControllers struct {
 	BaseController
 }
 
-// 检查并获取对应的 User 信息
-func (c *UserControllers) CheckAndGetUser() (*models.User, error) {
-	userId := c.GetSession(SESSION_USER_KEY)
-	var result *models.User
-	if userId == nil {
-		return nil, &resultError.NotLoginError
-	}
-	id, ok := userId.(uint64)
-	if !ok {
-		return nil, &resultError.NotLoginError
-	}
-	// 获取当前 Session 中的 userId 字段对应的值
-	result, err := models.FindUserById(id)
-	if err != nil {
-		return nil, &resultError.NotLoginError
-	}
-	return result, nil
-}
-
 ////////////////			Users	用户信息相关									///////////////
 
 // @Title 根据 id 获取 User
@@ -137,6 +118,8 @@ func (c *UserControllers) Register() {
 		c.ResponseErrJson(err)
 		return
 	}
+	//角色设置为买家
+	user.RoleId = enums.Role_Buyer
 	//向数据库中插入数据
 	err = models.InsertUser(&user)
 	if err != nil {

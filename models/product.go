@@ -101,6 +101,13 @@ func UpdateProduct(product *Product) error {
 	return err
 }
 
+// 获取全部产品
+func GetAllProduct() ([]*Product, error) {
+	var results []*Product
+	err := db.Find(&results).Error
+	return results, err
+}
+
 /////////////////////		EMD	基本增删改查			/////////////////////
 
 // 获取产品类型列表
@@ -140,16 +147,6 @@ func GetProductsByPageAndType(page int, pageSize int, productType int) ([]*Produ
 	return results, nil
 }
 
-// 获取全部产品
-func GetAllProduct() ([]*Product, error) {
-	var results []*Product
-	err := db.Find(&results).Error
-	if err != nil {
-		return nil, err
-	}
-	return results, nil
-}
-
 func GetProductWithPkg(productId uint64) (*Product, error) {
 	var result Product
 	err := db.Preload("ProductPackages").First(&result, productId).Error
@@ -157,15 +154,6 @@ func GetProductWithPkg(productId uint64) (*Product, error) {
 		return nil, err
 	}
 	return &result, nil
-}
-
-func GetProductPackages(productId uint64) ([]*ProductPackage, error) {
-	var result []*ProductPackage
-	err := db.Where("product_id = ?", productId).Find(&result).Error
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
 }
 
 // 根据页码等信息获取产品列表

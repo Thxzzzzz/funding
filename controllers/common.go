@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"errors"
-	"fmt"
 	"funding/enums"
 	"funding/models"
 	"funding/objects"
@@ -18,6 +16,25 @@ type BaseController struct {
 	beego.Controller
 }
 
+// 检查并获取对应的 User 信息
+func (c *BaseController) CheckAndGetUser() (*models.User, error) {
+	userId := c.GetSession(SESSION_USER_KEY)
+	var result *models.User
+	if userId == nil {
+		return nil, &resultError.NotLoginError
+	}
+	id, ok := userId.(uint64)
+	if !ok {
+		return nil, &resultError.NotLoginError
+	}
+	// 获取当前 Session 中的 userId 字段对应的值
+	result, err := models.FindUserById(id)
+	if err != nil {
+		return nil, &resultError.UserNotExitError
+	}
+	return result, nil
+}
+
 // 所有请求都需要身份验证的 Controller
 type VailUserController struct {
 	BaseController
@@ -26,21 +43,12 @@ type VailUserController struct {
 
 // 实现 Prepare 验证身份
 func (c *VailUserController) Prepare() {
-	userId := c.GetSession(SESSION_USER_KEY)
-	var result *models.User
-	if userId == nil {
-		c.ResponseErrJson(errors.New("没有登录"))
-		return
-	}
-	id, _ := userId.(uint64)
-	// 获取当前 Session 中的 userId 字段对应的值
-	result, err := models.FindUserById(id)
+	user, err := c.CheckAndGetUser()
 	if err != nil {
-		c.ResponseErrJson(errors.New("没有该用户"))
+		c.ResponseErrJson(err)
 		return
 	}
-	fmt.Println(result)
-	c.User = result
+	c.User = user
 }
 
 // 校验是否为对应角色

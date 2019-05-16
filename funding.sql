@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   KEY `idx_addresses_user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户收货地址表';
 
--- 正在导出表  funding.addresses 的数据：~7 rows (大约)
+-- 正在导出表  funding.addresses 的数据：~15 rows (大约)
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
 REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-23 21:24:44', NULL),
@@ -119,9 +119,9 @@ CREATE TABLE IF NOT EXISTS `comments_infos` (
   KEY `idx_comments_infos_deleted_at` (`deleted_at`) USING BTREE,
   KEY `idx_comments_infos_user_id` (`user_id`) USING BTREE,
   KEY `idx_comments_infos_product_id` (`product_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论主表';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论主表';
 
--- 正在导出表  funding.comments_infos 的数据：~9 rows (大约)
+-- 正在导出表  funding.comments_infos 的数据：~12 rows (大约)
 /*!40000 ALTER TABLE `comments_infos` DISABLE KEYS */;
 REPLACE INTO `comments_infos` (`id`, `product_id`, `user_id`, `is_seller`, `content`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 11128, 20003, 0, '这是第一条评论，哈哈', '2019-05-15 01:21:26', '2019-05-15 01:21:26', NULL),
@@ -132,7 +132,10 @@ REPLACE INTO `comments_infos` (`id`, `product_id`, `user_id`, `is_seller`, `cont
 	(6, 11128, 20002, 1, '评论测试4', '2019-05-15 16:51:33', '2019-05-15 16:51:33', NULL),
 	(7, 11128, 20002, 1, '评论测试5', '2019-05-15 16:53:56', '2019-05-15 16:53:56', NULL),
 	(8, 11128, 20002, 1, '评论测试6', '2019-05-15 16:55:07', '2019-05-15 16:55:07', NULL),
-	(9, 11128, 20002, 1, '评论测试7', '2019-05-15 16:55:34', '2019-05-15 16:55:34', NULL);
+	(9, 11128, 20002, 1, '评论测试7', '2019-05-15 16:55:34', '2019-05-15 16:55:34', NULL),
+	(10, 11120, 20002, 1, '评论测试', '2019-05-16 09:28:45', '2019-05-16 09:28:45', NULL),
+	(11, 11120, 20002, 1, '评论测试', '2019-05-16 09:30:15', '2019-05-16 09:30:15', NULL),
+	(12, 11120, 20002, 1, '新评论测试', '2019-05-16 09:35:21', '2019-05-16 09:35:21', NULL);
 /*!40000 ALTER TABLE `comments_infos` ENABLE KEYS */;
 
 -- 导出  表 funding.comments_replys 结构
@@ -150,14 +153,22 @@ CREATE TABLE IF NOT EXISTS `comments_replys` (
   KEY `idx_comments_replys_deleted_at` (`deleted_at`) USING BTREE,
   KEY `idx_comments_replys_user_id` (`user_id`) USING BTREE,
   KEY `idx_comments_replys_comment_id` (`comment_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论回复表';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论回复表';
 
--- 正在导出表  funding.comments_replys 的数据：~3 rows (大约)
+-- 正在导出表  funding.comments_replys 的数据：~11 rows (大约)
 /*!40000 ALTER TABLE `comments_replys` DISABLE KEYS */;
 REPLACE INTO `comments_replys` (`id`, `comment_id`, `user_id`, `is_seller`, `content`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 1, 20003, 0, '这是第一条回复，哈哈', '2019-05-15 01:21:26', '2019-05-15 01:21:26', NULL),
 	(2, 1, 20002, 1, '这是第一条商家回复，哈哈', '2019-05-15 01:21:26', '2019-05-15 15:19:02', NULL),
-	(3, 9, 20002, 1, '测试回复', '2019-05-15 20:59:06', '2019-05-15 20:59:06', NULL);
+	(3, 9, 20002, 1, '测试回复', '2019-05-15 20:59:06', '2019-05-15 20:59:06', NULL),
+	(4, 10, 20002, 1, '回复测试', '2019-05-16 09:28:50', '2019-05-16 09:28:50', NULL),
+	(5, 10, 20002, 1, '回复测试', '2019-05-16 09:29:04', '2019-05-16 09:29:04', NULL),
+	(6, 10, 20002, 1, '回复测试', '2019-05-16 09:30:01', '2019-05-16 09:30:01', NULL),
+	(7, 11, 20002, 1, '回复测试', '2019-05-16 09:30:21', '2019-05-16 09:30:21', NULL),
+	(8, 10, 20002, 1, '回复测试', '2019-05-16 09:30:29', '2019-05-16 09:30:29', NULL),
+	(9, 11, 20002, 1, '添加新评论测试', '2019-05-16 09:35:08', '2019-05-16 09:35:08', NULL),
+	(10, 12, 20002, 1, '回复测试', '2019-05-16 09:35:36', '2019-05-16 09:35:36', NULL),
+	(11, 12, 20002, 1, '添加新评论测试', '2019-05-16 09:35:46', '2019-05-16 09:35:46', NULL);
 /*!40000 ALTER TABLE `comments_replys` ENABLE KEYS */;
 
 -- 导出  表 funding.licenses 结构
@@ -165,12 +176,13 @@ DROP TABLE IF EXISTS `licenses`;
 CREATE TABLE IF NOT EXISTS `licenses` (
   `id` bigint(24) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `company_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司名称',
-  `description` varchar(500) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司描述',
+  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '公司描述',
   `user_id` bigint(24) NOT NULL COMMENT '对应账号ID',
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '联系地址',
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '官方电话',
   `license_image_url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '执照图片地址',
-  `verify` tinyint(1) NOT NULL DEFAULT '2' COMMENT '审核情况 1：已通过 2：待审核 3: 待提交 4: 未通过 ',
+  `verify_status` tinyint(1) NOT NULL DEFAULT '2' COMMENT '审核情况 1：已通过 2：待审核 3: 待提交 4: 未通过 ',
+  `verify_message` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '审核消息（不通过时显示）',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间(软删除) NULL为未删除',
@@ -179,10 +191,10 @@ CREATE TABLE IF NOT EXISTS `licenses` (
   KEY `idx_licenses_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11111112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
 
--- 正在导出表  funding.licenses 的数据：~0 rows (大约)
+-- 正在导出表  funding.licenses 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `licenses` DISABLE KEYS */;
-REPLACE INTO `licenses` (`id`, `company_name`, `description`, `user_id`, `address`, `phone`, `license_image_url`, `verify`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(11111111, '北京驰讯通科技有限公司', '我们是一家科技服务公司', 20002, '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '2019-03-09 18:40:38', '2019-05-16 01:27:32', NULL);
+REPLACE INTO `licenses` (`id`, `company_name`, `description`, `user_id`, `address`, `phone`, `license_image_url`, `verify_status`, `verify_message`, `created_at`, `updated_at`, `deleted_at`) VALUES
+	(11111111, '北京驰讯通科技有限公司', '我们是一家科技服务公司', 20002, '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '', '2019-03-09 18:40:38', '2019-05-16 01:27:32', NULL);
 /*!40000 ALTER TABLE `licenses` ENABLE KEYS */;
 
 -- 导出  表 funding.orders 结构
@@ -215,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `idx_orders_package_id` (`product_package_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表，用来存储订单信息';
 
--- 正在导出表  funding.orders 的数据：~12 rows (大约)
+-- 正在导出表  funding.orders 的数据：~14 rows (大约)
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 REPLACE INTO `orders` (`id`, `user_id`, `name`, `address`, `phone`, `seller_id`, `product_id`, `product_package_id`, `nums`, `unit_price`, `total_price`, `status`, `checking_number`, `paid_at`, `close_at`, `finished_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 20003, '测试', '广西壮族自治区桂林市七星区桂林电子科技大学', '18545456464', 20002, 11111, 111111111, 2, 269.00, 538.00, 1, '', NULL, NULL, NULL, '2019-05-06 00:49:00', '2019-05-12 01:20:42', '2019-05-06 00:58:30'),
@@ -234,20 +246,6 @@ REPLACE INTO `orders` (`id`, `user_id`, `name`, `address`, `phone`, `seller_id`,
 	(14, 20003, '新的人', '新的地址', '12345646712', 20002, 11128, 111111165, 1, 1090.00, 1090.00, 1, '', NULL, NULL, NULL, '2019-05-15 22:30:39', '2019-05-15 22:30:39', NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 
--- 导出  表 funding.permissions 结构
-DROP TABLE IF EXISTS `permissions`;
-CREATE TABLE IF NOT EXISTS `permissions` (
-  `id` int(3) NOT NULL COMMENT '权限类型的 ID',
-  `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '权限名称',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='权限表，用来存储各种权限的名称';
-
--- 正在导出表  funding.permissions 的数据：~0 rows (大约)
-/*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-REPLACE INTO `permissions` (`id`, `name`) VALUES
-	(1, 'All');
-/*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
-
 -- 导出  表 funding.products 结构
 DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
@@ -260,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `current_price` decimal(12,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '已经筹集的金额',
   `target_price` decimal(12,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '目标金额',
   `verify_status` tinyint(3) unsigned NOT NULL DEFAULT '2' COMMENT '1：已通过 2：待审核 3: 待提交 4: 未通过 ',
-  `verify_message` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '审核消息，在审核未通过的时候会显示给商家',
+  `verify_message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '审核消息，在审核未通过的时候会显示给商家',
   `backers` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '支持者人数',
   `end_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '众筹截止时间',
   `detail_html` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '详情介绍Html',

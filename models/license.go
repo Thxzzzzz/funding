@@ -9,7 +9,8 @@ type License struct {
 	Address         string `json:"address"`           // 联系地址
 	Phone           string `json:"phone"`             // 联系电话
 	LicenseImageUrl string `json:"license_image_url"` // 营业执照照片地址
-	VerifyStatus    int    `json:"verify_status"`     // 审核状态
+	VerifyStatus    int    `json:"verify_status"`     // 审核状态  1：已通过 2：待审核 3: 待提交 4: 未通过
+	VerifyMessage   string `json:"verify_message"`    // 审核消息（审核不通过时显示）
 }
 
 /////////////////////			基本增删改查			/////////////////////
@@ -52,6 +53,13 @@ func UpdateLicense(license *License) error {
 	}
 	err = db.Model(&rec).Updates(license).Error
 	return err
+}
+
+// 获取全部执照信息
+func GetAllLicense() ([]*License, error) {
+	var results []*License
+	err := db.Find(&results).Error
+	return results, err
 }
 
 /////////////////////		EMD	基本增删改查			/////////////////////

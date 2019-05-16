@@ -133,7 +133,7 @@ func (c *ProductMangerController) SaveProductPackage() {
 			// 如果找到了记录，则标记为更新，后面对相应的套餐进行更新
 			isUpdate = true
 		}
-		// 总数增加，对库存进行校正
+		// 总数修改，对库存进行校正
 		if isUpdate && form.Total != 0 && oldPkg.Total != form.Total {
 			form.Stock += (form.Total - oldPkg.Total)
 		}
