@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"funding/enums"
 	"funding/models"
 	"funding/objects"
 	"github.com/astaxie/beego"
@@ -21,19 +22,13 @@ type ProductMangerController struct {
 // @Failure 400
 // @router /save [post]
 func (c *ProductMangerController) SaveProduct() {
-	// 如果不是卖家，也不是审核员，也不是管理员，那就返回错误
+	// 如果不是卖家 那就返回错误
 	err := c.VerifySeller()
 	if err != nil {
-		err = c.VerifyAuditor()
-	}
-	if err != nil {
-		err = c.VerifySuperAdmin()
-	}
-	if err != nil {
-		beego.BeeLogger.Warn(err.Error())
 		c.ResponseErrJson(err)
 		return
 	}
+
 	// 获取传过来的产品信息
 	form := models.Product{}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
@@ -42,6 +37,7 @@ func (c *ProductMangerController) SaveProduct() {
 		return
 	}
 	isUpdate := false
+	// 添加ID
 	form.UserId = c.User.ID
 	//  如果有 product_id 先查询是否存在 对应产品，存在则说明是要更新而不是新增
 	if form.ID > 0 {
@@ -57,11 +53,17 @@ func (c *ProductMangerController) SaveProduct() {
 			// 如果找到了记录，则标记为更新，后面对相应的产品进行更新
 			isUpdate = true
 		}
-		// userId 对不上 也返回错误
+
+		// 如果是卖家而且 userId 对不上 也返回错误
 		if isUpdate && form.UserId != oldProduct.UserId {
 			c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的产品"))
 			return
 		}
+	}
+
+	// 卖家不能改成除了待审核/待提交以外的状态，如果这以外的参数有则去掉
+	if form.VerifyStatus != enums.Verify_Wait && form.VerifyStatus != enums.Verify_UnSubmit {
+		form.VerifyStatus = 0
 	}
 
 	if isUpdate {

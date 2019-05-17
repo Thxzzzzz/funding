@@ -49,12 +49,18 @@ func init() {
 			),
 		),
 	)
+	beego.AddNamespace(ns)
 
 	// 管理端 API 路由
 	managerNs := beego.NewNamespace("/manager",
 		beego.NSNamespace("/license",
 			beego.NSInclude(
 				&managerControllers.LicenseController{},
+			),
+		),
+		beego.NSNamespace("/product",
+			beego.NSInclude(
+				&managerControllers.ManagerProductController{},
 			),
 		),
 		beego.NSNamespace("/user",
@@ -64,7 +70,6 @@ func init() {
 		),
 	)
 
-	beego.AddNamespace(ns)
 	beego.AddNamespace(managerNs)
 
 }

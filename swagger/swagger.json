@@ -509,6 +509,89 @@
                 }
             }
         },
+        "/product/getProductList": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "获取产品列表，包括未审核的 (1：已通过 2：待审核 3: 待提交 4: 未通过 ) 新建的默认应为待审核状态",
+                "operationId": "ManagerProductController.获取产品列表，包括未审核的和待提交的也能获取到",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "页码",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "description": "每页数量",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "产品名称",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "type",
+                        "description": "产品类型",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "funding_status",
+                        "description": "众筹状态",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "排序方式",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_gt",
+                        "description": "价格大于",
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_lt",
+                        "description": "价格小于",
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "in": "query",
+                        "name": "verify_status",
+                        "description": "审核状态",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/product/getSellerByProductId": {
             "get": {
                 "tags": [
@@ -579,6 +662,12 @@
                     },
                     {
                         "in": "query",
+                        "name": "name",
+                        "description": "产品名称",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
                         "name": "type",
                         "description": "产品类型",
                         "type": "integer",
@@ -586,7 +675,7 @@
                     },
                     {
                         "in": "query",
-                        "name": "status",
+                        "name": "funding_status",
                         "description": "众筹状态",
                         "type": "integer",
                         "format": "int64"
@@ -646,30 +735,24 @@
                 }
             }
         },
-        "/product/verify": {
-            "get": {
-                "tags": [
-                    "product"
-                ],
-                "description": "审核人员才能调用该接口获取信息 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态",
-                "operationId": "ProductController.根据审核状态获取产品信息",
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/product/verify/update": {
+        "/product/update": {
             "post": {
                 "tags": [
                     "product"
                 ],
                 "description": "审核人员才能修改审核状态 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态",
-                "operationId": "ProductController.产品审核状态修改",
+                "operationId": "ManagerProductController.更新产品 (包括审核状态)",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "产品model",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": ""

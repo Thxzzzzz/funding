@@ -250,24 +250,6 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
-        beego.ControllerComments{
-            Method: "GetVerifyProduct",
-            Router: `/verify`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
-        beego.ControllerComments{
-            Method: "VerifyProduct",
-            Router: `/verify/update`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
     beego.GlobalControllerRouter["funding/controllers:ProductMangerController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductMangerController"],
         beego.ControllerComments{
             Method: "GetAllProductBySellerId",

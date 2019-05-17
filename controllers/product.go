@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"funding/enums"
 	"funding/forms"
 	"funding/models"
 	"funding/objects"
@@ -128,8 +129,9 @@ func (c *ProductController) GetAll() {
 // @Description	据页码和其他条件获取产品信息
 // @Param	page			query	int		true	"页码"
 // @Param	page_size		query	int		true	"每页数量"
+// @Param	name			query	string	false	"产品名称"
 // @Param	type			query	int		false	"产品类型"
-// @Param	status			query	int		false	"众筹状态"
+// @Param	funding_status	query	int		false	"众筹状态"
 // @Param	sort			query	int		false	"排序方式"
 // @Param	price_gt		query	float64	false	"价格大于"
 // @Param	price_lt		query	float64	false	"价格小于"
@@ -145,34 +147,14 @@ func (c *ProductController) GetProductByPage() {
 	err := beego.ParseForm(values, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
+		return
 	}
-	pl, err := models.GetProductList(form)
+	pl, err := models.GetProductList(form, enums.Verify_Success)
 	if err != nil {
 		c.ResponseErrJson(err)
+		return
 	}
 	c.ResponseSuccessJson(pl)
-}
-
-// @Title 根据审核状态获取产品信息
-// @Description 审核人员才能调用该接口获取信息 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态
-//
-// @Success 200
-// @Failure 400
-// @router /verify [get]
-func (c *ProductController) GetVerifyProduct() {
-	// 首先要校验权限，是审核人员才能修改审核状态
-	// TODO 根据审核状态获取产品信息
-}
-
-// @Title 产品审核状态修改
-// @Description 审核人员才能修改审核状态 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态
-//
-// @Success 200
-// @Failure 400
-// @router /verify/update [post]
-func (c *ProductController) VerifyProduct() {
-	// 首先要校验权限，是审核人员才能修改审核状态
-	// TODO 产品审核状态修改
 }
 
 // @Title Get Product With Detail
@@ -269,7 +251,7 @@ func (c *ProductController) GetProductCountInfo() {
 // @Title 根据商品 ID 获取商家信息
 // @Description 根据商品 ID 获取商家信息
 // @Param	product_id	query	int	true	"套餐ID"
-// @Param	page	query	int	true	"页码"
+// @Param	page		query	int	true	"页码"
 // @Param	page_size	query	int	true	"每页数量"
 // @Success	200
 // @Failure 400

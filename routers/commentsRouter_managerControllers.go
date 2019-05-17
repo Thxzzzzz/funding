@@ -25,10 +25,46 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"],
+        beego.ControllerComments{
+            Method: "GetProductList",
+            Router: `/getProductList`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"],
+        beego.ControllerComments{
+            Method: "UpdateProduct",
+            Router: `/update`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"],
+        beego.ControllerComments{
+            Method: "Info",
+            Router: `/info`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"],
         beego.ControllerComments{
             Method: "Login",
             Router: `/login`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"],
+        beego.ControllerComments{
+            Method: "Logout",
+            Router: `/logout`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

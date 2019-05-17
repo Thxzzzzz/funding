@@ -158,7 +158,7 @@ func GetProductWithPkg(productId uint64) (*Product, error) {
 }
 
 // 根据页码等信息获取产品列表
-func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, error) {
+func GetProductList(form forms.ProductListForm, verifyStatus int) (*resultModels.ProductList, error) {
 	result := resultModels.ProductList{}
 	var list []*resultModels.ProductContent
 	cDb := db
@@ -177,11 +177,13 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 		page = form.Page
 		pageSize = form.PageSize
 	}
-
+	if verifyStatus != 0 {
+		// 只查询指定验证状态
+		cDb = cDb.Where("verify_status = ?", verifyStatus)
+	}
 	// 只查询指定字段
 	cDb = cDb.Select(resultModels.ProductContentField)
-	// 只查询已通过验证的
-	cDb = cDb.Where("verify_status = ?", enums.Verify_Success)
+
 	// 未软删除的行
 	cDb = cDb.Where("deleted_at IS NULL").Table("products")
 	// 排序
