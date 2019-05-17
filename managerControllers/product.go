@@ -59,7 +59,7 @@ func (c *ManagerProductController) GetProductList() {
 }
 
 // @Title 更新产品 (包括审核状态)
-// @Description 审核人员才能修改审核状态 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态
+// @Description  审核状态 ( (1：已通过 2：待审核 3: 待提交 4: 未通过 )  对应 enums.VerifyXXXX 常量)
 // @Param	form	body	models.Product	true	"产品model"
 // @Success 200
 // @Failure 400

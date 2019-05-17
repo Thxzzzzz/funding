@@ -25,6 +25,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["funding/managerControllers:LicenseController"] = append(beego.GlobalControllerRouter["funding/managerControllers:LicenseController"],
+        beego.ControllerComments{
+            Method: "UpdateLicense",
+            Router: `/update`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"],
         beego.ControllerComments{
             Method: "GetProductList",
