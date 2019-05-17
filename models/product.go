@@ -5,6 +5,7 @@ import (
 	"funding/enums"
 	"funding/forms"
 	"funding/resultModels"
+	"strings"
 	"time"
 )
 
@@ -164,6 +165,11 @@ func GetProductList(form forms.ProductListForm) (*resultModels.ProductList, erro
 	// 如果传入类型不为 0 （传入了 Type)，则根据 Type 查询
 	if form.Type != 0 {
 		cDb = cDb.Where("product_type = ?", form.Type)
+	}
+	form.Name = strings.TrimSpace(form.Name)
+	// 传入的名称不为空，则根据名称查询
+	if form.Name != "" {
+		cDb = cDb.Where("name LIKE ?", "%"+form.Name+"%")
 	}
 	page, pageSize := 1, 10
 	// 如果页码和每页数量大于 0

@@ -4,6 +4,7 @@ package forms
 type ProductListForm struct {
 	Page     int     `form:"page"`      // 页码
 	PageSize int     `form:"page_size"` // 每页数量
+	Name     string  `form:"name"`      // 产品名称
 	Type     int     `form:"type"`      // 产品类型
 	Sort     int     `form:"sort"`      // 排序方式
 	Status   int     `form:"status"`    // form众筹状态

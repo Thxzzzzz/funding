@@ -27,7 +27,8 @@ func TestGetProductsByPageAndType(t *testing.T) {
 
 func TestGetProductList(t *testing.T) {
 	form := forms.ProductListForm{
-		Type: 1,
+		//Type: 1,
+		Name: "手环",
 	}
 	resutlt, err := models.GetProductList(form)
 	if err != nil {
