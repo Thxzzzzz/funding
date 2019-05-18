@@ -21,7 +21,7 @@ type Product struct {
 	TargetPrice     float64             `json:"target_price"`                   //目标筹集金额
 	VerifyStatus    int                 `json:"verify_status" gorm:"default:3"` //审核状态(1：已通过 2：待审核 3:待提交（默认） 4:未通过 )
 	VerifyMessage   string              `json:"verify_message"`                 //审核消息（审核失败的原因）
-	FundingStatus   enums.FundingStatus `json:"funding_status"`                 //众筹状态 TODO:(现在这个字段数据库里还没有)
+	FundingStatus   enums.FundingStatus `json:"funding_status"  gorm:"-"`       //众筹状态 TODO:(现在这个字段数据库里还没有)
 	Backers         int                 `json:"backers"`                        //支持人数
 	EndTime         time.Time           `json:"end_time"`                       //截止时间
 	DetailHtml      string              `json:"detail_html"`                    //介绍页详情 Html
@@ -65,7 +65,7 @@ func FindProductById(productId uint64) (*Product, error) {
 // 根据用户 ID 来获取产品列表
 func FindProductsByUserId(userId uint64) ([]*Product, error) {
 	var result []*Product
-	err := db.Where("user_id = ?", userId).Find(&result).Error
+	err := db.Where("user_id = ?", userId).Order("id DESC").Find(&result).Error
 	if err != nil {
 		return nil, err
 	}
@@ -169,6 +169,10 @@ func GetProductList(form forms.ProductListForm, verifyStatus int) (*resultModels
 	form.Name = strings.TrimSpace(form.Name)
 	// 传入的名称不为空，则根据名称查询
 	if form.Name != "" {
+		cDb = cDb.Where("name LIKE ?", "%"+form.Name+"%")
+	}
+
+	if form.Type != 0 {
 		cDb = cDb.Where("name LIKE ?", "%"+form.Name+"%")
 	}
 	page, pageSize := 1, 10

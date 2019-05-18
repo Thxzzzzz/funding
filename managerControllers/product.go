@@ -28,7 +28,6 @@ type ManagerProductController struct {
 // @Failure 400
 // @router /getProductList [get]
 func (c *ManagerProductController) GetProductList() {
-
 	// 获取所选的验证状态
 	verifyStatus, err := c.GetInt("verify_status")
 	if err != nil {
@@ -84,4 +83,42 @@ func (c *ManagerProductController) UpdateProduct() {
 		return
 	}
 	c.ResponseSuccessJson(nil)
+}
+
+// 根据产品 Id 获取产品信息
+// @router /productById [get]
+func (c *ManagerProductController) GetProductById() {
+	// 获取传过来的Id
+	id, err := c.GetUint64("id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.FindProductById(id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
+
+// @Title 根据产品 Id 获取产品信息
+// @Description 根据卖家UserID 根据产品 Id 获取产品信息
+// @Param	product_id	query	int	true	"套餐ID"
+// @Success	200
+// @Failure 400
+// @router /pkgListByProductId [get]
+func (c *ManagerProductController) GetPkgListByProductId() {
+	// 获取传过来的Id
+	id, err := c.GetUint64("id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.FindProductPackagesByProductId(id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
 }

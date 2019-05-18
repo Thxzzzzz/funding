@@ -17,7 +17,9 @@ type HomeResult struct {
 }
 
 // ProductList 的字段
-const ProductContentField string = "id,name,product_type,big_img,small_img,current_price,target_price,backers,end_time"
+const ProductContentField string = "id,name,product_type,big_img,small_img," +
+	"current_price,target_price,backers,end_time," +
+	"verify_status,verify_message,created_at,updated_at"
 
 type ProductContent struct {
 	ID            uint64              `json:"product_id"`
@@ -29,7 +31,11 @@ type ProductContent struct {
 	TargetPrice   float64             `json:"target_price"`   //目标筹集金额
 	Backers       int                 `json:"backers"`        //支持人数
 	EndTime       time.Time           `json:"end_time"`       //截止时间
+	VerifyStatus  int                 `json:"verify_status"`  //审核状态(1：已通过 2：待审核 3:待提交（默认） 4:未通过 )
+	VerifyMessage string              `json:"verify_message"` //审核消息（审核失败的原因）
 	FundingStatus enums.FundingStatus `json:"funding_status"` //众筹状态
+	CreatedAt     time.Time           `json:"created_at"`
+	UpdatedAt     time.Time           `json:"updated_at"`
 }
 
 // 产品列表

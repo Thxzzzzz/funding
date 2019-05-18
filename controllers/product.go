@@ -165,17 +165,29 @@ func (c *ProductController) GetProductByPage() {
 // @router /detail [get]
 func (c *ProductController) GetProductWithPkg() {
 	id, err := c.GetUint64("id")
-	var result resultModels.Result
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
+		c.ResponseErrJson(err)
+		return
 	}
 	dbResult, err := models.GetProductWithPkg(id)
 	if err != nil {
-		result = resultModels.ErrorResult(resultModels.FALL, err.Error())
-	} else {
-		result = resultModels.SuccessResult(dbResult)
+		c.ResponseErrJson(err)
+		return
 	}
-	c.ResponseJson(result)
+	// 如果不是验证成功的项目，普通用户不能查询
+	if dbResult.VerifyStatus != enums.Verify_Success {
+		user, err := c.CheckAndGetUser()
+		if err != nil {
+			c.ResponseErrJson(err)
+			return
+		}
+		if user.RoleId == enums.Role_Buyer {
+			c.ResponseErrJson(&resultError.UserRoleVerifyError)
+			return
+		}
+	}
+
+	c.ResponseSuccessJson(dbResult)
 }
 
 // @Title 获取结算所需的套餐信息 （给“立即支持”这个功能用）
