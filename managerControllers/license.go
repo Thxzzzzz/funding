@@ -15,6 +15,23 @@ type LicenseController struct {
 	controllers.VailUserController
 }
 
+// 根据产品 Id 获取执照信息
+// @router /licenseById [get]
+func (c *LicenseController) GetLicenseById() {
+	// 获取传过来的Id
+	id, err := c.GetUint64("id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.FindLicenseById(id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
+
 // @Title 获取全部执照信息
 // @Description
 // @Success 200
@@ -83,7 +100,15 @@ func (c *LicenseController) UpdateLicense() {
 	// 通过验证，将对应用户改为商家
 	if form.VerifyStatus == enums.Verify_Success {
 		form.VerifyMessage = "审核通过"
-		user, err := models.FindUserById(form.ID)
+		// 查找对应的 license 信息
+		license, err := models.FindLicenseById(form.ID)
+		if err != nil {
+			c.ResponseErrJson(err)
+			return
+		}
+		// 取对应的商家 ID
+		form.UserId = license.UserId
+		user, err := models.FindUserById(form.UserId)
 		if err != nil {
 			c.ResponseErrJson(err)
 			return

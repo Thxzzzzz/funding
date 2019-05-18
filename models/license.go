@@ -3,14 +3,14 @@ package models
 // 执照信息 对应 licenses 表
 type License struct {
 	BaseModel
-	UserId          uint64 `json:"user_id"`           // 用户ID
-	CompanyName     string `json:"company_name"`      // 公司名
-	Description     string `json:"description"`       // 公司描述
-	Address         string `json:"address"`           // 联系地址
-	Phone           string `json:"phone"`             // 联系电话
-	LicenseImageUrl string `json:"license_image_url"` // 营业执照照片地址
-	VerifyStatus    int    `json:"verify_status"`     // 审核状态  1：已通过 2：待审核 3: 待提交 4: 未通过
-	VerifyMessage   string `json:"verify_message"`    // 审核消息（审核不通过时显示）
+	UserId          uint64 `json:"user_id"`                       // 用户ID
+	CompanyName     string `json:"company_name"`                  // 公司名
+	Description     string `json:"description"`                   // 公司描述
+	Address         string `json:"address"`                       // 联系地址
+	Phone           string `json:"phone"`                         // 联系电话
+	LicenseImageUrl string `json:"license_image_url"`             // 营业执照照片地址
+	VerifyStatus    int    `json:"verify_status" gorm:"default:3` // 审核状态  1：已通过 2：待审核 3: 待提交 4: 未通过
+	VerifyMessage   string `json:"verify_message"`                // 审核消息（审核不通过时显示）
 }
 
 /////////////////////			基本增删改查			/////////////////////

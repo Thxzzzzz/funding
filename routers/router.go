@@ -33,6 +33,11 @@ func init() {
 				&controllers.CartController{},
 			),
 		),
+		beego.NSNamespace("/user/license",
+			beego.NSInclude(
+				&controllers.LicenseController{},
+			),
+		),
 		beego.NSNamespace("/order",
 			beego.NSInclude(
 				&controllers.OrderController{},

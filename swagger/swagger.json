@@ -106,6 +106,41 @@
                 }
             }
         },
+        "/license/licenseById": {
+            "get": {
+                "tags": [
+                    "license"
+                ]
+            }
+        },
+        "/license/update": {
+            "post": {
+                "tags": [
+                    "license"
+                ],
+                "description": "审核状态 ( (1：已通过 2：待审核 3: 待提交 4: 未通过 )  对应 enums.VerifyXXXX 常量)",
+                "operationId": "LicenseController.更新执照 (包括审核状态)",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "执照model",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.License"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/order/addOrder": {
             "post": {
                 "tags": [
@@ -636,6 +671,40 @@
                 }
             }
         },
+        "/product/pkgListByProductId": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "description": "根据卖家UserID 根据产品 Id 获取产品信息",
+                "operationId": "ManagerProductController.根据产品 Id 获取产品信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "product_id",
+                        "description": "套餐ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/product/productById": {
+            "get": {
+                "tags": [
+                    "product"
+                ]
+            }
+        },
         "/product/productList": {
             "get": {
                 "tags": [
@@ -740,7 +809,7 @@
                 "tags": [
                     "product"
                 ],
-                "description": "审核人员才能修改审核状态 (0:未通过 1：已通过 2：待审核 对应 enums.VerifyXXXX 常量) 新建的默认应为待审核状态",
+                "description": "审核状态 ( (1：已通过 2：待审核 3: 待提交 4: 未通过 )  对应 enums.VerifyXXXX 常量)",
                 "operationId": "ManagerProductController.更新产品 (包括审核状态)",
                 "parameters": [
                     {
@@ -1130,6 +1199,34 @@
                 }
             }
         },
+        "/user/license/save": {
+            "post": {
+                "tags": [
+                    "user/license"
+                ],
+                "description": "保存产品",
+                "operationId": "LicenseController.保存产品",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "产品model",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.License"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
                 "tags": [
@@ -1464,6 +1561,10 @@
                 "address": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -1473,6 +1574,10 @@
                 },
                 "phone": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "user_id": {
                     "type": "integer",
@@ -1484,9 +1589,17 @@
             "title": "BaseModel",
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
                 }
             }
         },
@@ -1496,6 +1609,10 @@
             "properties": {
                 "checked": {
                     "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "id": {
                     "type": "integer",
@@ -1508,6 +1625,10 @@
                 "product_package_id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "user_id": {
                     "type": "integer",
@@ -1522,6 +1643,10 @@
                 "content": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -1532,6 +1657,10 @@
                 "product_id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "user_id": {
                     "type": "integer",
@@ -1550,6 +1679,10 @@
                 "content": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -1557,7 +1690,55 @@
                 "is_seller": {
                     "type": "boolean"
                 },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.License": {
+            "title": "License",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "company_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "license_image_url": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "verify_message": {
+                    "type": "string"
+                },
+                "verify_status": {
                     "type": "integer",
                     "format": "int64"
                 }
@@ -1573,6 +1754,10 @@
                 },
                 "big_img": {
                     "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "current_price": {
                     "type": "number",
@@ -1612,6 +1797,10 @@
                     "type": "number",
                     "format": "double"
                 },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "user_id": {
                     "type": "integer",
                     "format": "int64"
@@ -1632,6 +1821,10 @@
                 "backers": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "delivery_day": {
                     "type": "integer",
@@ -1666,6 +1859,10 @@
                 "total": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
                 }
             }
         },
@@ -1686,6 +1883,10 @@
             "title": "User",
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "default_address_id": {
                     "type": "integer",
                     "format": "int64"
@@ -1716,6 +1917,10 @@
                 "role_id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "username": {
                     "type": "string"
@@ -1785,6 +1990,10 @@
         {
             "name": "user/cart",
             "description": "用户购物车相关\n"
+        },
+        {
+            "name": "user/license",
+            "description": "营业执照相关\n放在 /user/license 路由下吧\n"
         },
         {
             "name": "order",
