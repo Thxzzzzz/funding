@@ -2,7 +2,6 @@ package managerControllers
 
 import (
 	"encoding/json"
-	"funding/controllers"
 	"funding/enums"
 	"funding/models"
 	"funding/objects"
@@ -12,7 +11,7 @@ import (
 // 执照信息相关的 API
 // BASE_API 应该为 /manager/ 但是自动生成的是错的，不知道怎么改,所以这个端口 SWAGGER 不能正常测试
 type LicenseController struct {
-	controllers.VailUserController
+	VailManagerController
 }
 
 // 根据产品 Id 获取执照信息
@@ -100,7 +99,7 @@ func (c *LicenseController) UpdateLicense() {
 	// 通过验证，将对应用户改为商家
 	if form.VerifyStatus == enums.Verify_Success {
 		form.VerifyMessage = "审核通过"
-		// 查找对应的 license 信息
+		// 查找对应的 license 信息getByVerifyStatus
 		license, err := models.FindLicenseById(form.ID)
 		if err != nil {
 			c.ResponseErrJson(err)
