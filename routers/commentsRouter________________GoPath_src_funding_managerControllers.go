@@ -81,6 +81,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"],
         beego.ControllerComments{
+            Method: "GetUserInfoByRoleId",
+            Router: `/GetUserInfoByRoleId`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerUserController"],
+        beego.ControllerComments{
             Method: "Info",
             Router: `/info`,
             AllowHTTPMethods: []string{"get"},

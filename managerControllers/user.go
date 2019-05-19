@@ -141,3 +141,19 @@ func (c *ManagerUserController) Info() {
 	result = resultModels.SuccessResult(user)
 	c.ResponseJson(result)
 }
+
+// @Title 根据角色ID来获取用户列表
+// @Description 根据角色ID来获取用户列表
+// @Params	role_id	query	int	true	"角色ID"
+// @Success 200	{object} models.User
+// @Failure 400
+// @router /GetUserInfoByRoleId [get]
+func (c *ManagerUserController) GetUserInfoByRoleId() {
+	user, err := c.CheckAndGetUser()
+	if err != nil || user.RoleId != enums.Role_SuperAdmin {
+		c.ResponseErrJson(&resultError.UserRoleVerifyError)
+		return
+	}
+
+	c.ResponseSuccessJson(user)
+}
