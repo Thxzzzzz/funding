@@ -207,15 +207,6 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
         beego.ControllerComments{
-            Method: "GetProductsRandByTypeAndNum",
-            Router: `/getCommentInfoByProductId`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
-        beego.ControllerComments{
             Method: "GetCommentInfoByProductId",
             Router: `/getCommentInfoByProductId`,
             AllowHTTPMethods: []string{"get"},
@@ -227,6 +218,15 @@ func init() {
         beego.ControllerComments{
             Method: "GetProductCountInfo",
             Router: `/getProductCountInfo`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:ProductController"] = append(beego.GlobalControllerRouter["funding/controllers:ProductController"],
+        beego.ControllerComments{
+            Method: "GetProductsRandByTypeAndNum",
+            Router: `/getProductsRand`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

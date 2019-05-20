@@ -58,8 +58,6 @@
 
 
 
-
-
 ### 新增订单 
 
 > 数据库操作相关代码在 ./models/order.go 的 NewOrderFromForm() 函数
@@ -87,17 +85,188 @@
 ### 支付
 
 支付这里还没有接入第三方支付平台（本来是要接入支付宝的，但是时间不够了），所以这里点击支付之后会做几件事：
--  发送订单 ID 给后端，请求后端支付对应订单
--  根据订单 ID 查询出对应订单信息
--  将对应订单状态更新为已支付
--  根据订单查询出对应产品
--  检查产品是否已超过众筹时间（众筹结束）如果已结束则回归之前的修改，并返回错误信息，支付失败，否则进入下一步
--  增加对应产品支持者人数，增加已筹集金额
--  根据订单查询出对应套餐
--  检查套餐库存是否足够，如果不够则回归之前的修改，并返回错误信息，支付失败，否则进入下一步
--  减少对应套餐相应的库存，增加支持人数
--  完成支付，返回 OK
-以上步骤在进行数据库更更改时会在一个数据库事务中进行，如有一步发生错误则将会全部回滚，保证数据正确性
+- 发送订单 ID 给后端，请求后端支付对应订单
+
+- 根据订单 ID 查询出对应订单信息
+
+- 将对应订单状态更新为已支付
+
+- 根据订单查询出对应产品
+
+- 检查产品是否已超过众筹时间（众筹结束）如果已结束则回归之前的修改，并返回错误信息，支付失败，否则进入下一步
+
+- 增加对应产品支持者人数，增加已筹集金额
+
+- 根据订单查询出对应套餐
+
+- 检查套餐库存是否足够，如果不够则回归之前的修改，并返回错误信息，支付失败，否则进入下一步
+
+- 减少对应套餐相应的库存，增加支持人数
+
+- 完成支付，返回 OK
+  以上步骤在进行数据库更更改时会在一个数据库事务中进行，如有一步发生错误则将会全部回滚，保证数据正确性
+
+  
+
+## 猜你喜欢（商品推荐）
+
+  ### 设计思路
+
+在每次商品列表的卡片（或者轮播图的大图）被点击打开商品详情页时（不做在详情页打开事件里是因为做在那里的话每次详情页刷新都会累加一次），会将在浏览器的 Local Stroage 里将对应类型的累计点击次数+1，然后每次访问有“猜你喜欢”模块的页面（首页，商品列表，商品详情）的时候，就会从 Local Stroage 里读取出累计点击次数最多的产品类型，然后将类型 `product_type` 和需要查询的数量`num`添加到请求参数中，向后端接口`/product/getProductsRand`发起请求，将返回该类型正在众筹中的随机指定数量的产品信息。
+
+### 前端 Local Storage 的处理（算是一种非常简化的推荐算法？）
+
+> 前端关于 Local Storage 的处理代码在 src\utils\storage.js 里面
+
+这里是将推荐相关的数据保存在 Local Storage 的 `fProductRecommend`字段里面 ，这个字段的值为一个数组，所保存的数据结构如下可以 F12 打开浏览器的开发者工具，在 `Application` 标签下 Stroage 里面的 Local Storage 中的 http://localhost:9999 中查看
+
+```json
+[
+    {
+        "type":1, // 产品类型
+        "count":5 // 打开次数
+    },
+    {
+        "type":2,
+        "count":6
+    }
+ ]
+```
+
+![1558354100983](.\mdImg\1558354100983.png)
+
+在 `src\utils\storage.js` 的代码中，主要是 `Recommend` 字段相关的几个函数（或者说方法？）来对 `fProductRecommend` 进行操作，
+
+``` javascript
+// 对应产品类型点击次数保存在 Local Storage 中的 字段名
+const recommendStroeKey = 'fProductRecommend'
+/**
+ * 给对应类型增加点击数量
+ * @param {商品类型} type
+ * @param {增加的计数值} count
+ */
+export const addRecommendCount = (type, count) => {
+  // 从浏览器 Local Storage 取出类型推荐计数的数组
+  let recommend = getStore(recommendStroeKey)
+  // 如果没有就初始化一个空数组
+  if (!recommend) {
+    recommend = []
+  } else {
+    // 因为  Local Storage 只能存字符串，所以要将 Json 字符串反序列化成 JavaScript 对象
+    recommend = JSON.parse(recommend)
+  }
+  let typeIndex = -1
+  // 遍历查找对应类型
+  for (let index = 0; index < recommend.length; index++) {
+    const element = recommend[index]
+    // 找到之后将对应类型的计数累加
+    if (element.type === type) {
+      typeIndex = index
+      recommend[index].count += count
+      break
+    }
+  }
+  // 如果没有找到对应类型，则新建一个对象加入数组中
+  if (typeIndex === -1) {
+    let newTypeRec = {
+      type: type,
+      count: count
+    }
+    Array.push(recommend, newTypeRec)
+  }
+  // 保存到浏览器 Local Storage
+  setStore(recommendStroeKey, recommend)
+}
+
+/**
+ * 获取点击次数最多的类型
+ */
+export const getRecommendType = () => {
+  // 从浏览器 Local Storage 取出类型推荐计数的数组
+  let recommend = getStore(recommendStroeKey)
+  // 如果没有就返回 0 后端将从所有类型中推荐
+  if (!recommend) return 0
+  // 因为  Local Storage 只能存字符串，所以要将 Json 字符串反序列化成 JavaScript 对象
+  recommend = JSON.parse(recommend)
+  let type = 0
+  let maxCount = 0
+  // 在数组中遍历找最大值
+  for (let index = 0; index < recommend.length; index++) {
+    const element = recommend[index]
+    if (element.count > maxCount) {
+      type = element.type
+      maxCount = element.count
+    }
+  }
+  // 返回对应类型
+  return type
+}
+
+/**
+ * 清理推荐计数（注销时清理）
+ */
+export const clearRecommendStorage = () => {
+  removeStore(recommendStroeKey)
+}
+
+```
+
+`addRecommendCount` 主要是在` src/components/mallGoods.vue` 里面的`openProduct()`(即打开对应商品的详情页)有调用,还有在 `src/pages/Home/home.vue ` 里面的 `openProduct()` （之前是写成了 `LinkTo()`现在改了）里有调用
+
+`getRecommendType` 就是在 home 、goodsDetails还有 goods 里面 `getRecommendProducts()`（获取推荐产品列表）在向后端发起请求前调用，来决定向后端获取哪个类型的产品
+
+`clearRecommendStorage` 则是在 `src/common/header.vue`里面的 `_loginOut()` 里，在用户注销时会清除这个字段（从 Local Storage中删除）
+
+### SQL 查询语句原型
+
+以获取产品类型为 `1`查询数量为 `4`的查询为例，
+
+``` sql
+SELECT * 						   # 获取所有字段
+FROM `products` 				   # 从 products 表查询
+WHERE (verify_status = 1)		   # 只查询通过验证的产品
+AND product_type = 1 			   # 只查询产品类型为 1 的产品
+AND end_time > CURRENT_TIMESTAMP() # 只查询截止时间大于当前时间的产品（众筹未结束）
+ORDER BY RAND()  				   # 按随机数排序（即可随机查询）
+LIMIT 4 						   # 限制返回前四个结果
+```
+
+### 后端 Gorm 查询
+
+> 代码在 /models/product.go 里面
+
+这里为了节约数据资源用`resultModels.ProductContent`作为范围值，它与 `models.Product ` 的差别在于前者没有 `detail_html`字段，而后者有，由于这里只是要在列表中显示，而 `detail_html` 数据比较长，所以并不需要它
+
+``` go
+// 根据类型随机获取指定数量的产品 ProductContent
+func GetProductsRandByTypeAndNum(productType int, num int) ([]resultModels.ProductContent, error) {
+	var result []resultModels.ProductContent
+	cDb := db
+	// 只能查到验证通过的
+	cDb = cDb.Where("verify_status = ?", enums.Verify_Success)
+	// 只能查到未到期的 截止时间大于当前时间
+	cDb = cDb.Where("end_time > CURRENT_TIMESTAMP()")
+    // 如果传入的类型值不为零，则查询对应类型，否则不添加这个条件
+	if productType > 0 {
+		cDb = cDb.Where("product_type = ?", productType)
+	}
+	// 如果传入的数量值不为零，则限制查询返回结果的数量，否则返回所有符合条件的数据
+	if num > 0 {
+		cDb = cDb.Limit(num)
+	}
+    // 只返回指定字段（不包含 detail_html）
+    // 表为 products 按随机数排序
+    // 将结果赋值到 result 中
+	err := cDb.Select(resultModels.ProductContentField).
+		Table("products").Order("RAND()").
+		Scan(&result).Error
+	return result, err
+}
+```
+
+
+
+
 
 
 # BeeGo -- 后端框架

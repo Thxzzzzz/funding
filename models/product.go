@@ -253,23 +253,26 @@ func GetAllProductCountInfo() (resultModels.ProductCountInfo, error) {
 
 // 根据类型随机获取指定数量的产品 ProductContent
 func GetProductsRandByTypeAndNum(productType int, num int) ([]resultModels.ProductContent, error) {
-
 	var result []resultModels.ProductContent
 	cDb := db
 	// 只能查到验证通过的
 	cDb = cDb.Where("verify_status = ?", enums.Verify_Success)
 	// 只能查到未到期的 截止时间大于当前时间
 	cDb = cDb.Where("end_time > CURRENT_TIMESTAMP()")
+	// 如果传入的类型值不为零，则查询对应类型，否则不添加这个条件
 	if productType > 0 {
 		cDb = cDb.Where("product_type = ?", productType)
 	}
+	// 如果传入的数量值不为零，则限制查询返回结果的数量，否则返回所有符合条件的数据
 	if num > 0 {
 		cDb = cDb.Limit(num)
 	}
+	// 只返回指定字段（不包含 detail_html）
+	// 表为 products 按随机数排序
+	// 将结果赋值到 result 中
 	err := cDb.Select(resultModels.ProductContentField).
 		Table("products").Order("RAND()").
 		Scan(&result).Error
-
 	return result, err
 }
 
