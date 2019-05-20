@@ -317,24 +317,18 @@ paths:
     get:
       tags:
       - product
-      description: 根据商品 ID 获取商家信息
-      operationId: ProductController.根据商品 ID 获取商家信息
+      description: 根据产品类型 和数量 获取随机数量的指定类型产品
+      operationId: ProductController.根据产品类型 和数量 获取随机数量的指定类型产品
       parameters:
       - in: query
-        name: product_id
-        description: 套餐ID
+        name: product_type
+        description: 产品类型
         required: true
         type: integer
         format: int64
       - in: query
-        name: page
-        description: 页码
-        required: true
-        type: integer
-        format: int64
-      - in: query
-        name: page_size
-        description: 每页数量
+        name: num
+        description: 查询数量
         required: true
         type: integer
         format: int64
@@ -755,26 +749,6 @@ paths:
             $ref: '#/definitions/models.User'
         "400":
           description: ""
-  /user/getUserInfoByRoleId:
-    get:
-      tags:
-      - user
-      description: 根据角色ID来获取用户列表
-      operationId: ManagerUserController.根据角色ID来获取用户列表
-      parameters:
-      - in: query
-        name: role_id
-        description: 角色ID
-        required: true
-        type: integer
-        format: int64
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.User'
-        "400":
-          description: ""
   /user/id:
     get:
       tags:
@@ -801,6 +775,26 @@ paths:
       - user
       description: 用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期
       operationId: ManagerUserController.根据当前的 Session 查询对应的用户信息
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: ""
+  /user/infoByRoleId:
+    get:
+      tags:
+      - user
+      description: 根据角色ID来获取用户列表
+      operationId: ManagerUserController.根据角色ID来获取用户列表
+      parameters:
+      - in: query
+        name: role_id
+        description: 角色ID
+        required: true
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -857,6 +851,26 @@ paths:
           description: ""
         "400":
           description: ""
+  /user/newUser:
+    post:
+      tags:
+      - user
+      description: 更新用户信息
+      operationId: ManagerUserController.更新用户信息
+      parameters:
+      - in: body
+        name: form
+        description: 用户信息
+        required: true
+        schema:
+          $ref: '#/definitions/forms.UserFormWithRole'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: ""
   /user/register:
     post:
       tags:
@@ -873,6 +887,26 @@ paths:
       responses:
         "200":
           description: ""
+        "400":
+          description: ""
+  /user/updateUser:
+    post:
+      tags:
+      - user
+      description: 更新用户信息
+      operationId: ManagerUserController.更新用户信息
+      parameters:
+      - in: body
+        name: form
+        description: 用户信息
+        required: true
+        schema:
+          $ref: '#/definitions/forms.UserFormWithRole'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
         "400":
           description: ""
   /user/uploadImage:
@@ -1049,6 +1083,26 @@ definitions:
       product_id:
         type: integer
         format: int64
+  forms.UserFormWithRole:
+    title: UserFormWithRole
+    type: object
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+        format: int64
+      nickname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      role_id:
+        type: integer
+        format: int64
+      username:
+        type: string
   models.Address:
     title: Address
     type: object

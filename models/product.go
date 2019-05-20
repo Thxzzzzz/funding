@@ -113,7 +113,7 @@ func GetAllProduct() ([]*Product, error) {
 
 // 获取产品类型列表
 func GetProductTypeList() ([]ProductType, error) {
-	results := []ProductType{}
+	var results []ProductType
 	err := db.Find(&results).Error
 	return results, err
 }
@@ -249,6 +249,22 @@ func GetAllProductCountInfo() (resultModels.ProductCountInfo, error) {
 	countInfo := resultModels.ProductCountInfo{}
 	err := db.Table("products").Select(sqlCountProduct).Scan(&countInfo).Error
 	return countInfo, err
+}
+
+// 根据类型随机获取指定数量的产品 ProductContent
+func GetProductsRandByTypeAndNum(productType int, num int) ([]resultModels.ProductContent, error) {
+
+	var result []resultModels.ProductContent
+	cDb := db
+	if productType > 0 {
+		cDb = cDb.Where("product_type = ?", productType)
+	}
+	if num > 0 {
+		cDb = cDb.Limit(num)
+	}
+	err := cDb.Select(resultModels.ProductContentField).Table("products").Order("RAND()").Scan(&result).Error
+
+	return result, err
 }
 
 // 获取产品的截止日期,这个可以用作购物车的失效处理,或者在获取购物车列表的时候就处理？

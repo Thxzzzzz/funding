@@ -21,7 +21,7 @@ func FindAddressById(addressId uint64) (*Address, error) {
 // 根据用户 ID 来获取地址列表
 func FindAddressesByUserId(userId uint64) ([]*Address, error) {
 	var rets []*Address
-	err := db.Find(&rets).Where("user_id = ?", userId).Error
+	err := db.Where("user_id = ?", userId).Find(&rets).Error
 	if err != nil {
 		return nil, err
 	}

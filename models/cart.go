@@ -47,7 +47,7 @@ func FindCartById(cartId uint64) (*Cart, error) {
 // 根据用户 ID 来获取购物车列表
 func FindCartsByUserId(userId uint64) ([]*Cart, error) {
 	var rets []*Cart
-	err := db.Find(&rets).Where("user_id = ?", userId).Error
+	err := db.Where("user_id = ?", userId).Find(&rets).Error
 	return rets, err
 }
 
