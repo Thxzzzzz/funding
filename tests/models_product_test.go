@@ -65,7 +65,7 @@ func TestGetAllProductCountInfo(t *testing.T) {
 }
 
 func TestGetProductsRandByTypeAndNum(t *testing.T) {
-	result, err := models.GetProductsRandByTypeAndNum(1, 5)
+	result, err := models.GetProductsRandByTypeAndNum(0, 5)
 	if err != nil {
 		t.Fail()
 		t.Log(err)

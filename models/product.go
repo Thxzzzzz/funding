@@ -256,13 +256,19 @@ func GetProductsRandByTypeAndNum(productType int, num int) ([]resultModels.Produ
 
 	var result []resultModels.ProductContent
 	cDb := db
+	// 只能查到验证通过的
+	cDb = cDb.Where("verify_status = ?", enums.Verify_Success)
+	// 只能查到未到期的 截止时间大于当前时间
+	cDb = cDb.Where("end_time > CURRENT_TIMESTAMP()")
 	if productType > 0 {
 		cDb = cDb.Where("product_type = ?", productType)
 	}
 	if num > 0 {
 		cDb = cDb.Limit(num)
 	}
-	err := cDb.Select(resultModels.ProductContentField).Table("products").Order("RAND()").Scan(&result).Error
+	err := cDb.Select(resultModels.ProductContentField).
+		Table("products").Order("RAND()").
+		Scan(&result).Error
 
 	return result, err
 }

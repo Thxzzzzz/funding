@@ -64,12 +64,79 @@
                 }
             }
         },
-        "/license/all": {
+        "/manager/product/getProductList": {
             "get": {
                 "tags": [
-                    "license"
+                    "manager/product"
                 ],
-                "operationId": "LicenseController.获取全部执照信息",
+                "description": "获取产品列表，包括未审核的 (1：已通过 2：待审核 3: 待提交 4: 未通过 ) 新建的默认应为待审核状态",
+                "operationId": "ManagerProductController.获取产品列表，包括未审核的和待提交的也能获取到",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "页码",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "description": "每页数量",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "产品名称",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "type",
+                        "description": "产品类型",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "funding_status",
+                        "description": "众筹状态",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "排序方式",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_gt",
+                        "description": "价格大于",
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_lt",
+                        "description": "价格小于",
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "in": "query",
+                        "name": "verify_status",
+                        "description": "审核状态",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": ""
@@ -80,17 +147,18 @@
                 }
             }
         },
-        "/license/getByVerifyStatus": {
+        "/manager/product/pkgListByProductId": {
             "get": {
                 "tags": [
-                    "license"
+                    "manager/product"
                 ],
-                "operationId": "LicenseController.获取对应状态的执照信息",
+                "description": "根据卖家UserID 根据产品 Id 获取产品信息",
+                "operationId": "ManagerProductController.根据产品 Id 获取产品信息",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "verify_status",
-                        "description": "验证状态",
+                        "name": "product_id",
+                        "description": "套餐ID",
                         "required": true,
                         "type": "integer",
                         "format": "int64"
@@ -106,34 +174,222 @@
                 }
             }
         },
-        "/license/licenseById": {
+        "/manager/product/productById": {
             "get": {
                 "tags": [
-                    "license"
+                    "manager/product"
                 ]
             }
         },
-        "/license/update": {
+        "/manager/product/update": {
             "post": {
                 "tags": [
-                    "license"
+                    "manager/product"
                 ],
                 "description": "审核状态 ( (1：已通过 2：待审核 3: 待提交 4: 未通过 )  对应 enums.VerifyXXXX 常量)",
-                "operationId": "LicenseController.更新执照 (包括审核状态)",
+                "operationId": "ManagerProductController.更新产品 (包括审核状态)",
                 "parameters": [
                     {
                         "in": "body",
                         "name": "form",
-                        "description": "执照model",
+                        "description": "产品model",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.License"
+                            "$ref": "#/definitions/models.Product"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/info": {
+            "get": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期",
+                "operationId": "ManagerUserController.根据当前的 Session 查询对应的用户信息",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/infoByRoleId": {
+            "get": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "根据角色ID来获取用户列表",
+                "operationId": "ManagerUserController.根据角色ID来获取用户列表",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "role_id",
+                        "description": "角色ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/login": {
+            "post": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "用账号密码登录",
+                "operationId": "ManagerUserController.登录",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "userForm",
+                        "description": "登录账号密码",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.LoginForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/logout": {
+            "post": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "注销",
+                "operationId": "ManagerUserController.注销",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/newUser": {
+            "post": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "更新用户信息",
+                "operationId": "ManagerUserController.更新用户信息",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "用户信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.UserFormWithRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/register": {
+            "post": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "注册",
+                "operationId": "ManagerUserController.注册",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "user",
+                        "description": "注册信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/user/updateUser": {
+            "post": {
+                "tags": [
+                    "manager/user"
+                ],
+                "description": "更新用户信息",
+                "operationId": "ManagerUserController.更新用户信息",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "用户信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.UserFormWithRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
                     },
                     "400": {
                         "description": ""
@@ -536,89 +792,6 @@
                 }
             }
         },
-        "/product/getProductList": {
-            "get": {
-                "tags": [
-                    "product"
-                ],
-                "description": "获取产品列表，包括未审核的 (1：已通过 2：待审核 3: 待提交 4: 未通过 ) 新建的默认应为待审核状态",
-                "operationId": "ManagerProductController.获取产品列表，包括未审核的和待提交的也能获取到",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "page",
-                        "description": "页码",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "page_size",
-                        "description": "每页数量",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "name",
-                        "description": "产品名称",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "type",
-                        "description": "产品类型",
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "funding_status",
-                        "description": "众筹状态",
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "sort",
-                        "description": "排序方式",
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "price_gt",
-                        "description": "价格大于",
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "in": "query",
-                        "name": "price_lt",
-                        "description": "价格小于",
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "in": "query",
-                        "name": "verify_status",
-                        "description": "审核状态",
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/product/getSellerByProductId": {
             "get": {
                 "tags": [
@@ -661,40 +834,6 @@
                         "description": ""
                     }
                 }
-            }
-        },
-        "/product/pkgListByProductId": {
-            "get": {
-                "tags": [
-                    "product"
-                ],
-                "description": "根据卖家UserID 根据产品 Id 获取产品信息",
-                "operationId": "ManagerProductController.根据产品 Id 获取产品信息",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "product_id",
-                        "description": "套餐ID",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/product/productById": {
-            "get": {
-                "tags": [
-                    "product"
-                ]
             }
         },
         "/product/productList": {
@@ -789,34 +928,6 @@
                                 "$ref": "#/definitions/models.ProductType"
                             }
                         }
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/product/update": {
-            "post": {
-                "tags": [
-                    "product"
-                ],
-                "description": "审核状态 ( (1：已通过 2：待审核 3: 待提交 4: 未通过 )  对应 enums.VerifyXXXX 常量)",
-                "operationId": "ManagerProductController.更新产品 (包括审核状态)",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "form",
-                        "description": "产品model",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Product"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
                     },
                     "400": {
                         "description": ""
@@ -1177,37 +1288,7 @@
                     "user"
                 ],
                 "description": "用户登录之后查询当前登录的用户信息，每次查询会刷新 Session 有效期",
-                "operationId": "ManagerUserController.根据当前的 Session 查询对应的用户信息",
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/user/infoByRoleId": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "description": "根据角色ID来获取用户列表",
-                "operationId": "ManagerUserController.根据角色ID来获取用户列表",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "role_id",
-                        "description": "角色ID",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
+                "operationId": "UserControllers.根据当前的 Session 查询对应的用户信息",
                 "responses": {
                     "200": {
                         "description": "",
@@ -1255,7 +1336,7 @@
                     "user"
                 ],
                 "description": "用账号密码登录",
-                "operationId": "ManagerUserController.登录",
+                "operationId": "UserControllers.登录",
                 "parameters": [
                     {
                         "in": "body",
@@ -1286,41 +1367,10 @@
                     "user"
                 ],
                 "description": "注销",
-                "operationId": "ManagerUserController.注销",
+                "operationId": "UserControllers.注销",
                 "responses": {
                     "200": {
                         "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/user/newUser": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "description": "更新用户信息",
-                "operationId": "ManagerUserController.更新用户信息",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "form",
-                        "description": "用户信息",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/forms.UserFormWithRole"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
                     },
                     "400": {
                         "description": ""
@@ -1334,52 +1384,21 @@
                     "user"
                 ],
                 "description": "注册",
-                "operationId": "ManagerUserController.注册",
+                "operationId": "UserControllers.注册",
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "user",
+                        "name": "registerForm",
                         "description": "注册信息",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/forms.RegisterForm"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": ""
-                    },
-                    "400": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/user/updateUser": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "description": "更新用户信息",
-                "operationId": "ManagerUserController.更新用户信息",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "form",
-                        "description": "用户信息",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/forms.UserFormWithRole"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
                     },
                     "400": {
                         "description": ""
@@ -1421,6 +1440,83 @@
                 "tags": [
                     "user"
                 ]
+            }
+        },
+        "manager/license/all": {
+            "get": {
+                "tags": [
+                    "manager/license"
+                ],
+                "operationId": "LicenseController.获取全部执照信息",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "manager/license/getByVerifyStatus": {
+            "get": {
+                "tags": [
+                    "manager/license"
+                ],
+                "operationId": "LicenseController.获取对应状态的执照信息",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "verify_status",
+                        "description": "验证状态",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "manager/license/licenseById": {
+            "get": {
+                "tags": [
+                    "manager/license"
+                ]
+            }
+        },
+        "manager/license/update": {
+            "post": {
+                "tags": [
+                    "manager/license"
+                ],
+                "description": "审核状态 ( (1：已通过 2：待审核 3: 待提交 4: 未通过 )  对应 enums.VerifyXXXX 常量)",
+                "operationId": "LicenseController.更新执照 (包括审核状态)",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "执照model",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.License"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
             }
         }
     },
@@ -2121,11 +2217,11 @@
             "description": "产品详情获取评论列表是写在 /controller/product.go 里面\n评论相关 主要是提交评论和回复，需要验证身份\n"
         },
         {
-            "name": "license",
+            "name": "manager/license",
             "description": "执照信息相关的 API\nBASE_API 应该为 /manager/ 但是自动生成的是错的，不知道怎么改,所以这个端口 SWAGGER 不能正常测试\n"
         },
         {
-            "name": "user",
+            "name": "manager/user",
             "description": "管理端的 UserController\n"
         }
     ]

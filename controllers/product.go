@@ -88,7 +88,7 @@ func (c *ProductController) GetHome() {
 		if len(products) < 6 {
 			continue
 		}
-		techResult := resultModels.HomeResult{
+		typeResult := resultModels.HomeResult{
 			Name:     productType.Name + "精选",
 			LimitNum: 7,
 			Type:     3,
@@ -98,9 +98,9 @@ func (c *ProductController) GetHome() {
 			var productContent resultModels.ProductContent
 			utils.CopyStructJ(&p, &productContent)
 			productContent.ID = p.ID
-			techResult.ProductContents = append(techResult.ProductContents, productContent)
+			typeResult.ProductContents = append(typeResult.ProductContents, productContent)
 		}
-		home = append(home, techResult)
+		home = append(home, typeResult)
 
 	}
 
