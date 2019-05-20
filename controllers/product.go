@@ -284,3 +284,14 @@ func (c *ProductController) GetCommentInfoByProductId() {
 	}
 	c.ResponseSuccessJson(results)
 }
+
+// @Title 根据产品类型 和数量 获取随机数量的指定类型产品
+// @Description 根据产品类型 和数量 获取随机数量的指定类型产品
+// @Param	product_type	query	int	true	"产品类型"
+// @Param	num				query	int	true	"查询数量"
+// @Success	200
+// @Failure 400
+// @router /getCommentInfoByProductId [get]
+func (c *ProductController) GetProductsRandByTypeAndNum() {
+
+}

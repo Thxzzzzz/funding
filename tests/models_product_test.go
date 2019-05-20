@@ -30,7 +30,7 @@ func TestGetProductList(t *testing.T) {
 		//Type: 1,
 		Name: "手环",
 	}
-	resutlt, err := models.GetProductList(form)
+	resutlt, err := models.GetProductList(form, 1)
 	if err != nil {
 		t.Failed()
 	}
@@ -57,6 +57,15 @@ func TestGetProductTypeList(t *testing.T) {
 
 func TestGetAllProductCountInfo(t *testing.T) {
 	result, err := models.GetAllProductCountInfo()
+	if err != nil {
+		t.Fail()
+		t.Log(err)
+	}
+	t.Log(result)
+}
+
+func TestGetProductsRandByTypeAndNum(t *testing.T) {
+	result, err := models.GetProductsRandByTypeAndNum(1, 5)
 	if err != nil {
 		t.Fail()
 		t.Log(err)
