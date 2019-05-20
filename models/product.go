@@ -154,6 +154,10 @@ func GetProductWithPkg(productId uint64) (*Product, error) {
 	if err != nil {
 		return nil, err
 	}
+	timeNow := time.Now()
+	// 计算 众筹状态
+	result.FundingStatus = CalcFundingStatus(timeNow, result.EndTime,
+		result.CurrentPrice, result.TargetPrice)
 	return &result, nil
 }
 
