@@ -488,6 +488,47 @@ paths:
     get:
       tags:
       - product
+      description: 根据商品 ID 获取商家信息
+      operationId: ProductController.根据商品 ID 获取商家信息
+      parameters:
+      - in: query
+        name: product_id
+        description: 套餐ID
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: page
+        description: 页码
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: page_size
+        description: 每页数量
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+  /product/getProductCountInfo:
+    get:
+      tags:
+      - product
+      description: 获取统计信息
+      operationId: ProductController.获取统计信息
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+  /product/getProductsRand:
+    get:
+      tags:
+      - product
       description: 根据产品类型 和数量 获取随机数量的指定类型产品
       operationId: ProductController.根据产品类型 和数量 获取随机数量的指定类型产品
       parameters:
@@ -503,17 +544,6 @@ paths:
         required: true
         type: integer
         format: int64
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: ""
-  /product/getProductCountInfo:
-    get:
-      tags:
-      - product
-      description: 获取统计信息
-      operationId: ProductController.获取统计信息
       responses:
         "200":
           description: ""

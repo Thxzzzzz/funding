@@ -276,6 +276,7 @@ func (c *ProductController) GetCommentInfoByProductId() {
 	err := beego.ParseForm(values, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
+		return
 	}
 	results, err := models.GetResultCommentInfosByProductId(&form)
 	if err != nil {
@@ -291,7 +292,19 @@ func (c *ProductController) GetCommentInfoByProductId() {
 // @Param	num				query	int	true	"查询数量"
 // @Success	200
 // @Failure 400
-// @router /getCommentInfoByProductId [get]
+// @router /getProductsRand [get]
 func (c *ProductController) GetProductsRandByTypeAndNum() {
-
+	productType, err := c.GetInt("product_type")
+	num, err := c.GetInt("num")
+	if err != nil {
+		c.ResponseErrJson(&resultError.FormParamErr)
+		return
+	}
+	// 根据类型 和数量随机获取 一组产品信息
+	result, err := models.GetProductsRandByTypeAndNum(productType, num)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
 }
