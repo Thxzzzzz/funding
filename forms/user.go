@@ -14,3 +14,14 @@ type RegisterForm struct {
 	Email    string `json:"email" form:"email"`
 	Phone    string `json:"phone" form:"phone"`
 }
+
+//注册表单 带角色
+type UserFormWithRole struct {
+	ID       uint64 `json:"id" form:"id"`
+	Username string `json:"username" form:"username"`
+	Password string `json:"password" form:"password"`
+	Nickname string `json:"nickname" form:"nickname"`
+	RoleId   int    `json:"role_id"  gorm:"default:0"` //角色  ( 0:普通用户(默认) )
+	Email    string `json:"email" form:"email"`
+	Phone    string `json:"phone" form:"phone"`
+}

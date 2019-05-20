@@ -755,6 +755,26 @@ paths:
             $ref: '#/definitions/models.User'
         "400":
           description: ""
+  /user/getUserInfoByRoleId:
+    get:
+      tags:
+      - user
+      description: 根据角色ID来获取用户列表
+      operationId: ManagerUserController.根据角色ID来获取用户列表
+      parameters:
+      - in: query
+        name: role_id
+        description: 角色ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: ""
   /user/id:
     get:
       tags:

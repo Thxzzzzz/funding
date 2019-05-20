@@ -46,3 +46,11 @@ func UpdateUser(user *User) error {
 	err = db.Model(&ret).Updates(user).Error
 	return err
 }
+
+// 根据角色类型获取角色信息列表
+func GetUsersByRoleId(roleId int) ([]User, error) {
+	var result []User
+	// 根据 role_id 查询 ，根据 id  倒序
+	err := db.Where("role_id = ?", roleId).Order("id DESC").Find(&result).Error
+	return result, err
+}

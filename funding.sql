@@ -36,13 +36,13 @@ CREATE TABLE IF NOT EXISTS `addresses` (
 -- 正在导出表  funding.addresses 的数据：~15 rows (大约)
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
 REPLACE INTO `addresses` (`id`, `user_id`, `name`, `address`, `phone`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-04-23 21:24:44', NULL),
+	(1, 20003, '李小明5', '广西壮族自治区桂林市七星区桂林电子科技大学', '18500000012', '2019-04-15 14:24:56', '2019-05-19 14:42:46', NULL),
 	(2, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 00:31:47', '2019-04-16 00:33:11', '2019-04-16 00:33:11'),
 	(3, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:54:39', '2019-04-30 00:29:33', '2019-04-30 00:29:34'),
 	(4, 20003, '测试大佬2', '广西壮族自治区桂林市七星区南方小清华', '18512345432', '2019-04-16 01:56:50', '2019-04-16 01:59:21', '2019-04-16 01:59:21'),
-	(5, 20003, '测试大佬update', '广西壮族自治区桂林市四电之一', '18512345521', '2019-04-16 02:00:30', '2019-04-20 15:58:26', NULL),
+	(5, 20003, '测试大佬update', '广西壮族自治区桂林市四电之一', '18512345521', '2019-04-16 02:00:30', '2019-05-19 14:47:12', NULL),
 	(6, 20003, '什么鬼', '桂林电子科技大学', '18511123456', '2019-04-20 14:51:14', '2019-04-20 15:30:24', '2019-04-20 15:30:24'),
-	(7, 20003, '测试大佬123', '桂林电子科技大学', '185123123123', '2019-04-30 00:31:19', '2019-04-30 00:31:19', NULL),
+	(7, 20003, '测试大佬123', '桂林电子科技大学', '185123123123', '2019-04-30 00:31:19', '2019-05-19 14:46:33', NULL),
 	(8, 20003, '新地址', '桂电123', '12345678901', '2019-05-15 22:04:50', '2019-05-15 22:06:29', '2019-05-15 22:06:30'),
 	(9, 20003, '新的人', '新的地址', '1234567801', '2019-05-15 22:10:20', '2019-05-15 22:11:56', '2019-05-15 22:11:56'),
 	(10, 20003, '新的人', '新的地址', '1234567801', '2019-05-15 22:12:07', '2019-05-15 22:25:27', '2019-05-15 22:25:27'),
@@ -189,9 +189,9 @@ CREATE TABLE IF NOT EXISTS `licenses` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `idx_licenses_user_id` (`user_id`) USING BTREE,
   KEY `idx_licenses_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=11111114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
+) ENGINE=InnoDB AUTO_INCREMENT=11111117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='执照信息 项目发起人资质信息';
 
--- 正在导出表  funding.licenses 的数据：~0 rows (大约)
+-- 正在导出表  funding.licenses 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `licenses` DISABLE KEYS */;
 REPLACE INTO `licenses` (`id`, `company_name`, `description`, `user_id`, `address`, `phone`, `license_image_url`, `verify_status`, `verify_message`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(11111111, '北京驰讯通科技有限公司', '我们是一家科技服务公司', 20002, '北京海淀区三环到四环之间  中关村东路18号财智国际大厦702', '13570828180', 'https://img30.360buyimg.com/cf/jfs/t1/4374/9/6975/444185/5ba469f2E849b4a18/9ad35bddbd55accf.jpg', 1, '', '2019-03-09 18:40:38', '2019-05-16 01:27:32', NULL),
@@ -448,20 +448,22 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间(软删除) NULL为未删除',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `username_idx` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=20008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户';
+  UNIQUE KEY `username_idx` (`username`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=20010 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='用户';
 
 -- 正在导出表  funding.users 的数据：~8 rows (大约)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `phone`, `role_id`, `person_id`, `icon_url`, `default_address_id`, `license_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(10000, 'admin', '123456', '超级管理员', '', '0', 999, 0, '', 0, '', '2019-03-09 17:02:45', '2019-04-15 20:49:48', NULL),
-	(11001, 'shenhe1', '123456', '审核员1', '', '0', 1, 0, '', 0, '', '2019-05-17 15:15:27', '2019-05-17 16:36:42', NULL),
+	(11001, 'shenhe1', '123456', '审核员1', '123@123.com', '123213123', 1, 0, '', 0, '', '2019-05-17 15:15:27', '2019-05-20 01:02:04', NULL),
 	(20002, 'shangjia1', '123456', '驰讯通科技', 'cxt@cxt.com', '0', 2, 0, '', 0, '11111111', '2019-03-09 17:03:37', '2019-05-16 01:29:05', NULL),
-	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 3, '', '2019-04-15 14:22:26', '2019-04-30 00:27:32', NULL),
+	(20003, 'test1', '123456', '一号测试用户', '123456@123.com', '18512345678', 0, 0, '', 5, '', '2019-04-15 14:22:26', '2019-05-19 14:47:12', NULL),
 	(20004, 'test2', '123456', '测试2', '123456@123.com', '18512345678', 2, 0, '', 0, '', '2019-04-15 20:47:28', '2019-05-19 02:34:23', NULL),
 	(20005, 'test3', '123456', '测试3', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:11:16', '2019-04-15 21:12:23', NULL),
 	(20006, 'test4', '123456', '测试4', '123456@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-15 21:14:30', '2019-04-15 21:14:30', NULL),
-	(20007, 'test1415', '123456', 'test1415111', '3121@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-17 20:35:13', '2019-04-17 20:35:13', NULL);
+	(20007, 'test1415', '123456', 'test1415111', '3121@123.com', '18512345678', 0, 0, '', 0, '', '2019-04-17 20:35:13', '2019-04-17 20:35:13', NULL),
+	(20008, 'shenhe2', '123456', '审核员2', '1231@123.com', '123456', 1, 0, '', 0, '', '2019-05-20 01:07:47', '2019-05-20 01:21:09', NULL),
+	(20009, 'shenhe3', '123456', '审核员3', '123456123@123.com', '1234654657', 1, 0, '', 0, '', '2019-05-20 01:21:25', '2019-05-20 01:21:25', NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

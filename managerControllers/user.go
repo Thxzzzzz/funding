@@ -7,6 +7,7 @@ import (
 	"funding/models"
 	"funding/objects"
 	"funding/resultModels"
+	"funding/utils"
 	"github.com/jinzhu/gorm"
 )
 
@@ -144,16 +145,116 @@ func (c *ManagerUserController) Info() {
 
 // @Title 根据角色ID来获取用户列表
 // @Description 根据角色ID来获取用户列表
-// @Params	role_id	query	int	true	"角色ID"
+// @Param	role_id	query	int	true	"角色ID"
 // @Success 200	{object} models.User
 // @Failure 400
-// @router /GetUserInfoByRoleId [get]
-func (c *ManagerUserController) GetUserInfoByRoleId() {
+// @router /infoByRoleId [get]
+func (c *ManagerUserController) GetInfoByRoleId() {
 	user, err := c.CheckAndGetUser()
 	if err != nil || user.RoleId != enums.Role_SuperAdmin {
 		c.ResponseErrJson(&resultError.UserRoleVerifyError)
 		return
 	}
+	roleId, err := c.GetInt("role_id")
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 根据 role_id 来查询角色列表
+	result, err := models.GetUsersByRoleId(roleId)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
 
-	c.ResponseSuccessJson(user)
+// @Title 更新用户信息
+// @Description 更新用户信息
+// @Param	form	body	forms.UserFormWithRole	true	"用户信息"
+// @Success 200	{object} models.User
+// @Failure 400
+// @router /updateUser [post]
+func (c *ManagerUserController) UpdateUser() {
+	user, err := c.CheckAndGetUser()
+	if err != nil {
+		c.ResponseErrJson(&resultError.UserRoleVerifyError)
+		return
+	}
+	form := forms.UserFormWithRole{}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 如果不是超级管理员，那只能更新自己的信息
+	if user.RoleId != enums.Role_SuperAdmin && user.ID != form.ID {
+		c.ResponseErrJson(&resultError.UserRoleVerifyError)
+		return
+	}
+
+	//因为 User 屏蔽了 password 的 json 解析，所以这里要转一下
+	newUser := models.User{}
+	err = utils.CopyStruct(form, &newUser)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 更新信息
+	err = models.UpdateUser(&newUser)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(newUser)
+}
+
+// @Title 更新用户信息
+// @Description 更新用户信息
+// @Param	form	body	forms.UserFormWithRole	true	"用户信息"
+// @Success 200	{object} models.User
+// @Failure 400
+// @router /newUser [post]
+func (c *ManagerUserController) NewUser() {
+	user, err := c.CheckAndGetUser()
+	// 超级管理员才能创建
+	if err != nil || user.RoleId != enums.Role_SuperAdmin {
+		c.ResponseErrJson(&resultError.UserRoleVerifyError)
+		return
+	}
+	form := forms.UserFormWithRole{}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	//查询是否已存在用户名
+	dbExisted, err := models.FindUserByUsername(form.Username)
+	//查询出错
+	if err != nil && err.Error() != gorm.ErrRecordNotFound.Error() {
+		c.ResponseErrJson(err)
+		return
+	}
+	//已存在
+	if dbExisted != nil && dbExisted.Username == form.Username {
+		c.ResponseErrJson(resultError.NewFallFundingErr("用户已存在"))
+		return
+	}
+
+	//因为 User 屏蔽了 password 的 json 解析，所以这里要转一下
+	newUser := models.User{}
+	err = utils.CopyStruct(form, &newUser)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 更新信息
+	err = models.InsertUser(&newUser)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(newUser)
 }
