@@ -86,6 +86,10 @@ func (c *ManagerProductController) UpdateProduct() {
 }
 
 // 根据产品 Id 获取产品信息
+// @Description 根据产品ID 获取产品信息
+// @Param	id	query	int	true	"产品ID"
+// @Success	200
+// @Failure 400
 // @router /productById [get]
 func (c *ManagerProductController) GetProductById() {
 	// 获取传过来的Id
@@ -103,8 +107,8 @@ func (c *ManagerProductController) GetProductById() {
 }
 
 // @Title 根据产品 Id 获取产品信息
-// @Description 根据卖家UserID 根据产品 Id 获取产品信息
-// @Param	product_id	query	int	true	"套餐ID"
+// @Description 根据产品 Id 获取产品信息
+// @Param	product_id	query	int	true	"产品ID"
 // @Success	200
 // @Failure 400
 // @router /pkgListByProductId [get]

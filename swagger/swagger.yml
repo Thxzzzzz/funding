@@ -103,12 +103,12 @@ paths:
     get:
       tags:
       - manager/product
-      description: 根据卖家UserID 根据产品 Id 获取产品信息
+      description: 根据产品 Id 获取产品信息
       operationId: ManagerProductController.根据产品 Id 获取产品信息
       parameters:
       - in: query
         name: product_id
-        description: 套餐ID
+        description: 产品ID
         required: true
         type: integer
         format: int64
@@ -121,6 +121,19 @@ paths:
     get:
       tags:
       - manager/product
+      description: 根据产品ID 获取产品信息
+      parameters:
+      - in: query
+        name: id
+        description: 产品ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /manager/product/update:
     post:
       tags:

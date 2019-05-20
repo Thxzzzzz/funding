@@ -295,10 +295,12 @@ func (c *ProductController) GetCommentInfoByProductId() {
 // @router /getProductsRand [get]
 func (c *ProductController) GetProductsRandByTypeAndNum() {
 	productType, err := c.GetInt("product_type")
+	if err != nil {
+		productType = 0
+	}
 	num, err := c.GetInt("num")
 	if err != nil {
-		c.ResponseErrJson(&resultError.FormParamErr)
-		return
+		num = 4
 	}
 	// 根据类型 和数量随机获取 一组产品信息
 	result, err := models.GetProductsRandByTypeAndNum(productType, num)
