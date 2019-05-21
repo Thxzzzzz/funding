@@ -105,7 +105,7 @@ func (c *OrderController) OrderInIds() {
 // @Failure 400
 // @router /orderPay [Post]
 func (c *OrderController) OrderPay() {
-	orderIds := []uint64{}
+	var orderIds []uint64
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &orderIds)
 	if err != nil {
 		c.ResponseErrJson(err)
@@ -124,8 +124,8 @@ func (c *OrderController) OrderPay() {
 // @Param	id	body	forms.IdForm	true	"订单ID"
 // @Success 200
 // @Failure 400
-// @router /receivedProduct [Post]
-func (c *OrderController) ReceivedProduct() {
+// @router /receivedOrder [Post]
+func (c *OrderController) ReceivedOrdergen() {
 	user := c.User
 	if user.RoleId != enums.Role_Buyer {
 		c.ResponseErrJson(resultError.NewFallFundingErr("买家才能确认收货"))
@@ -170,7 +170,7 @@ func (c *OrderController) ReceivedProduct() {
 
 // @Title 买家根据订单 ID 申请退款
 // @Description  买家根据订单 ID 申请退款
-// @Param	id	body	forms.IdForm	true	"订单ID"
+// @Param	form	body	forms.RefundForm	true	"订单ID"
 // @Success 200
 // @Failure 400
 // @router /refund [Post]
@@ -180,25 +180,35 @@ func (c *OrderController) Refund() {
 		c.ResponseErrJson(resultError.NewFallFundingErr("买家才能申请退款"))
 		return
 	}
-	form := forms.IdForm{}
+	form := forms.RefundForm{}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
 	// 先根据订单 ID 查询对应订单
-	order, err := models.FindOrderById(form.Id)
+	order, err := models.FindOrderById(form.ID)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
+	// 只能给自己的订单申请退款
+	if user.RoleId == enums.Role_Buyer && user.ID != order.UserId {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
+		return
+	}
+
 	// 如果是已付款且未结束的才能申请退款
 	if !(order.Status >= enums.OrderStatus_Paid && order.Status < enums.OrderStatus_Finished) {
 		c.ResponseErrJson(resultError.NewFallFundingErr("订单状态异常"))
 		return
 	}
+	// 记录申请退款前的订单状态 (拒绝退款后要恢复到这个状态)
+	order.LastStatus = order.Status
 	// 修改订单状态为申请退款状态
 	order.Status = enums.OrderStatus_Refund
+	// 添加退款原因
+	order.RefundReason = form.RefundReason
 	// 更新订单状态
 	err = models.UpdateOrder(order)
 	if err != nil {
@@ -210,13 +220,13 @@ func (c *OrderController) Refund() {
 
 // @Title 根据订单 ID 取消订单
 // @Description  根据订单 ID 取消订单
-// @Param	id	body	forms.IdForm	true	"订单ID"
+// @Param	form	body	forms.RefundForm	true	"订单ID"
 // @Success 200
 // @Failure 400
 // @router /cancel [Post]
 func (c *OrderController) Cancel() {
 	user := c.User
-	form := forms.IdForm{}
+	form := forms.RefundForm{}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
@@ -224,26 +234,32 @@ func (c *OrderController) Cancel() {
 	}
 
 	// 先根据订单 ID 查询对应订单
-	order, err := models.FindOrderById(form.Id)
+	order, err := models.FindOrderById(form.ID)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
 
-	// 买家只能取消自己的订单 而且只能取消未开始备货/发货的，已开始的要先申请退款
-	if user.RoleId != enums.Role_Buyer && order.UserId != user.ID && order.Status < enums.OrderStatus_Prepare {
+	// 买家只能取消自己的订单
+	if user.RoleId == enums.Role_Buyer && order.UserId != user.ID {
 		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
 		return
 	}
 
+	//  买家只能取消未开始备货/发货的，已开始的要先申请退款，卖家同意后取消
+	if user.RoleId == enums.Role_Buyer && order.Status >= enums.OrderStatus_Prepare {
+		c.ResponseErrJson(resultError.NewFallFundingErr("订单状态异常"))
+		return
+	}
+
 	// 卖家只能取消卖家为自己的订单
-	if user.RoleId != enums.Role_Seller && order.SellerId != user.ID {
+	if user.RoleId == enums.Role_Seller && order.SellerId != user.ID {
 		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
 		return
 	}
 
 	// 取消相关订单
-	orderIds := []uint64{form.Id}
+	orderIds := []uint64{form.ID}
 	err = models.CancelOrderByOrderIds(orderIds)
 
 	c.ResponseSuccessJson(nil)
@@ -303,6 +319,49 @@ func (c *OrderController) SendOutOrder() {
 		return
 	}
 	err = models.SendOutOrderById(&form, c.User.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
+
+// @Title 卖家根据订单 ID 拒绝退款
+// @Description   卖家根据订单 ID 拒绝退款
+// @Param	form	body	forms.RefundForm	true	"订单ID 和原因"
+// @Success 200
+// @Failure 400
+// @router /cantRefund [Post]
+func (c *OrderController) CantRefund() {
+	user := c.User
+	if user.RoleId != enums.Role_Seller {
+		c.ResponseErrJson(resultError.NewFallFundingErr("卖家才能拒绝申请退款"))
+		return
+	}
+	form := forms.RefundForm{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 先根据订单 ID 查询对应订单
+	order, err := models.FindOrderById(form.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 必须是正在申请退款的才能拒绝退款
+	if order.Status != enums.OrderStatus_Refund {
+		c.ResponseErrJson(resultError.NewFallFundingErr("订单状态异常"))
+		return
+	}
+	// 修改订单状态为申请退款前的状态
+	order.Status = order.LastStatus
+	// 添加拒绝退款原因
+	order.RefundReason = form.RefundReason
+	// 更新订单状态
+	err = models.UpdateOrder(order)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return

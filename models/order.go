@@ -13,21 +13,23 @@ import (
 // 订单
 type Order struct {
 	BaseModel
-	UserId           uint64            // 买家 Id
-	Name             string            // 收件人姓名
-	Address          string            // 收件人地址
-	Phone            string            // 收件人电话
-	SellerId         uint64            // 卖家 Id
-	ProductId        uint64            // 产品 Id
-	ProductPackageId uint64            // 套餐 Id
-	Nums             int               // 购买数量
-	UnitPrice        float64           // 单价
-	TotalPrice       float64           // 总价
-	Status           enums.OrderStatus // 订单状态
-	CheckingNumber   string            // 物流单号
-	PaidAt           *time.Time        // 支付时间
-	CloseAt          *time.Time        // 关闭时间
-	FinishedAt       *time.Time        // 交易成功时间
+	UserId           uint64            `json:"user_id"`            // 买家 Id
+	Name             string            `json:"name"`               // 收件人姓名
+	Address          string            `json:"address"`            // 收件人地址
+	Phone            string            `json:"phone"`              // 收件人电话
+	SellerId         uint64            `json:"seller_id"`          // 卖家 Id
+	ProductId        uint64            `json:"product_id"`         // 产品 Id
+	ProductPackageId uint64            `json:"product_package_id"` // 套餐 Id
+	Nums             int               `json:"nums"`               // 购买数量
+	UnitPrice        float64           `json:"unit_price"`         // 单价
+	TotalPrice       float64           `json:"total_price"`        // 总价
+	Status           enums.OrderStatus `json:"status"`             // 订单状态
+	CheckingNumber   string            `json:"checking_number"`    // 物流单号
+	RefundReason     string            `json:"refund_reason"`      // 申请退款原因
+	LastStatus       enums.OrderStatus `json:"last_status"`        // 上次状态（申请退款之前的订单状态),用于拒绝退款后恢复
+	PaidAt           *time.Time        `json:"paid_at"`            // 支付时间
+	CloseAt          *time.Time        `json:"close_at"`           // 关闭时间
+	FinishedAt       *time.Time        `json:"finished_at"`        // 交易成功时间
 }
 
 // 根据订单的 ID 来获取订单
@@ -144,7 +146,7 @@ SELECT
 	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
 	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,p.end_time,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
-	p.current_price,p.target_price,
+	p.current_price,p.target_price,o.refund_reason,o.last_status,
 	o.created_at,o.status AS order_status,o.total_price,o.checking_number,
 	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at
 `
@@ -423,10 +425,10 @@ func CancelOrderByOrderIds(orderIds []uint64) error {
 				return resultError.NewFallFundingErr("获取产品时发生错误")
 			}
 
-			if time.Now().After(product.EndTime) {
-				tx.Rollback()
-				return resultError.NewFallFundingErr("众筹已结束")
-			}
+			//if time.Now().After(product.EndTime) {
+			//	tx.Rollback()
+			//	return resultError.NewFallFundingErr("众筹已结束")
+			//}
 
 			// 减少支持者人数
 			product.Backers--
@@ -464,6 +466,8 @@ func CancelOrderByOrderIds(orderIds []uint64) error {
 
 		// 根据订单 ID 将订单状态更新为取消
 		order.Status = enums.OrderStatus_Canceled
+		// 订单上次状态更改为 1（已下单） （为了前端在取消后订单后不显示被拒绝退款原因）
+		order.LastStatus = enums.OrderStatus_Ordered
 		// 更新订单状态和关闭时间
 		err = tx.Model(&order).
 			Updates(map[string]interface{}{"status": order.Status, "close_at": timeNow}).Error

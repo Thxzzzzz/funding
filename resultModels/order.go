@@ -24,6 +24,8 @@ type OrderListItem struct {
 	Nums             int                 `json:"nums"`               // 购买数量
 	UnitPrice        float64             `json:"unit_price"`         // 单价
 	CheckingNumber   string              `json:"checking_number"`    // 物流单号
+	RefundReason     string              `json:"refund_reason"`      // 申请退款原因
+	LastStatus       enums.OrderStatus   `json:"last_status"`        // 上次状态（申请退款之前的订单状态),用于拒绝退款后恢复
 	Freight          float64             `json:"freight"`            // 运费
 	TotalPrice       float64             `json:"total_price"`        // 总价
 	OrderStatus      enums.OrderStatus   `json:"order_status"`       // 订单状态

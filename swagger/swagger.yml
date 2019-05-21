@@ -300,11 +300,29 @@ paths:
       operationId: OrderController.根据订单 ID 取消订单
       parameters:
       - in: body
-        name: id
+        name: form
         description: 订单ID
         required: true
         schema:
-          $ref: '#/definitions/forms.IdForm'
+          $ref: '#/definitions/forms.RefundForm'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+  /order/cantRefund:
+    post:
+      tags:
+      - order
+      description: 卖家根据订单 ID 拒绝退款
+      operationId: OrderController.卖家根据订单 ID 拒绝退款
+      parameters:
+      - in: body
+        name: form
+        description: 订单ID 和原因
+        required: true
+        schema:
+          $ref: '#/definitions/forms.RefundForm'
       responses:
         "200":
           description: ""
@@ -384,7 +402,7 @@ paths:
           description: ""
         "400":
           description: ""
-  /order/receivedProduct:
+  /order/receivedOrder:
     post:
       tags:
       - order
@@ -410,11 +428,11 @@ paths:
       operationId: OrderController.买家根据订单 ID 申请退款
       parameters:
       - in: body
-        name: id
+        name: form
         description: 订单ID
         required: true
         schema:
-          $ref: '#/definitions/forms.IdForm'
+          $ref: '#/definitions/forms.RefundForm'
       responses:
         "200":
           description: ""
@@ -1218,6 +1236,15 @@ definitions:
       PageSize:
         type: integer
         format: int64
+  forms.RefundForm:
+    title: RefundForm
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      refund_reason:
+        type: string
   forms.RegisterForm:
     title: RegisterForm
     type: object

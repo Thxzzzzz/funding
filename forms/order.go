@@ -23,6 +23,12 @@ type NewOrderForm struct {
 	OrderTotal   float64        `json:"order_total"`
 }
 
+// 退款申请表单（带退款原因）
+type RefundForm struct {
+	ID           uint64 `json:"id"`            // 订单ID
+	RefundReason string `json:"refund_reason"` // 退款原因
+}
+
 ////////////// 			卖家相关								/////////////
 
 // 卖家获取订单的 Form
