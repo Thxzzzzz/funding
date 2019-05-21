@@ -135,6 +135,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
         beego.ControllerComments{
+            Method: "Cancel",
+            Router: `/cancel`,
+            AllowHTTPMethods: []string{"Post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
+        beego.ControllerComments{
             Method: "OrderInIds",
             Router: `/orderInIds`,
             AllowHTTPMethods: []string{"get"},
@@ -164,6 +173,24 @@ func init() {
         beego.ControllerComments{
             Method: "OrderPay",
             Router: `/orderPay`,
+            AllowHTTPMethods: []string{"Post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "ReceivedProduct",
+            Router: `/receivedProduct`,
+            AllowHTTPMethods: []string{"Post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:OrderController"] = append(beego.GlobalControllerRouter["funding/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "Refund",
+            Router: `/refund`,
             AllowHTTPMethods: []string{"Post"},
             MethodParams: param.Make(),
             Filters: nil,

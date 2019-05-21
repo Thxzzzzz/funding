@@ -292,6 +292,24 @@ paths:
           description: ""
         "400":
           description: ""
+  /order/cancel:
+    post:
+      tags:
+      - order
+      description: 根据订单 ID 取消订单
+      operationId: OrderController.根据订单 ID 取消订单
+      parameters:
+      - in: body
+        name: id
+        description: 订单ID
+        required: true
+        schema:
+          $ref: '#/definitions/forms.IdForm'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /order/orderInIds:
     get:
       tags:
@@ -361,6 +379,42 @@ paths:
           items:
             format: int64
             type: integer
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+  /order/receivedProduct:
+    post:
+      tags:
+      - order
+      description: 根据订单 ID 确认收货
+      operationId: OrderController.根据订单 ID 确认收货
+      parameters:
+      - in: body
+        name: id
+        description: 订单ID
+        required: true
+        schema:
+          $ref: '#/definitions/forms.IdForm'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+  /order/refund:
+    post:
+      tags:
+      - order
+      description: 买家根据订单 ID 申请退款
+      operationId: OrderController.买家根据订单 ID 申请退款
+      parameters:
+      - in: body
+        name: id
+        description: 订单ID
+        required: true
+        schema:
+          $ref: '#/definitions/forms.IdForm'
       responses:
         "200":
           description: ""
@@ -1089,6 +1143,13 @@ definitions:
     type: object
     properties:
       product_package_id:
+        type: integer
+        format: int64
+  forms.IdForm:
+    title: IdForm
+    type: object
+    properties:
+      Id:
         type: integer
         format: int64
   forms.LoginForm:

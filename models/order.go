@@ -393,6 +393,91 @@ func PayOrderByOrderIdList(orderIds []uint64) error {
 	return nil
 }
 
+// 根据订单 ID 数组 取消订单
+func CancelOrderByOrderIds(orderIds []uint64) error {
+	// 开始事务
+	tx := db.Begin()
+	timeNow := time.Now()
+	for _, orderId := range orderIds {
+		// 先查询出对应订单信息
+		order := Order{}
+		err := tx.Last(&order, orderId).Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("订单查询出错")
+		}
+		// 订单已取消或已结束
+		if order.Status == enums.OrderStatus_Canceled || order.Status == enums.OrderStatus_Finished {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("订单已取消或已结束")
+		}
+
+		// 如果是在申请退款或者已付款但又没有交易成功的,需要对库存和支持人数、筹集金额等信息进行修改
+		if order.Status == enums.OrderStatus_Refund || order.Status >= enums.OrderStatus_Paid && order.Status < enums.OrderStatus_Finished {
+
+			// 对应的产品减少支持人数 以及筹集金额
+			product := Product{}
+			err = tx.Last(&product, order.ProductId).Error
+			if err != nil {
+				tx.Rollback()
+				return resultError.NewFallFundingErr("获取产品时发生错误")
+			}
+
+			if time.Now().After(product.EndTime) {
+				tx.Rollback()
+				return resultError.NewFallFundingErr("众筹已结束")
+			}
+
+			// 减少支持者人数
+			product.Backers--
+			// 减少筹集金额
+			product.CurrentPrice -= order.TotalPrice
+			err = tx.Model(&product).
+				Updates(map[string]interface{}{"backers": product.Backers, "current_price": product.CurrentPrice}).Error
+
+			if err != nil {
+				tx.Rollback()
+				return resultError.NewFallFundingErr("产品状态更新时发生错误")
+			}
+			// 相应的套餐增加库存 减少支持人数
+			pkg := ProductPackage{}
+			err = tx.Last(&pkg, order.ProductPackageId).Error
+			if err != nil {
+				tx.Rollback()
+				return resultError.NewFallFundingErr("获取套餐时发生错误")
+			}
+			// 减少支持者人数
+			pkg.Backers--
+			// 增加库存
+			pkg.Stock += int64(order.Nums)
+			if pkg.Stock < 0 {
+				tx.Rollback()
+				return resultError.NewFallFundingErr("库存不足")
+			}
+			err = tx.Model(&pkg).Updates(map[string]interface{}{"backers": pkg.Backers, "stock": pkg.Stock}).Error
+			if err != nil {
+				tx.Rollback()
+				return resultError.NewFallFundingErr("套餐状态更新时发生错误")
+			}
+
+		}
+
+		// 根据订单 ID 将订单状态更新为取消
+		order.Status = enums.OrderStatus_Canceled
+		// 更新订单状态和关闭时间
+		err = tx.Model(&order).
+			Updates(map[string]interface{}{"status": order.Status, "close_at": timeNow}).Error
+		if err != nil {
+			tx.Rollback()
+			return resultError.NewFallFundingErr("订单状态更新时发生错误")
+		}
+
+	}
+	// 提交事务
+	tx.Commit()
+	return nil
+}
+
 /////////////////// 			商家相关					/////////////////
 
 // 发货

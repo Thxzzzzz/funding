@@ -235,7 +235,7 @@ LIMIT 4 						   # 限制返回前四个结果
 
 > 代码在 /models/product.go 里面
 
-这里为了节约数据资源用`resultModels.ProductContent`作为范围值，它与 `models.Product ` 的差别在于前者没有 `detail_html`字段，而后者有，由于这里只是要在列表中显示，而 `detail_html` 数据比较长，所以并不需要它
+这里为了节约数据资源用`resultModels.ProductContent`作为返回值，它与 `models.Product ` 的差别在于前者没有 `detail_html`字段，而后者有，由于这里只是要在列表中显示，而 `detail_html` 数据比较长，所以并不需要它
 
 ``` go
 // 根据类型随机获取指定数量的产品 ProductContent

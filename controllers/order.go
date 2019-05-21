@@ -7,6 +7,7 @@ import (
 	"funding/models"
 	"funding/objects"
 	"github.com/astaxie/beego"
+	"time"
 )
 
 // 用户订单相关
@@ -118,9 +119,138 @@ func (c *OrderController) OrderPay() {
 	c.ResponseSuccessJson(nil)
 }
 
+// @Title 根据订单 ID 确认收货
+// @Description  根据订单 ID 确认收货
+// @Param	id	body	forms.IdForm	true	"订单ID"
+// @Success 200
+// @Failure 400
+// @router /receivedProduct [Post]
+func (c *OrderController) ReceivedProduct() {
+	user := c.User
+	if user.RoleId != enums.Role_Buyer {
+		c.ResponseErrJson(resultError.NewFallFundingErr("买家才能确认收货"))
+		return
+	}
+	form := forms.IdForm{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 先根据订单 ID 查询对应订单
+	order, err := models.FindOrderById(form.Id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 订单对应的用户是否是当前请求的用户
+	if order.UserId != user.ID {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
+		return
+	}
+	// 如果不是已发货，则不能确认收货
+	if order.Status != enums.OrderStatus_Deliver {
+		c.ResponseErrJson(resultError.NewFallFundingErr("订单状态异常"))
+		return
+	}
+	// 已发货则将订单状态改为结束(成功)~
+	order.Status = enums.OrderStatus_Finished
+	// 并更新订单结束时间
+	nowTime := time.Now()
+	order.FinishedAt = &nowTime
+
+	// 更新订单信息
+	err = models.UpdateOrder(order)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
+
+// @Title 买家根据订单 ID 申请退款
+// @Description  买家根据订单 ID 申请退款
+// @Param	id	body	forms.IdForm	true	"订单ID"
+// @Success 200
+// @Failure 400
+// @router /refund [Post]
+func (c *OrderController) Refund() {
+	user := c.User
+	if user.RoleId != enums.Role_Buyer {
+		c.ResponseErrJson(resultError.NewFallFundingErr("买家才能申请退款"))
+		return
+	}
+	form := forms.IdForm{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 先根据订单 ID 查询对应订单
+	order, err := models.FindOrderById(form.Id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 如果是已付款且未结束的才能申请退款
+	if !(order.Status >= enums.OrderStatus_Paid && order.Status < enums.OrderStatus_Finished) {
+		c.ResponseErrJson(resultError.NewFallFundingErr("订单状态异常"))
+		return
+	}
+	// 修改订单状态为申请退款状态
+	order.Status = enums.OrderStatus_Refund
+	// 更新订单状态
+	err = models.UpdateOrder(order)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
+
+// @Title 根据订单 ID 取消订单
+// @Description  根据订单 ID 取消订单
+// @Param	id	body	forms.IdForm	true	"订单ID"
+// @Success 200
+// @Failure 400
+// @router /cancel [Post]
+func (c *OrderController) Cancel() {
+	user := c.User
+	form := forms.IdForm{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 先根据订单 ID 查询对应订单
+	order, err := models.FindOrderById(form.Id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 买家只能取消自己的订单 而且只能取消未开始备货/发货的，已开始的要先申请退款
+	if user.RoleId != enums.Role_Buyer && order.UserId != user.ID && order.Status < enums.OrderStatus_Prepare {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
+		return
+	}
+
+	// 卖家只能取消卖家为自己的订单
+	if user.RoleId != enums.Role_Seller && order.SellerId != user.ID {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
+		return
+	}
+
+	// 取消相关订单
+	orderIds := []uint64{form.Id}
+	err = models.CancelOrderByOrderIds(orderIds)
+
+	c.ResponseSuccessJson(nil)
+}
+
 /////////////////// 			商家相关的订单接口					/////////////////
 
-// 这个的 swagger 应该是用不了的，因为懒得把每个字段写进去。。
 // @Title 商家获取订单列表
 // @Description  商家获取订单列表
 // @Param	form	body	forms.SellerGetOrderListForm	true	"订单ID列表"

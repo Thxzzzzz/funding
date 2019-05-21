@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"funding/enums"
 	"funding/forms"
 	"funding/models"
@@ -64,5 +65,11 @@ func TestSendOutOrderById(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 		t.Fail()
+	}
+}
+
+func TestCancelOrderByOrderId(t *testing.T) {
+	if enums.OrderStatus_Finished < enums.OrderStatus_Paid {
+		fmt.Println(">>>>>>")
 	}
 }
