@@ -89,7 +89,7 @@ func (c *AddressController) NewAddress() {
 			return
 		}
 	}
-	c.ResponseSuccessJson(nil)
+	c.ResponseSuccessJson(address)
 
 	//result := resultModels.SuccessResult(nil)
 	//c.ResponseJson(result)
