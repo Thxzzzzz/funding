@@ -297,10 +297,37 @@ func (c *UserControllers) OptionsUploadImage() {
 // @Failure 400
 // @router /updateInfo [post]
 func (c *UserControllers) UpdateInfo() {
-	_, err := c.CheckAndGetUser()
+	user, err := c.CheckAndGetUser()
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
 
+	form := forms.UserFormWithRole{}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 如果不是超级管理员，那只能更新自己的信息
+	if user.RoleId != enums.Role_SuperAdmin && user.ID != form.ID {
+		c.ResponseErrJson(&resultError.UserRoleVerifyError)
+		return
+	}
+
+	//因为 User 屏蔽了 password 的 json 解析，所以这里要转一下
+	newUser := models.User{}
+	err = utils.CopyStruct(form, &newUser)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 更新信息
+	err = models.UpdateUser(&newUser)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(newUser)
 }

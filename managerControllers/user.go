@@ -210,8 +210,8 @@ func (c *ManagerUserController) UpdateUser() {
 	c.ResponseSuccessJson(newUser)
 }
 
-// @Title 更新用户信息
-// @Description 更新用户信息
+// @Title 新增用户
+// @Description 新增用户
 // @Param	form	body	forms.UserFormWithRole	true	"用户信息"
 // @Success 200	{object} models.User
 // @Failure 400

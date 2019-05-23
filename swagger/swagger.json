@@ -331,8 +331,8 @@
                 "tags": [
                     "manager/user"
                 ],
-                "description": "更新用户信息",
-                "operationId": "ManagerUserController.更新用户信息",
+                "description": "新增用户",
+                "operationId": "ManagerUserController.新增用户",
                 "parameters": [
                     {
                         "in": "body",
@@ -1580,6 +1580,37 @@
                 }
             }
         },
+        "/user/updateInfo": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "上传图片",
+                "operationId": "UserControllers.上传图片",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "图片文件",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.UserUpdateForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/uploadImage": {
             "post": {
                 "tags": [
@@ -1954,6 +1985,34 @@
                 "role_id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "forms.UserUpdateForm": {
+            "title": "UserUpdateForm",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "icon_url": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
