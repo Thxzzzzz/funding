@@ -28,7 +28,7 @@ type UserControllers struct {
 ////////////////			Users	用户信息相关									///////////////
 
 // @Title 根据 id 获取 User
-// @Description 根据 Id（数据库表 Id ，不是用户名）来获取对应用户信息
+// @Description 根据 Id（数据库表 Id ，不是账号）来获取对应用户信息
 // @Param	id	query	int	true	"数据库 User 表ID"
 // @Success 200	{object} models.User
 // @Failure 400
@@ -63,7 +63,7 @@ func (c *UserControllers) GetUserById() {
 }
 
 /*
-// @Param 	username formData	string 	true	"用户名"
+// @Param 	username formData	string 	true	"账号"
 // @Param 	password formData	string 	true	"密码"
 // @Param 	nickname formData	string 	true	"昵称"
 // @Param 	email    formData	string 	true	"邮箱"
@@ -98,7 +98,7 @@ func (c *UserControllers) Register() {
 		return
 	}
 
-	//查询是否已存在用户名
+	//查询是否已存在账号
 	dbExisted, err := models.FindUserByUsername(form.Username)
 	//查询出错
 	if err != nil && err.Error() != gorm.ErrRecordNotFound.Error() {
@@ -107,7 +107,7 @@ func (c *UserControllers) Register() {
 	}
 	//已存在
 	if dbExisted != nil && dbExisted.Username == form.Username {
-		result = resultModels.ErrorResult(resultModels.FALL, "用户名已存在")
+		result = resultModels.ErrorResult(resultModels.FALL, "账号已存在")
 		c.ResponseJson(result)
 		return
 	}
@@ -287,4 +287,20 @@ func (c *UserControllers) UploadImage() {
 // @router /uploadImage [options]
 func (c *UserControllers) OptionsUploadImage() {
 	c.ResponseSuccessJson(nil)
+}
+
+// @Title 上传图片
+// @Description 上传图片
+// @Param	form	body	forms.UserUpdateForm	true	"图片文件"
+// @Accept form
+// @Success 200
+// @Failure 400
+// @router /updateInfo [post]
+func (c *UserControllers) UpdateInfo() {
+	_, err := c.CheckAndGetUser()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
 }

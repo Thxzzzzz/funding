@@ -399,7 +399,7 @@ sessionname = "token"
 ```go
 // @Title 登录
 // @Description 用账号密码登录
-// @Param	username	formData	string		true	"用户名"
+// @Param	username	formData	string		true	"账号"
 // @Param	password	formData	string		true	"密码"
 // @Success 200
 // @Failure 400
@@ -432,7 +432,7 @@ func (c *UserControllers) Login() {
 		//TODO 单点登录
 	} else {
 		// 密码不正确也返回错误
-		result = resultModels.ErrorResult(resultModels.FALL, "用户名或密码错误")
+		result = resultModels.ErrorResult(resultModels.FALL, "账号或密码错误")
 	}
 	//  4.. 返回 Json 信息
 	c.ResponseJson(result)

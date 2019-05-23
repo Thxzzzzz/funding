@@ -6,13 +6,24 @@ type LoginForm struct {
 	Password string `form:"password"`
 }
 
-//注册表单 //TODO valid 数据验证
+// 注册表单 //TODO valid 数据验证
 type RegisterForm struct {
 	Username string `json:"username" form:"username"`
 	Password string `json:"password" form:"password"`
 	Nickname string `json:"nickname" form:"nickname"`
 	Email    string `json:"email" form:"email"`
 	Phone    string `json:"phone" form:"phone"`
+}
+
+// 用户表
+type UserUpdateForm struct {
+	ID       uint64 `json:"id"`       // ID
+	Username string `json:"username"` // 账号
+	Password string `json:"password"` // 密码
+	Nickname string `json:"nickname"` // 昵称
+	Email    string `json:"email"`    // 邮箱
+	Phone    string `json:"phone"`    // 手机号
+	IconUrl  string `json:"icon_url"` // 头像
 }
 
 //注册表单 带角色

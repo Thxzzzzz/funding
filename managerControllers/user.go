@@ -45,7 +45,7 @@ func (c *ManagerUserController) Register() {
 		c.ResponseErrJson(err)
 		return
 	}
-	//查询是否已存在用户名
+	//查询是否已存在账号
 	dbExisted, err := models.FindUserByUsername(form.Username)
 	//查询出错
 	if err != nil && err.Error() != gorm.ErrRecordNotFound.Error() {
@@ -54,7 +54,7 @@ func (c *ManagerUserController) Register() {
 	}
 	//已存在
 	if dbExisted != nil && dbExisted.Username == form.Username {
-		c.ResponseErrJson(resultError.NewFallFundingErr("用户名已存在"))
+		c.ResponseErrJson(resultError.NewFallFundingErr("账号已存在"))
 		return
 	}
 
@@ -229,7 +229,7 @@ func (c *ManagerUserController) NewUser() {
 		c.ResponseErrJson(err)
 		return
 	}
-	//查询是否已存在用户名
+	//查询是否已存在账号
 	dbExisted, err := models.FindUserByUsername(form.Username)
 	//查询出错
 	if err != nil && err.Error() != gorm.ErrRecordNotFound.Error() {

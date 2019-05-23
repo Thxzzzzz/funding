@@ -24,7 +24,7 @@ type ResultCommentInfo struct {
 	IsSeller  bool                 `json:"is_seller"`  // 是否是对应卖家
 	Content   string               `json:"content"`    // 评论内容
 	CreatedAt time.Time            `json:"created_at"` // 创建时间
-	Username  string               `json:"username"`   // 用户名
+	Username  string               `json:"username"`   // 账号
 	Nickname  string               `json:"nickname"`   // 昵称
 	IconUrl   string               `json:"icon_url"`   // 用户头像
 	Replys    []ResultCommentReply `json:"replys"`     // 回复信息

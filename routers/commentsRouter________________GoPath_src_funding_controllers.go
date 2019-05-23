@@ -414,6 +414,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
         beego.ControllerComments{
+            Method: "UpdateInfo",
+            Router: `/updateInfo`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/controllers:UserControllers"] = append(beego.GlobalControllerRouter["funding/controllers:UserControllers"],
+        beego.ControllerComments{
             Method: "UploadImage",
             Router: `/uploadImage`,
             AllowHTTPMethods: []string{"post"},

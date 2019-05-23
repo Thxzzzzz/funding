@@ -3,7 +3,7 @@ package models
 //用户表
 type User struct {
 	BaseModel
-	Username         string `json:"username"`                  //用户名
+	Username         string `json:"username"`                  //账号
 	Password         string `json:"-"`                         //密码 这里 tag 设置为 - ,保证其永远不会被解析为 Json
 	Nickname         string `json:"nickname"`                  //昵称
 	Email            string `json:"email"`                     //邮箱
@@ -28,7 +28,7 @@ func FindUserById(id uint64) (*User, error) {
 	return &result, err
 }
 
-//根据用户名查找用户信息
+//根据账号查找用户信息
 func FindUserByUsername(username string) (*User, error) {
 	var result User
 	//// SELECT * FROM users WHERE username = "username" LIMIT 1;

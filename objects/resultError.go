@@ -36,7 +36,7 @@ var (
 var (
 	NotLoginError       = FundingError{Code: resultModels.NOT_LOGIN, Msg: "没有登录"}
 	UserNotExitError    = FundingError{Code: resultModels.FALL, Msg: "用户不存在"}
-	UserPasswordError   = FundingError{Code: resultModels.FALL, Msg: "用户名或密码错误"}
+	UserPasswordError   = FundingError{Code: resultModels.FALL, Msg: "账号或密码错误"}
 	UserRoleVerifyError = FundingError{Code: resultModels.VERIFY_FALL, Msg: "用户身份验证失败"}
 )
 

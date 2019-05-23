@@ -941,7 +941,7 @@ paths:
     get:
       tags:
       - user
-      description: 根据 Id（数据库表 Id ，不是用户名）来获取对应用户信息
+      description: 根据 Id（数据库表 Id ，不是账号）来获取对应用户信息
       operationId: UserControllers.根据 id 获取 User
       parameters:
       - in: query
