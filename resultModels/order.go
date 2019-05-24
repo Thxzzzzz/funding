@@ -8,7 +8,7 @@ import (
 // 订单列表 Item
 type OrderListItem struct {
 	ID               uint64              `json:"order_id"`           // 订单 Id
-	UserId           uint64              `json:"user_id"`            // 买家 Id
+	BuyerId          uint64              `json:"buyer_id"`           // 买家 Id
 	SellerId         uint64              `json:"seller_id"`          // 卖家 Id
 	SellerNickname   string              `json:"seller_nickname"`    // 卖家昵称
 	ProductId        uint64              `json:"product_id"`         // 产品 Id

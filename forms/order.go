@@ -6,7 +6,7 @@ import (
 
 // 单个订单
 type OrderPkgItem struct {
-	UserID           uint64  `json:"user_id"`            // 购买者 ID
+	BuyerId          uint64  `json:"buyer_id"`           // 购买者 ID
 	SellerID         uint64  `json:"seller_id"`          // 卖家 ID
 	ProductID        uint64  `json:"product_id"`         // 产品 ID
 	ProductPackageID uint64  `json:"product_package_id"` // 套餐 ID
@@ -33,9 +33,7 @@ type RefundForm struct {
 
 // 卖家获取订单的 Form
 type SellerGetOrderListForm struct {
-	PageForm // 页码信息
-	//SellerId      uint64              `json:"seller_id"`                            // 卖家 ID
-	//UserId        uint64              `json:"user_id"`                              // 用户 ID 可能是卖家也可能是买家
+	PageForm                          // 页码信息
 	OrderStatus   enums.OrderStatus   `json:"order_status" form:"order_status"`     // 订单状态
 	FundingStatus enums.FundingStatus `json:"funding_status" form:"funding_status"` // 众筹状态 （0 :全部 ,1:众筹成功,2:失败,3:正在进行）
 	ProductId     uint64              `json:"product_id"`                           // 商品ID

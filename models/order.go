@@ -13,7 +13,7 @@ import (
 // 订单
 type Order struct {
 	BaseModel
-	UserId           uint64            `json:"user_id"`            // 买家 Id
+	BuyerId          uint64            `json:"buyer_id"`           // 买家 Id
 	Name             string            `json:"name"`               // 收件人姓名
 	Address          string            `json:"address"`            // 收件人地址
 	Phone            string            `json:"phone"`              // 收件人电话
@@ -109,7 +109,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error)
 		}
 		// 根据表单创建新订单
 		newOrder := Order{
-			UserId:           userId,
+			BuyerId:          userId,
 			Name:             form.Name,
 			Address:          form.Address,
 			Phone:            form.Phone,
@@ -143,7 +143,7 @@ func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error)
 
 const sqlSelectOrderListField = `
 SELECT
-	o.id,o.user_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
+	o.id,o.buyer_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
 	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,p.end_time,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
 	p.current_price,p.target_price,o.refund_reason,o.last_status,
@@ -169,7 +169,7 @@ JOIN
 //	o.deleted_at IS NULL  AND
 //	p.deleted_at IS NULL  AND
 //	pkg.deleted_at IS NULL AND
-//	o.user_id = (?)
+//	o.buyer_id = (?)
 //ORDER BY
 //	o.created_at DESC
 //LIMIT ? OFFSET ?
@@ -196,7 +196,7 @@ func GetOrderListByUserId(form *forms.SellerGetOrderListForm, userId uint64, rol
 	if roleId == 2 {
 		sql = sql + ` AND o.seller_id = (?) `
 	} else {
-		sql = sql + ` AND o.user_id = (?) `
+		sql = sql + ` AND o.buyer_id = (?) `
 	}
 
 	// 如果条件有产品 ID
@@ -272,7 +272,7 @@ WHERE
 	o.deleted_at IS NULL  AND
 	p.deleted_at IS NULL  AND
 	pkg.deleted_at IS NULL AND
-	o.user_id = (?) AND
+	o.buyer_id = (?) AND
     o.id IN (?)
 ORDER BY
 	o.created_at DESC

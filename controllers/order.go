@@ -144,7 +144,7 @@ func (c *OrderController) ReceivedOrdergen() {
 		return
 	}
 	// 订单对应的用户是否是当前请求的用户
-	if order.UserId != user.ID {
+	if order.BuyerId != user.ID {
 		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
 		return
 	}
@@ -193,7 +193,7 @@ func (c *OrderController) Refund() {
 		return
 	}
 	// 只能给自己的订单申请退款
-	if user.RoleId == enums.Role_Buyer && user.ID != order.UserId {
+	if user.RoleId == enums.Role_Buyer && user.ID != order.BuyerId {
 		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
 		return
 	}
@@ -241,7 +241,7 @@ func (c *OrderController) Cancel() {
 	}
 
 	// 买家只能取消自己的订单
-	if user.RoleId == enums.Role_Buyer && order.UserId != user.ID {
+	if user.RoleId == enums.Role_Buyer && order.BuyerId != user.ID {
 		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
 		return
 	}
