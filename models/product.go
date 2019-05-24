@@ -40,11 +40,11 @@ func init() {
 
 // 计算众筹状态
 func CalcFundingStatus(currentTime time.Time, endTime time.Time,
-	current_price float64, target_price float64) enums.FundingStatus {
+	currentPrice float64, targetPrice float64) enums.FundingStatus {
 	if currentTime.Before(endTime) {
 		return enums.FundingStatus_Ing
 	}
-	if current_price >= target_price {
+	if currentPrice >= targetPrice {
 		return enums.FundingStatus_Success
 	}
 	return enums.FundingStatus_Fail
