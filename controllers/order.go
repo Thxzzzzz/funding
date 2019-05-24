@@ -265,6 +265,46 @@ func (c *OrderController) Cancel() {
 	c.ResponseSuccessJson(nil)
 }
 
+// @Title 根据订单 ID 删除订单
+// @Description  根据订单 ID 取消订单
+// @Param	form	body	forms.IdForm	true	"订单ID"
+// @Success 200
+// @Failure 400
+// @router /delOrder [Post]
+func (c *OrderController) DelOrder() {
+	user := c.User
+	form := forms.IdForm{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 先根据订单 ID 查询对应订单
+	order, err := models.FindOrderById(form.Id)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 买家只能删除自己的订单
+	if user.RoleId == enums.Role_Buyer && order.BuyerId != user.ID {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
+		return
+	}
+
+	//  买家只能删除已完成或取消的订单
+	if order.Status != enums.OrderStatus_Finished && order.Status != enums.OrderStatus_Canceled {
+		c.ResponseErrJson(resultError.NewFallFundingErr("只能删除已完成或取消的订单"))
+		return
+	}
+
+	// 删除相关订单
+	err = models.DeleteOrderById(form.Id)
+
+	c.ResponseSuccessJson(nil)
+}
+
 /////////////////// 			商家相关的订单接口					/////////////////
 
 // @Title 商家获取订单列表

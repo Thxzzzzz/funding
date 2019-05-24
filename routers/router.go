@@ -73,6 +73,11 @@ func init() {
 				&managerControllers.ManagerUserController{},
 			),
 		),
+		beego.NSNamespace("/manager/order",
+			beego.NSInclude(
+				&managerControllers.ManagerOrderController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(managerNs)

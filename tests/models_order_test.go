@@ -73,3 +73,28 @@ func TestCancelOrderByOrderId(t *testing.T) {
 		fmt.Println(">>>>>>")
 	}
 }
+
+func TestUpdateOrder(t *testing.T) {
+	order := models.Order{BaseModel: models.BaseModel{ID: 15}, Name: "李小明谁"}
+	err := models.UpdateOrder(&order)
+	if err != nil {
+		t.Fail()
+		t.Log(err)
+	}
+}
+func TestUpdateOrderIncludeDeleted(t *testing.T) {
+	order := models.Order{BaseModel: models.BaseModel{ID: 15, DeletedAt: nil}, Name: "李小明谁"}
+	err := models.UpdateOrderIncludeDeleted(&order)
+	if err != nil {
+		t.Fail()
+		t.Log(err)
+	}
+}
+
+func TestRecoverDeletedOrder(t *testing.T) {
+	err := models.RecoverDeletedOrder(15)
+	if err != nil {
+		t.Fail()
+		t.Log(err)
+	}
+}

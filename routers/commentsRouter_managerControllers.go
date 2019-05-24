@@ -43,6 +43,51 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
+        beego.ControllerComments{
+            Method: "OrderAdd",
+            Router: `/add`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
+        beego.ControllerComments{
+            Method: "OrderAll",
+            Router: `/all`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
+        beego.ControllerComments{
+            Method: "OrderDelete",
+            Router: `/delete`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
+        beego.ControllerComments{
+            Method: "OrderRecover",
+            Router: `/recover`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
+        beego.ControllerComments{
+            Method: "OrderUpdate",
+            Router: `/update`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerProductController"],
         beego.ControllerComments{
             Method: "GetProductList",

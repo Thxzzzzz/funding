@@ -64,6 +64,146 @@
                 }
             }
         },
+        "/manager/order/add": {
+            "post": {
+                "tags": [
+                    "manager/order"
+                ],
+                "description": "订单增",
+                "operationId": "ManagerOrderController.订单增",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/order/all": {
+            "get": {
+                "tags": [
+                    "manager/order"
+                ],
+                "description": "订单查（包括已软删除）",
+                "operationId": "ManagerOrderController.订单查（包括已软删除）",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/order/delete": {
+            "post": {
+                "tags": [
+                    "manager/order"
+                ],
+                "description": "订单删",
+                "operationId": "ManagerOrderController.订单删",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/order/recover": {
+            "post": {
+                "tags": [
+                    "manager/order"
+                ],
+                "description": "恢复已删除的订单",
+                "operationId": "ManagerOrderController.恢复已删除的订单",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manager/order/update": {
+            "post": {
+                "tags": [
+                    "manager/order"
+                ],
+                "description": "订单改（包括已软删除）",
+                "operationId": "ManagerOrderController.订单改（包括已软删除）",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/manager/product/getProductList": {
             "get": {
                 "tags": [
@@ -487,6 +627,34 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/forms.RefundForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/order/delOrder": {
+            "post": {
+                "tags": [
+                    "order"
+                ],
+                "description": "根据订单 ID 取消订单",
+                "operationId": "OrderController.根据订单 ID 删除订单",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单ID",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.IdForm"
                         }
                     }
                 ],
@@ -1851,6 +2019,10 @@
             "title": "OrderPkgItem",
             "type": "object",
             "properties": {
+                "buyer_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "nums": {
                     "type": "integer",
                     "format": "int64"
@@ -1868,10 +2040,6 @@
                     "format": "int64"
                 },
                 "seller_id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "user_id": {
                     "type": "integer",
                     "format": "int64"
                 }
@@ -2030,6 +2198,10 @@
                     "type": "string",
                     "format": "datetime"
                 },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -2058,6 +2230,10 @@
                     "type": "string",
                     "format": "datetime"
                 },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -2076,6 +2252,10 @@
                     "type": "boolean"
                 },
                 "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "deleted_at": {
                     "type": "string",
                     "format": "datetime"
                 },
@@ -2109,6 +2289,10 @@
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "deleted_at": {
                     "type": "string",
                     "format": "datetime"
                 },
@@ -2148,6 +2332,10 @@
                     "type": "string",
                     "format": "datetime"
                 },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64"
@@ -2176,6 +2364,10 @@
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "deleted_at": {
                     "type": "string",
                     "format": "datetime"
                 },
@@ -2209,6 +2401,89 @@
                 }
             }
         },
+        "models.Order": {
+            "title": "Order",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "buyer_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "checking_number": {
+                    "type": "string"
+                },
+                "close_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "finished_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "last_status": {
+                    "$ref": "#/definitions/enums.OrderStatus"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nums": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "paid_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "product_package_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "refund_reason": {
+                    "type": "string"
+                },
+                "seller_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "status": {
+                    "$ref": "#/definitions/enums.OrderStatus"
+                },
+                "total_price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "unit_price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
         "models.Product": {
             "title": "Product",
             "type": "object",
@@ -2227,6 +2502,10 @@
                 "current_price": {
                     "type": "number",
                     "format": "double"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "detail_html": {
                     "type": "string"
@@ -2288,6 +2567,10 @@
                     "format": "int64"
                 },
                 "created_at": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "deleted_at": {
                     "type": "string",
                     "format": "datetime"
                 },
@@ -2355,6 +2638,10 @@
                 "default_address_id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "email": {
                     "type": "string"

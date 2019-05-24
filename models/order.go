@@ -6,6 +6,7 @@ import (
 	"funding/forms"
 	"funding/objects"
 	"funding/resultModels"
+	"github.com/jinzhu/gorm"
 	"time"
 	"unicode/utf8"
 )
@@ -31,6 +32,8 @@ type Order struct {
 	CloseAt          *time.Time        `json:"close_at"`           // 关闭时间
 	FinishedAt       *time.Time        `json:"finished_at"`        // 交易成功时间
 }
+
+/////////////////					基础增删改查									///////////
 
 // 根据订单的 ID 来获取订单
 func FindOrderById(orderId uint64) (*Order, error) {
@@ -84,6 +87,38 @@ func UpdateOrder(order *Order) error {
 	err = db.Model(&rec).Updates(order).Error
 	return err
 }
+
+//根据 order.ID 来更新其他相应的字段，包括软删除的
+func UpdateOrderIncludeDeleted(order *Order) error {
+	var rec Order
+	err := db.Unscoped().First(&rec, "id = ?", order.ID).Error
+	if err != nil {
+		return err
+	}
+	err = db.Unscoped().Model(&rec).Updates(order).Error
+	return err
+}
+
+//根据 order.ID 来更新其他相应的字段，包括软删除的
+func RecoverDeletedOrder(orderId uint64) error {
+	var rec Order
+	err := db.Unscoped().First(&rec, "id = ?", orderId).Error
+	if err != nil {
+		return err
+	}
+	// deleted_at 改成 NULL
+	err = db.Unscoped().Model(&rec).Update("deleted_at", gorm.Expr("NULL")).Error
+	return err
+}
+
+// 获取所有订单，包括软删除的
+func FindAllOrderIncludeDeleted() ([]*Order, error) {
+	var results []*Order
+	err := db.Unscoped().Find(&results).Error
+	return results, err
+}
+
+/////////////////				END	基础增删改查									///////////
 
 // 从表单信息新增订单
 func NewOrderFromForm(userId uint64, form *forms.NewOrderForm) ([]uint64, error) {
