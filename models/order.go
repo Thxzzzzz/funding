@@ -550,3 +550,30 @@ func SendOutOrderById(form *forms.OrderSendOutForm, sellerId uint64) error {
 	}
 	return nil
 }
+
+// 获取所有有投诉的订单
+func GetComplaintOrders() ([]*resultModels.OrderListItem, error) {
+	var list []*resultModels.OrderListItem
+	sql := `WHERE
+	complaint_reason != ''
+	ORDER BY id DESC
+	`
+	// 根据 SQL 字符串拼接查询订单相关信息列表
+	err := db.Raw(sqlSelectOrderListField + sqlOrderListTable + sql).
+		Scan(&list).Error
+	if err != nil {
+		return nil, err
+	}
+
+	timeNow := time.Now()
+	for i := range list {
+		list[i].FundingStatus = CalcFundingStatus(timeNow, list[i].EndTime,
+			list[i].CurrentPrice, list[i].TargetPrice)
+		// 如果为已付款状态而且众筹成功了则为备货状态
+		if list[i].FundingStatus == enums.FundingStatus_Success &&
+			list[i].OrderStatus == enums.OrderStatus_Paid {
+			list[i].OrderStatus = enums.OrderStatus_Prepare
+		}
+	}
+	return list, err
+}

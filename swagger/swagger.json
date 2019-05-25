@@ -120,6 +120,23 @@
                 }
             }
         },
+        "/manager/order/complaintOrders": {
+            "get": {
+                "tags": [
+                    "manager/order"
+                ],
+                "description": "恢复已删除的订单",
+                "operationId": "ManagerOrderController.恢复已删除的订单",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/manager/order/delete": {
             "post": {
                 "tags": [
@@ -627,6 +644,34 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/forms.RefundForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/order/complaint": {
+            "post": {
+                "tags": [
+                    "order"
+                ],
+                "description": "买家根据订单 ID 发起投诉",
+                "operationId": "OrderController.买家根据订单 ID 发起投诉",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "description": "订单ID",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.ComplaintForm"
                         }
                     }
                 ],
@@ -1958,6 +2003,19 @@
                 }
             }
         },
+        "forms.ComplaintForm": {
+            "title": "ComplaintForm",
+            "type": "object",
+            "properties": {
+                "complaint_reason": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
         "forms.DelCartForm": {
             "title": "DelCartForm",
             "type": "object",
@@ -2418,6 +2476,9 @@
                 "close_at": {
                     "type": "string",
                     "format": "datetime"
+                },
+                "complaint_reason": {
+                    "type": "string"
                 },
                 "created_at": {
                     "type": "string",

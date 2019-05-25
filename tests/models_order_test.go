@@ -98,3 +98,12 @@ func TestRecoverDeletedOrder(t *testing.T) {
 		t.Log(err)
 	}
 }
+
+func TestComplaintOrders(t *testing.T) {
+	result, err := models.GetComplaintOrders()
+	if err != nil {
+		t.Fail()
+		t.Log(err)
+	}
+	t.Log(result)
+}

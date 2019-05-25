@@ -140,3 +140,23 @@ func (c *ManagerOrderController) OrderRecover() {
 	}
 	c.ResponseSuccessJson(form)
 }
+
+// @Title 恢复已删除的订单
+// @Description 恢复已删除的订单
+// @Success	200
+// @Failure	400
+// @router /complaintOrders [get]
+func (c *ManagerOrderController) ComplaintOrders() {
+	// 检查是不是超级管理员
+	err := c.VerifySuperAdmin()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	result, err := models.GetComplaintOrders()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(result)
+}
