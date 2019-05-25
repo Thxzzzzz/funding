@@ -29,6 +29,11 @@ type RefundForm struct {
 	RefundReason string `json:"refund_reason"` // 退款原因
 }
 
+// 退款申请表单（带退款原因）
+type ComplaintForm struct {
+	ID           uint64 `json:"id"`            // 订单ID
+	ComplaintReason string `json:"complaint_reason"` // 投诉原因
+}
 ////////////// 			卖家相关								/////////////
 
 // 卖家获取订单的 Form

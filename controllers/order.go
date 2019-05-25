@@ -218,6 +218,46 @@ func (c *OrderController) Refund() {
 	c.ResponseSuccessJson(nil)
 }
 
+// @Title 买家根据订单 ID 发起投诉
+// @Description  买家根据订单 ID 发起投诉
+// @Param	form	body	forms.ComplaintForm	true	"订单ID"
+// @Success 200
+// @Failure 400
+// @router /complaint [Post]
+func (c *OrderController) Complaint() {
+	user := c.User
+	if user.RoleId != enums.Role_Buyer {
+		c.ResponseErrJson(resultError.NewFallFundingErr("买家才能发起投诉"))
+		return
+	}
+	form := forms.ComplaintForm{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 先根据订单 ID 查询对应订单
+	order, err := models.FindOrderById(form.ID)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	// 只能给自己的订单发起投诉
+	if user.RoleId == enums.Role_Buyer && user.ID != order.BuyerId {
+		c.ResponseErrJson(resultError.NewFallFundingErr("这不是你的订单"))
+		return
+	}
+	// 添加退款原因
+	order.ComplaintReason = form.ComplaintReason
+	// 更新订单状态
+	err = models.UpdateOrder(order)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(nil)
+}
+
 // @Title 根据订单 ID 取消订单
 // @Description  根据订单 ID 取消订单
 // @Param	form	body	forms.RefundForm	true	"订单ID"

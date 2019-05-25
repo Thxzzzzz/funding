@@ -27,6 +27,7 @@ type Order struct {
 	Status           enums.OrderStatus `json:"status"`             // 订单状态
 	CheckingNumber   string            `json:"checking_number"`    // 物流单号
 	RefundReason     string            `json:"refund_reason"`      // 申请退款原因
+	ComplaintReason  string            `json:"complaint_reason"`  // 投诉原因
 	LastStatus       enums.OrderStatus `json:"last_status"`        // 上次状态（申请退款之前的订单状态),用于拒绝退款后恢复
 	PaidAt           *time.Time        `json:"paid_at"`            // 支付时间
 	CloseAt          *time.Time        `json:"close_at"`           // 关闭时间
