@@ -125,7 +125,7 @@ func (c *OrderController) OrderPay() {
 // @Success 200
 // @Failure 400
 // @router /receivedOrder [Post]
-func (c *OrderController) ReceivedOrdergen() {
+func (c *OrderController) ReceivedOrder() {
 	user := c.User
 	if user.RoleId != enums.Role_Buyer {
 		c.ResponseErrJson(resultError.NewFallFundingErr("买家才能确认收货"))

@@ -27,7 +27,7 @@ type Order struct {
 	Status           enums.OrderStatus `json:"status"`             // 订单状态
 	CheckingNumber   string            `json:"checking_number"`    // 物流单号
 	RefundReason     string            `json:"refund_reason"`      // 申请退款原因
-	ComplaintReason  string            `json:"complaint_reason"`  // 投诉原因
+	ComplaintReason  string            `json:"complaint_reason"`   // 投诉原因
 	LastStatus       enums.OrderStatus `json:"last_status"`        // 上次状态（申请退款之前的订单状态),用于拒绝退款后恢复
 	PaidAt           *time.Time        `json:"paid_at"`            // 支付时间
 	CloseAt          *time.Time        `json:"close_at"`           // 关闭时间
@@ -182,7 +182,7 @@ SELECT
 	o.id,o.buyer_id,p.user_id AS seller_id,su.nickname AS seller_nickname,
 	o.product_package_id,o.nums,o.unit_price,pkg.product_id,pkg.freight,p.end_time,
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
-	p.current_price,p.target_price,o.refund_reason,o.last_status,
+	p.current_price,p.target_price,o.refund_reason,o.last_status,o.complaint_reason,
 	o.created_at,o.status AS order_status,o.total_price,o.checking_number,
 	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at
 `

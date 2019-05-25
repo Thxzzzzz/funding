@@ -31,9 +31,10 @@ type RefundForm struct {
 
 // 退款申请表单（带退款原因）
 type ComplaintForm struct {
-	ID           uint64 `json:"id"`            // 订单ID
+	ID              uint64 `json:"id"`               // 订单ID
 	ComplaintReason string `json:"complaint_reason"` // 投诉原因
 }
+
 ////////////// 			卖家相关								/////////////
 
 // 卖家获取订单的 Form
@@ -48,4 +49,9 @@ type SellerGetOrderListForm struct {
 type OrderSendOutForm struct {
 	OrderId        uint64 `json:"order_id"`        // 订单ID
 	CheckingNumber string `json:"checking_number"` // 物流单号
+}
+
+//////////////////		管理系统相关		///////////////////
+// 获取订单列表的表单（包含页码信息，以及订单号，买家/买家ID筛选）
+type FindOrderListForm struct {
 }
