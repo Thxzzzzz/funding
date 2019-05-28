@@ -1798,8 +1798,8 @@
                 "tags": [
                     "user"
                 ],
-                "description": "上传图片",
-                "operationId": "UserControllers.上传图片",
+                "description": "更新个人资料",
+                "operationId": "UserControllers.更新个人资料",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -1810,7 +1810,7 @@
                         "description": "图片文件",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/forms.UserUpdateForm"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -2211,34 +2211,6 @@
                 "role_id": {
                     "type": "integer",
                     "format": "int64"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "forms.UserUpdateForm": {
-            "title": "UserUpdateForm",
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "icon_url": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
                 },
                 "username": {
                     "type": "string"

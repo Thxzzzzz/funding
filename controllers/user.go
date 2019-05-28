@@ -289,9 +289,9 @@ func (c *UserControllers) OptionsUploadImage() {
 	c.ResponseSuccessJson(nil)
 }
 
-// @Title 上传图片
-// @Description 上传图片
-// @Param	form	body	forms.UserUpdateForm	true	"图片文件"
+// @Title 更新个人资料
+// @Description 更新个人资料
+// @Param	form	body	 models.User	true	"图片文件"
 // @Accept form
 // @Success 200
 // @Failure 400
@@ -303,31 +303,20 @@ func (c *UserControllers) UpdateInfo() {
 		return
 	}
 
-	form := forms.UserFormWithRole{}
+	form := models.User{}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
-	// 如果不是超级管理员，那只能更新自己的信息
-	if user.RoleId != enums.Role_SuperAdmin && user.ID != form.ID {
-		c.ResponseErrJson(&resultError.UserRoleVerifyError)
-		return
-	}
-
-	//因为 User 屏蔽了 password 的 json 解析，所以这里要转一下
-	newUser := models.User{}
-	err = utils.CopyStruct(form, &newUser)
-	if err != nil {
-		c.ResponseErrJson(err)
-		return
-	}
+	// 只能更新自己的信息
+	form.ID = user.ID
 
 	// 更新信息
-	err = models.UpdateUser(&newUser)
+	err = models.UpdateUser(&form)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return
 	}
-	c.ResponseSuccessJson(newUser)
+	c.ResponseSuccessJson(form)
 }

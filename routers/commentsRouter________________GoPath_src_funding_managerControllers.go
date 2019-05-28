@@ -63,6 +63,15 @@ func init() {
 
     beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
         beego.ControllerComments{
+            Method: "ComplaintOrders",
+            Router: `/complaintOrders`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"] = append(beego.GlobalControllerRouter["funding/managerControllers:ManagerOrderController"],
+        beego.ControllerComments{
             Method: "OrderDelete",
             Router: `/delete`,
             AllowHTTPMethods: []string{"post"},
