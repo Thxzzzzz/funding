@@ -1034,6 +1034,26 @@ paths:
           description: ""
         "400":
           description: ""
+  /user/changePsw:
+    post:
+      tags:
+      - user
+      description: 修改密码
+      operationId: UserControllers.修改密码
+      consumes:
+      - multipart/form-data
+      parameters:
+      - in: body
+        name: form
+        description: 修改密码表单
+        required: true
+        schema:
+          $ref: '#/definitions/forms.PswForm'
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
   /user/getInfoById:
     get:
       tags:
@@ -1185,7 +1205,7 @@ paths:
       parameters:
       - in: body
         name: form
-        description: 图片文件
+        description: 个人资料
         required: true
         schema:
           $ref: '#/definitions/models.User'
@@ -1402,6 +1422,14 @@ definitions:
       PageSize:
         type: integer
         format: int64
+  forms.PswForm:
+    title: PswForm
+    type: object
+    properties:
+      new_psw:
+        type: string
+      old_psw:
+        type: string
   forms.RefundForm:
     title: RefundForm
     type: object

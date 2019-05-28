@@ -26,6 +26,12 @@ type UserUpdateForm struct {
 	IconUrl  string `json:"icon_url"` // 头像
 }
 
+// 修改密码表单
+type PswForm struct {
+	OldPsw string `json:"old_psw"` // 旧密码
+	NewPsw string `json:"new_psw"` // 新密码
+}
+
 //注册表单 带角色
 type UserFormWithRole struct {
 	ID       uint64 `json:"id" form:"id"`
