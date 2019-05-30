@@ -197,7 +197,7 @@ func GetProductList(form forms.ProductListForm, verifyStatus int) (*resultModels
 	cDb = cDb.Where("deleted_at IS NULL").Table("products")
 	// 排序
 	// 默认按创建时间排序
-	if utf8.RuneCountInString(form.OrderBy) < 1 {
+	if utf8.RuneCountInString(form.Sort) < 1 {
 		// 是否升序，请求参数默认为否
 		if form.Asc {
 			cDb = cDb.Order("created_at")
@@ -207,9 +207,9 @@ func GetProductList(form forms.ProductListForm, verifyStatus int) (*resultModels
 	} else {
 		// 是否升序，请求参数默认为否
 		if form.Asc {
-			cDb = cDb.Order(form.OrderBy)
+			cDb = cDb.Order(form.Sort)
 		} else {
-			cDb = cDb.Order(form.OrderBy + " DESC")
+			cDb = cDb.Order(form.Sort + " DESC")
 		}
 	}
 	// 在其他排序条件相同的情况下，按照截止时间排序
