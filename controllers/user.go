@@ -291,7 +291,7 @@ func (c *UserControllers) OptionsUploadImage() {
 
 // @Title 更新个人资料
 // @Description 更新个人资料
-// @Param	form	body	 models.User	true	"图片文件"
+// @Param	form	body	 models.User	true	"个人资料"
 // @Accept form
 // @Success 200
 // @Failure 400
@@ -314,6 +314,44 @@ func (c *UserControllers) UpdateInfo() {
 
 	// 更新信息
 	err = models.UpdateUser(&form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+	c.ResponseSuccessJson(form)
+}
+
+// @Title 修改密码
+// @Description 修改密码
+// @Param	form	body	 forms.PswForm	true	"修改密码表单"
+// @Accept form
+// @Success 200
+// @Failure 400
+// @router /changePsw [post]
+func (c *UserControllers) ChangePsw() {
+	user, err := c.CheckAndGetUser()
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	form := forms.PswForm{}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		c.ResponseErrJson(err)
+		return
+	}
+
+	// 检查密码是否正确
+	if user.Password != form.OldPsw {
+		c.ResponseErrJson(resultError.NewFallFundingErr("密码错误"))
+		return
+	}
+	userInfo := models.User{}
+	userInfo.ID = user.ID
+	userInfo.Password = form.NewPsw
+	// 更新信息
+	err = models.UpdateUser(&userInfo)
 	if err != nil {
 		c.ResponseErrJson(err)
 		return

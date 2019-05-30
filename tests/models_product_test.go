@@ -29,7 +29,7 @@ func TestGetProductList(t *testing.T) {
 	form := forms.ProductListForm{
 		//Type: 1,
 		//Name: "手环",
-		Sort: "current_price",
+		OrderBy: "current_price",
 	}
 	result, err := models.GetProductList(form, 1)
 	if err != nil {

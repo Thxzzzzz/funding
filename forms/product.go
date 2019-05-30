@@ -6,7 +6,7 @@ type ProductListForm struct {
 	PageSize      int    `form:"page_size"`      // 每页数量
 	Name          string `form:"name"`           // 产品名称
 	Type          int    `form:"type"`           // 产品类型
-	Sort          string `form:"sort"`           // 排序方式
+	OrderBy       string `form:"order_by"`       // 按照 products 中哪个字段排序
 	Asc           bool   `form:"asc"`            // 升序
 	FundingStatus int    `form:"funding_status"` // 众筹状态
 	//PriceGt       float64 `form:"price_gt"`       // 价格大于
