@@ -28,13 +28,14 @@ func TestGetProductsByPageAndType(t *testing.T) {
 func TestGetProductList(t *testing.T) {
 	form := forms.ProductListForm{
 		//Type: 1,
-		Name: "手环",
+		//Name: "手环",
+		Sort: "current_price",
 	}
-	resutlt, err := models.GetProductList(form, 1)
+	result, err := models.GetProductList(form, 1)
 	if err != nil {
-		t.Failed()
+		t.Fail()
 	}
-	t.Log(resutlt)
+	t.Log(result)
 }
 
 func TestGetCheckoutPkgInfoFromPkgId(t *testing.T) {

@@ -7,6 +7,7 @@ import (
 	"funding/resultModels"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 //产品
@@ -195,7 +196,23 @@ func GetProductList(form forms.ProductListForm, verifyStatus int) (*resultModels
 	// 未软删除的行
 	cDb = cDb.Where("deleted_at IS NULL").Table("products")
 	// 排序
-	cDb = cDb.Order("created_at DESC,end_time DESC")
+	if utf8.RuneCountInString(form.Sort) < 1 {
+		// 是否升序，请求参数默认为否
+		if form.Asc {
+			cDb = cDb.Order("created_at")
+		} else {
+			cDb = cDb.Order("created_at DESC")
+		}
+	} else {
+		// 是否升序，请求参数默认为否
+		if form.Asc {
+			cDb = cDb.Order(form.Sort)
+		} else {
+			cDb = cDb.Order(form.Sort + " DESC")
+		}
+	}
+	// 在其他排序条件相同的情况下，按照截止时间排序
+	cDb = cDb.Order("end_time DESC")
 	// 统计总数
 	err := cDb.Count(&result.Total).Error
 	if err != nil {
