@@ -121,8 +121,9 @@ func (c *ManagerUserController) Login() {
 // @router /logout [post]
 func (c *ManagerUserController) Logout() {
 	var result resultModels.Result
-	//直接销毁 Session
-	c.DestroySession()
+	// 删除对应 Session
+	//c.DestroySession()
+	c.DelSession(SESSION_MANAGER_KEY)
 	result = resultModels.SuccessResult(nil)
 	c.ResponseJson(result)
 }
