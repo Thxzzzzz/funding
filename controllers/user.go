@@ -345,7 +345,7 @@ func (c *UserControllers) ChangePsw() {
 
 	// 检查密码是否正确
 	if user.Password != form.OldPsw {
-		c.ResponseErrJson(resultError.NewFallFundingErr("密码错误"))
+		c.ResponseErrJson(resultError.NewFallFundingErr("原密码输入错误"))
 		return
 	}
 	userInfo := models.User{}
