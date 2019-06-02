@@ -20,6 +20,7 @@ type OrderListItem struct {
 	ProductPackageId uint64              `json:"product_package_id"` // 套餐 Id
 	Stock            int                 `json:"stock"`              // 库存
 	Description      string              `json:"description"`        // 套餐描述
+	Deliveryday      int                 `json:"delivery_day"`         //发货天数
 	ImageUrl         string              `json:"image_url"`          // 图片链接
 	Nums             int                 `json:"nums"`               // 购买数量
 	UnitPrice        float64             `json:"unit_price"`         // 单价
@@ -38,6 +39,7 @@ type OrderListItem struct {
 	PaidAt           *time.Time          `json:"paid_at"`            // 支付时间
 	CloseAt          *time.Time          `json:"close_at"`           // 关闭时间
 	FinishedAt       *time.Time          `json:"finished_at"`        // 交易成功时间
+
 	//CheckingNumber   string             `json:"checking_number"`    // 物流单号
 }
 

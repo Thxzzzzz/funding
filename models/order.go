@@ -184,7 +184,7 @@ SELECT
 	p.name AS product_name,pkg.price,pkg.stock,pkg.image_url,pkg.description,pkg.stock,
 	p.current_price,p.target_price,o.refund_reason,o.last_status,o.complaint_reason,
 	o.created_at,o.status AS order_status,o.total_price,o.checking_number,
-	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at
+	o.name,o.address,o.phone,o.paid_at,o.finished_at,o.close_at,pkg.delivery_day
 `
 
 // 查询订单列表的 SQL 字段
