@@ -9,7 +9,8 @@ ON o.product_id = p.id
 SET
 o.status = 7,
 o.last_status = 2,
-o.refund_reason = "众筹失败，自动退款"
+o.refund_reason = "众筹失败，自动退款",
+o.close_at = DATE(NOW())
 WHERE
 o.status = 2
 AND p.end_time < DATE(NOW())
