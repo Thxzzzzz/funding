@@ -1,7 +1,7 @@
 # Funding 众筹系统 
-  当前仓库为 Go 后端仓库
-  前端仓库地址      https://github.com/Thxzzzzz/funding-front
-  管理者前端仓库地址 https://github.com/Thxzzzzz/funding-manager
+  当前仓库为 Go 后端仓库  
+  前端仓库地址	https://github.com/Thxzzzzz/funding-front  
+  管理者前端仓库地址 https://github.com/Thxzzzzz/funding-manager  
 
 # 具体功能的设计和实现
 
