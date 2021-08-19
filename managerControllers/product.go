@@ -49,6 +49,7 @@ func (c *ManagerProductController) GetProductList() {
 
 	if err != nil {
 		c.ResponseErrJson(err)
+		return
 	}
 	pl, err := models.GetProductList(form, verifyStatus)
 	if err != nil {
