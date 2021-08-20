@@ -54,6 +54,7 @@ func (c *ManagerProductController) GetProductList() {
 	pl, err := models.GetProductList(form, verifyStatus)
 	if err != nil {
 		c.ResponseErrJson(err)
+		return
 	}
 	c.ResponseSuccessJson(pl)
 }
