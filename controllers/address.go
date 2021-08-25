@@ -52,12 +52,6 @@ func (c *AddressController) NewAddress() {
 
 	//解析 form 表单数据
 	var form forms.Address
-	//err = c.ParseForm(&form)
-	//if err != nil {
-	//	c.ResponseErrJson(err)
-	//	return
-	//}
-
 	//这里由于 前端的 Axios 默认请求为 json 格式，所以先改为解析Json
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -215,6 +209,4 @@ func (c *AddressController) UpdateAddress() {
 	}
 
 	c.ResponseSuccessJson(nil)
-	//result = resultModels.SuccessResult(nil)
-	//c.ResponseJson(result)
 }
